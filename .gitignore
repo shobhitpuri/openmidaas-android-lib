@@ -9,12 +9,13 @@
 *.class
 
 # generated files
-bin/
-gen/
+library/bin/
+library/gen/
 
 # Local configuration file (sdk path, etc)
-local.properties
+library/local.properties
 
 # Eclipse project files
-.classpath
-.project
+library/.classpath
+library/.project
+library/.settings
