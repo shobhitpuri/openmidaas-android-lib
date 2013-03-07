@@ -15,9 +15,20 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-public final class AttributeFactory {
+import org.openmidaas.library.model.core.AbstractAttributeFactory;
+
+public class GenericAttributeFactory implements AbstractAttributeFactory<GenericAttribute>{
+
+	private String mAttributeName;
 	
-	public static EmailAttribute getEmailAttribute(String email) {
-		return new EmailAttribute(email);
+	public GenericAttributeFactory(String attributeName) {
+		if (attributeName == null) { throw new IllegalArgumentException(); }
+		mAttributeName = attributeName;
 	}
+	
+	@Override
+	public GenericAttribute createAttribute() {
+		return new GenericAttribute(mAttributeName);
+	}
+
 }

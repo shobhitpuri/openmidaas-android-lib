@@ -15,10 +15,15 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-public interface InitializeVerificationCallback {
-	
-	public void onSuccess();
-	
-	public void onError();
+import org.openmidaas.library.model.core.AbstractAttribute;
 
+public class GenericAttribute extends AbstractAttribute<String>{
+	
+	protected GenericAttribute(String name) {
+		mName = name;
+	}
+
+	protected boolean validateAttribute(String value) {
+		return true;
+	}
 }

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library;
+package org.openmidaas.library.model;
 
-public class OpenMIDaas {
-	
-	public static boolean isRegistered() {
-		return true;
+import org.openmidaas.library.model.core.AbstractAttributeFactory;
+
+public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute>{
+
+	@Override
+	public EmailAttribute createAttribute() {
+		return new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification());
 	}
-
 }

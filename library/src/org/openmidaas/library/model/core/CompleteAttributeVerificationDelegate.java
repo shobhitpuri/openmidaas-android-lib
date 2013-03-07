@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library;
+package org.openmidaas.library.model.core;
 
-public class OpenMIDaas {
+
+public interface CompleteAttributeVerificationDelegate {
 	
-	public static boolean isRegistered() {
-		return true;
-	}
+	/**
+	 * This method completes the verification 
+	 * @param pin
+	 * @param callback
+	 */
+	public void completeVerification(String pin, CompleteVerificationCallback callback);
 
 }

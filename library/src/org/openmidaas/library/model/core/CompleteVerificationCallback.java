@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library;
+package org.openmidaas.library.model.core;
 
-public class OpenMIDaas {
+public interface CompleteVerificationCallback {
 	
-	public static boolean isRegistered() {
-		return true;
-	}
+	public void onSuccess();
+	
+	public void onError();
 
 }

@@ -8,14 +8,21 @@
 # Java class files
 *.class
 
+library-tests/*.log
 # generated files
 library/bin/
 library/gen/
+library-tests/bin/
+library-tests/gen/
 
 # Local configuration file (sdk path, etc)
 library/local.properties
+library-tests/local.properties
 
 # Eclipse project files
 library/.classpath
 library/.project
 library/.settings
+library-tests/.classpath
+library-tests/.project
+library-tests/.settings

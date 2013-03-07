@@ -15,8 +15,6 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-public abstract class AbstractAttributeFactory {
-	
-	public abstract AbstractAttribute createAttribute(String type);
+public class InvalidAttributeValueException extends Exception{
 
 }

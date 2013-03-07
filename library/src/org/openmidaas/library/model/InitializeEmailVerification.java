@@ -15,12 +15,15 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
+import org.openmidaas.library.model.core.InitializeVerificationCallback;
+
 public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate {
 
 	@Override
-	public void initializeVerification(InitializeVerificationCallback callback) {
+	public void startVerification(InitializeVerificationCallback callback) {
 		//TODO: call the server to start email verification and call callback.onSuccess();/callback.onError() accordingly
-		
+		callback.onSuccess();
 	}
 
 }

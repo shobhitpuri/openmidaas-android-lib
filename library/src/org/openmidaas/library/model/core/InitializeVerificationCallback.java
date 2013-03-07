@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.model;
+package org.openmidaas.library.model.core;
 
-public interface CompleteAttributeVerificationDelegate {
+public interface InitializeVerificationCallback {
 	
-	public void completeVerification(CompleteVerificationCallback callback);
+	public void onSuccess();
+	
+	public void onError();
 
 }

@@ -15,11 +15,14 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
+import org.openmidaas.library.model.core.CompleteVerificationCallback;
+
 public class CompleteEmailVerification implements CompleteAttributeVerificationDelegate{
 
 	@Override
-	public void completeVerification(CompleteVerificationCallback callback) {
-		
+	public void completeVerification(String code, CompleteVerificationCallback callback) {
+		//TODO: send code to server.
 	}
 
 }

@@ -15,12 +15,51 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-public class EmailAttribute extends AbstractAttribute {
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
+import org.openmidaas.library.model.core.CompleteVerificationCallback;
+import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
+import org.openmidaas.library.model.core.InitializeVerificationCallback;
+
+/**
+ * Email Attribute class
+ */
+public class EmailAttribute extends AbstractAttribute<String> {
 	
-	public EmailAttribute(String email) {
-		
-		mInitVerificationDelegate = new InitializeEmailVerification();
-		mCompleteVerificationDelegate = new CompleteEmailVerification();
+	//Credit for regex rule: http://www.mkyong.com/regular-expressions/how-to-validate-email-address-with-regular-expression/
+	private final String EMAIL_REGEX_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"; 
+	
+	private final String ATTRIBUTE_NAME = "email";
+	
+	protected EmailAttribute(InitializeAttributeVerificationDelegate initEmailDelegate,
+			CompleteAttributeVerificationDelegate completeEmailDelegate) {
+		mIsVerifiable = true;
+		mName = ATTRIBUTE_NAME;
+		mInitVerificationDelegate = initEmailDelegate;
+		mCompleteVerificationDelegate = completeEmailDelegate;
 	}
 
+	@Override
+	protected boolean validateAttribute(String value) {
+		if(value == null || value.isEmpty()) {
+			return false;
+		}
+		Pattern pattern = Pattern.compile(EMAIL_REGEX_PATTERN);
+		Matcher matcher = pattern.matcher(value);
+		return matcher.matches();
+	}
+	
+	@Override
+	public void startVerification(InitializeVerificationCallback callback) {
+		mInitVerificationDelegate.startVerification(callback);
+	}
+	
+	@Override
+	public void completeVerification(String code, CompleteVerificationCallback callback)  {
+		mCompleteVerificationDelegate.completeVerification(code, callback);
+	}
 }
