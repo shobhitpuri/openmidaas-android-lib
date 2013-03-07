@@ -21,7 +21,7 @@ package org.openmidaas.library.model;
 
 public abstract class AbstractAttribute implements Verifiable{
 	
-	protected InitializeVerificationDelegate mInitVerificationDelegate;
+	protected InitializeAttributeVerificationDelegate mInitVerificationDelegate;
 	
 	protected CompleteAttributeVerificationDelegate mCompleteVerificationDelegate;
 	

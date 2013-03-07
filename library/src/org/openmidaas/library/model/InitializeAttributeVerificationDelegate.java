@@ -15,8 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-public abstract class AbstractAttributeFactory {
+public interface InitializeAttributeVerificationDelegate {
 	
-	public abstract AbstractAttribute createAttribute(String type);
+	public void initializeVerification(InitializeVerificationCallback callback);
 
 }
