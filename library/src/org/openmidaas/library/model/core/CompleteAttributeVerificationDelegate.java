@@ -15,7 +15,13 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
-
+/**
+ * Delegate class that completes an attribute verification. 
+ * Verification is specific to the type of attribute. For 
+ * example, an email attribute will implement this class. 
+ * For now it is assumed that the verification process uses a 
+ * one-time code. 
+ */
 public interface CompleteAttributeVerificationDelegate {
 	
 	/**

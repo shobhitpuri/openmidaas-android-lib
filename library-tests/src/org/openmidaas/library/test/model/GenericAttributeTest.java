@@ -20,11 +20,11 @@ import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.NotVerifiableException;
+import org.openmidaas.library.model.core.OpenMIDaaSException;
 
 public class GenericAttributeTest {
 	static GenericAttribute genericAttribute;
@@ -63,10 +63,10 @@ public class GenericAttributeTest {
 			}
 
 			@Override
-			public void onError() {
+			public void onError(OpenMIDaaSException exception) {
+				
 				
 			}
-			
 		});
 	}
 }

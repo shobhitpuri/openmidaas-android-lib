@@ -18,8 +18,17 @@ package org.openmidaas.library.model;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 
+/**
+ * Class that implements the delegate that initializes
+ * attribute verification. 
+ */
 public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate {
 
+	/**
+	 * The method calls the server with the provided attribute 
+	 * value (email address) and returns the result via a callback to 
+	 * the caller. 
+	 */
 	@Override
 	public void startVerification(InitializeVerificationCallback callback) {
 		//TODO: call the server to start email verification and call callback.onSuccess();/callback.onError() accordingly

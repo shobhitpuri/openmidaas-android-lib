@@ -15,6 +15,26 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
-public abstract class CompleteVerificationCallback extends AbstractCallback {
+public enum OpenMIDaaSError {
+	
+	SERVER_ERROR(101, "Error with the attribute server. "),
+	ERROR_AUTHENTICATING_DEVICE(100, "There was an error authenticating the device. ");
+	
+	private final int mErrorCode;
+	
+	private final String mErrorMessage;
+	
+	private OpenMIDaaSError(int errorCode, String errorMessage) {
+		this.mErrorCode = errorCode;
+		this.mErrorMessage = errorMessage;
+	}
+	
+	public String getErrorMessage() {
+		return mErrorMessage;
+	}
+	
+	public int getErrorCode() {
+		return mErrorCode;
+	}
 
 }

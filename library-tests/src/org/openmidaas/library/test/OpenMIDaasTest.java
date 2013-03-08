@@ -13,30 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.test.suites;
+package org.openmidaas.library.test;
 
+import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openmidaas.library.test.model.EmailAttributeTest;
-import org.openmidaas.library.test.model.GenericAttributeTest;
+import org.junit.Test;
+import org.openmidaas.library.OpenMIDaaS;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	GenericAttributeTest.class,
-	EmailAttributeTest.class
-})
-public class ModelTestSuite {
-	@BeforeClass 
-    public static void setUpClass() {      
-        
-    }
-
-    @AfterClass 
-    public static void tearDownClass() { 
-       
-    }
-
+public class OpenMIDaasTest {
+	@BeforeClass
+	public  static void testSetup(){
+		OpenMIDaaS.setLoggingLevel(OpenMIDaaS.LOG_LEVEL_INFO);
+	}
+	
+	@AfterClass
+	public  static void testCleanup(){}
+	
+	
 
 }

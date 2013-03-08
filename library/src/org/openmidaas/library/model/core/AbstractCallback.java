@@ -13,12 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library;
+package org.openmidaas.library.model.core;
 
-public class OpenMIDaas {
+/**
+ * Class that defines an abstract callback that 
+ * other callback implementations can use. 
+ *
+ */
+public abstract class AbstractCallback {
+	/**
+	 * This method is called when a successful 
+	 * operation takes place. 
+	 */
+	public abstract void onSuccess();
 	
-	public static boolean isRegistered() {
-		return true;
-	}
-
+	/**
+	 * This method is called when an error occurs while
+	 * performing an operation. 
+	 * @param exception - The OpenMIDaaSException containing 
+	 * the error code and description. 
+	 */
+	public abstract void onError(OpenMIDaaSException exception);
+	
 }

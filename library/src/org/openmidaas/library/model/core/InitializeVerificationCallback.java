@@ -15,10 +15,6 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
-public interface InitializeVerificationCallback {
-	
-	public void onSuccess();
-	
-	public void onError();
+public abstract class InitializeVerificationCallback extends AbstractCallback {
 
 }

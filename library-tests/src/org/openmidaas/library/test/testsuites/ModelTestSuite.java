@@ -13,8 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.model.core;
+package org.openmidaas.library.test.testsuites;
 
-public abstract class CompleteVerificationCallback extends AbstractCallback {
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.openmidaas.library.test.model.EmailAttributeTest;
+import org.openmidaas.library.test.model.GenericAttributeTest;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+	GenericAttributeTest.class,
+	EmailAttributeTest.class
+})
+public class ModelTestSuite {
+	@BeforeClass 
+    public static void setUpClass() {      
+        
+    }
+
+    @AfterClass 
+    public static void tearDownClass() { 
+       
+    }
+
 
 }

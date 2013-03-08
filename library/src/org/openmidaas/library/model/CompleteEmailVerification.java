@@ -18,8 +18,20 @@ package org.openmidaas.library.model;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 
+/**
+ * This class implements the delegate class that completes the 
+ * attribute verification process. It sends the one-time code 
+ * collected via a GUI to the server for verification. 
+ * The result is returned via a callback.
+ */
 public class CompleteEmailVerification implements CompleteAttributeVerificationDelegate{
 
+	/**
+	 * This methods is an implementation of the interface that 
+	 * completes an attribute verification. 
+	 * Here the one-time code is send to the server and the result
+	 * is send back to the callver via a callback.
+	 */
 	@Override
 	public void completeVerification(String code, CompleteVerificationCallback callback) {
 		//TODO: send code to server.

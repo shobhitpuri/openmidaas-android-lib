@@ -15,6 +15,22 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
-public abstract class CompleteVerificationCallback extends AbstractCallback {
+public class OpenMIDaaSException extends Exception {
 
+	private static final long serialVersionUID = 3928915108062731435L;
+	
+	private OpenMIDaaSError mErrorCode;
+
+	public OpenMIDaaSException(OpenMIDaaSError errorCode) {
+		this.mErrorCode = errorCode;
+	}
+
+	public OpenMIDaaSError getErrorError() {
+		return mErrorCode;
+	}
+	
+	@Override
+	public String toString() {
+		return (mErrorCode.getErrorCode() + " - " + mErrorCode.getErrorMessage());
+	}
 }

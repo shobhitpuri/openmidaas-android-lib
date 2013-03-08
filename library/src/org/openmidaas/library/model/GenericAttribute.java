@@ -17,12 +17,22 @@ package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttribute;
 
+/**
+ * Defines a generic attribute type. 
+ * Generic attributes are non-verifiable and by 
+ * default, are always validated. The attribute name *must* 
+ * be specified at the time of construction. 
+ */
 public class GenericAttribute extends AbstractAttribute<String>{
 	
 	protected GenericAttribute(String name) {
 		mName = name;
 	}
 
+	/**
+	 * Method that validates the format of the attribute. 
+	 * A generic attribute always returns true. 
+	 */
 	protected boolean validateAttribute(String value) {
 		return true;
 	}

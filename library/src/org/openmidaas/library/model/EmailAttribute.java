@@ -25,7 +25,7 @@ import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 
 /**
- * Email Attribute class
+ * Email Attribute class.
  */
 public class EmailAttribute extends AbstractAttribute<String> {
 	
@@ -35,6 +35,12 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	
 	private final String ATTRIBUTE_NAME = "email";
 	
+	/**
+	 * Constructs a new email attribute. A new instance must be
+	 * created via the provided factory method. 
+	 * @param initEmailDelegate - the delegate class that starts the email verification process.
+	 * @param completeEmailDelegate - the delegate class that completes the email verification process.
+	 */
 	protected EmailAttribute(InitializeAttributeVerificationDelegate initEmailDelegate,
 			CompleteAttributeVerificationDelegate completeEmailDelegate) {
 		mIsVerifiable = true;
@@ -43,6 +49,9 @@ public class EmailAttribute extends AbstractAttribute<String> {
 		mCompleteVerificationDelegate = completeEmailDelegate;
 	}
 
+	/**
+	 * Checks to see if the provided email address is valid.
+	 */
 	@Override
 	protected boolean validateAttribute(String value) {
 		if(value == null || value.isEmpty()) {
@@ -53,11 +62,20 @@ public class EmailAttribute extends AbstractAttribute<String> {
 		return matcher.matches();
 	}
 	
+	/**
+	 * Starts the email verification process by sending the email address to the 
+	 * Attribute Verification Service. The Attribute Verification Server sends a 
+	 * one-time code to the email address. 
+	 */
 	@Override
 	public void startVerification(InitializeVerificationCallback callback) {
 		mInitVerificationDelegate.startVerification(callback);
 	}
 	
+	/**
+	 * Completes the email verification process by sending a one-time code to the 
+	 * Attribute Verification Service.
+	 */
 	@Override
 	public void completeVerification(String code, CompleteVerificationCallback callback)  {
 		mCompleteVerificationDelegate.completeVerification(code, callback);

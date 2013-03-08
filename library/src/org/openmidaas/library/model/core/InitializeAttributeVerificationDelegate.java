@@ -14,10 +14,20 @@
  * limitations under the License.
  ******************************************************************************/
 package org.openmidaas.library.model.core;
-
+/**
+ * Delegate class that starts the attribute verification process.
+ * Each attribute type will implement their process to start verification.
+ *
+ */
 
 public interface InitializeAttributeVerificationDelegate {
 	
+	/**
+	 * This method starts the attribute verification process and the result
+	 * is returned via a callback.
+	 * @param callback - callback that returns the result of the start
+	 * 					 verification process.
+	 */
 	public void startVerification(InitializeVerificationCallback callback);
 
 }
