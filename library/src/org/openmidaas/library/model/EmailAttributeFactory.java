@@ -17,6 +17,9 @@ package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttributeFactory;
 
+/**
+ * Creates a new email attribute
+ */
 public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute>{
 
 	@Override

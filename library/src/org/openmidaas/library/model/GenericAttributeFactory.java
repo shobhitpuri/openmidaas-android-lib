@@ -17,6 +17,9 @@ package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttributeFactory;
 
+/**
+ * Creates a new generic attribute
+ */
 public class GenericAttributeFactory implements AbstractAttributeFactory<GenericAttribute>{
 
 	private String mAttributeName;
