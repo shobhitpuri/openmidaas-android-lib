@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.test.model;
+package org.openmidaas.library.test.models;
 
 import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,47 +27,60 @@ import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.NotVerifiableException;
 import org.openmidaas.library.model.core.OpenMIDaaSException;
 
-public class GenericAttributeTest {
-	static GenericAttribute genericAttribute;
-	static String attributeName = "firstName";
+import android.test.suitebuilder.annotation.SmallTest;
+
+public class GenericAttributeTest extends TestCase {
+	private GenericAttribute genericAttribute;
+	private String attributeName = "firstName";
 	
-	@BeforeClass
-	public  static void testSetup(){
+	public void setUp() {
 		genericAttribute = new GenericAttributeFactory(attributeName).createAttribute();
 	}
 	
-	@AfterClass
-	public  static void testCleanup(){}
-	
-	@Test
+	@SmallTest
 	public void testAttributeName() {
-		Assert.assertEquals(attributeName, genericAttribute.getName());
+		Assert.assertEquals(genericAttribute.getName(), attributeName);
 	}
 	
-	@Test(expected=IllegalArgumentException.class) 
-	public void createAttributeWithNullName() {
-		GenericAttribute genericAttribute = new GenericAttributeFactory(null).createAttribute();
+	@SmallTest
+	public void testCreateAttributeWithNullName() {
+		try {
+			GenericAttribute genericAttribute = new GenericAttributeFactory(null).createAttribute();
+			Assert.fail("Expected IllegalArgumentException");
+		} catch(IllegalArgumentException e) {
+			
+		}
 	}
 	
-	@Test(expected=NotVerifiableException.class)
-	public void startVerificationWithoutCallback() throws Exception {
-		genericAttribute.startVerification(null);
+	@SmallTest
+	public void testStartVerificationWithoutCallback() {
+		try {
+			genericAttribute.startVerification(null);
+			Assert.fail("Expected NotVerifiableException");
+		} catch (NotVerifiableException e) {
+			
+		}
 	}
 	
-	@Test(expected=NotVerifiableException.class)
-	public void startVerificationWithCallback() throws Exception {
-		genericAttribute.startVerification(new InitializeVerificationCallback() {
+	@SmallTest
+	public void testStartVerificationWithCallback() {
+		try {
+			genericAttribute.startVerification(new InitializeVerificationCallback() {
 
-			@Override
-			public void onSuccess() {
-				
-			}
+				@Override
+				public void onSuccess() {
+					
+				}
 
-			@Override
-			public void onError(OpenMIDaaSException exception) {
-				
-				
-			}
-		});
+				@Override
+				public void onError(OpenMIDaaSException exception) {
+					
+					
+				}
+			});
+			Assert.fail("Expected NotVerifiableException");
+		} catch (NotVerifiableException e) {
+			
+		}
 	}
 }

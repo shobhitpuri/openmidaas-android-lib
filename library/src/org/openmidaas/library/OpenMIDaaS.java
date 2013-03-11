@@ -69,12 +69,13 @@ public final class OpenMIDaaS {
 	/**
 	 * This methods initializes the library. It first checks to see if the 
 	 * device is already registered. If it is, it calls the onSuccess()
-	 * method. Otherwise, it tries to register the device with the server. 
+	 * method. Otherwise, it tries to register the device with the server and calls
+	 * onSuccess() or onError() accordingly. 
 	 * @param context - the Android context. 
 	 * @param callback - the Initialization callback. 
 	 */
 	public static void initialize(Context context, InitializationCallback callback) {
-		mContext = context;
+		mContext = context.getApplicationContext();
 		if (isAlreadyRegistered()) {
 			callback.onSuccess();
 			
