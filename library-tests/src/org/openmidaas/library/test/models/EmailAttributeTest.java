@@ -78,7 +78,7 @@ public class EmailAttributeTest extends TestCase{
 		
 		@SmallTest
 		public void testName() {
-			Assert.assertEquals("email", emailAttribute.getName());
+			Assert.assertEquals("emailaa", emailAttribute.getName());
 		}
 		
 		@SmallTest
