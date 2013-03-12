@@ -25,6 +25,7 @@ import org.junit.rules.ExpectedException;
 import org.openmidaas.library.model.EmailAttribute;
 import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
+import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.OpenMIDaaSException;
 
@@ -34,7 +35,6 @@ import junit.framework.TestCase;
 
 public class EmailAttributeTest extends TestCase{
 		static EmailAttribute emailAttribute;
-		private CountDownLatch mLatch = new CountDownLatch(1);
 		private boolean notificationSuccess = false;
 		
 		public void setUp() {
@@ -78,7 +78,7 @@ public class EmailAttributeTest extends TestCase{
 		
 		@SmallTest
 		public void testName() {
-			Assert.assertEquals("emailaa", emailAttribute.getName());
+			Assert.assertEquals("email", emailAttribute.getName());
 		}
 		
 		@SmallTest
@@ -102,6 +102,7 @@ public class EmailAttributeTest extends TestCase{
 		
 		@SmallTest
 		public void testInitializeEmailVerification() throws Exception {
+			final CountDownLatch mLatch = new CountDownLatch(1);
 			emailAttribute.startVerification(new InitializeVerificationCallback() {
 
 				@Override
@@ -121,6 +122,27 @@ public class EmailAttributeTest extends TestCase{
 			mLatch.await();
 			Assert.assertTrue(notificationSuccess);
 		}
-	
+		
+		@SmallTest
+		public void testCompleteEmailVerification() throws Exception {
+			final CountDownLatch mLatch = new CountDownLatch(1);
+			notificationSuccess = false;
+			emailAttribute.completeVerification("1234", new CompleteVerificationCallback() {
 
+				@Override
+				public void onSuccess() {
+					notificationSuccess = true;
+					mLatch.countDown();
+				}
+
+				@Override
+				public void onError(OpenMIDaaSException exception) {
+					notificationSuccess = false;
+					mLatch.countDown();
+				}
+				
+			});
+			mLatch.await();
+			Assert.assertTrue(notificationSuccess);
+		}
 }

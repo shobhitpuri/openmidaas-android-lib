@@ -35,4 +35,8 @@
 	    android:name="com.zutubi.android.junitreport.JUnitReportTestRunner"
         android:targetPackage="org.openmidaas.library.test"/>
 
+    <instrumentation android:label="All Tests" 
+	    android:name="org.openmidaas.library.test.models.TestSuite"
+        android:targetPackage="org.openmidaas.library.test"/>
+    
 </manifest>

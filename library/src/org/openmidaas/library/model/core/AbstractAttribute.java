@@ -103,8 +103,8 @@ public abstract class AbstractAttribute<T> {
 	 * @param callback - the verification callback
 	 * @throws NotVerifiableException - throws if the attribute is not verifiable
 	 */
-	public void startVerification(InitializeVerificationCallback callback) throws NotVerifiableException {
-		throw new NotVerifiableException(); 
+	public void startVerification(InitializeVerificationCallback callback) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("Cannot start verification"); 
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public abstract class AbstractAttribute<T> {
 	 * @param callback - the verification complete callback
 	 * @throws NotVerifiableException
 	 */
-	public void completeVerification(String code, CompleteVerificationCallback callback) throws NotVerifiableException  {
-		throw new NotVerifiableException();
+	public void completeVerification(String code, CompleteVerificationCallback callback) throws UnsupportedOperationException  {
+		throw new UnsupportedOperationException("Cannot complete verification");
 	}
 }

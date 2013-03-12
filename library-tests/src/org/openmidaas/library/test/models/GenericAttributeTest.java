@@ -17,14 +17,12 @@ package org.openmidaas.library.test.models;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
-import org.openmidaas.library.model.core.NotVerifiableException;
 import org.openmidaas.library.model.core.OpenMIDaaSException;
 
 import android.test.suitebuilder.annotation.SmallTest;
@@ -56,8 +54,8 @@ public class GenericAttributeTest extends TestCase {
 	public void testStartVerificationWithoutCallback() {
 		try {
 			genericAttribute.startVerification(null);
-			Assert.fail("Expected NotVerifiableException");
-		} catch (NotVerifiableException e) {
+			Assert.fail("Expected UnsupportedOperationException");
+		} catch (UnsupportedOperationException e) {
 			
 		}
 	}
@@ -78,8 +76,8 @@ public class GenericAttributeTest extends TestCase {
 					
 				}
 			});
-			Assert.fail("Expected NotVerifiableException");
-		} catch (NotVerifiableException e) {
+			Assert.fail("Expected UnsupportedOperationException");
+		} catch (UnsupportedOperationException e) {
 			
 		}
 	}

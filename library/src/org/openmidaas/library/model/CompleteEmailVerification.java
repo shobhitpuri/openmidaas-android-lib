@@ -34,7 +34,7 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 	 */
 	@Override
 	public void completeVerification(String code, CompleteVerificationCallback callback) {
-		//TODO: send code to server.
+		callback.onSuccess();
 	}
 
 }
