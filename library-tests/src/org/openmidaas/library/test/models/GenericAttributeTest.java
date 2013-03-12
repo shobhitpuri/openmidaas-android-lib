@@ -22,6 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
+import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.OpenMIDaaSException;
 
@@ -78,6 +79,30 @@ public class GenericAttributeTest extends TestCase {
 			});
 			Assert.fail("Expected UnsupportedOperationException");
 		} catch (UnsupportedOperationException e) {
+			
+		}
+	}
+	
+	@SmallTest
+	public void testCompleteVerification() {
+		try {
+			genericAttribute.completeVerification("1234", new CompleteVerificationCallback() {
+
+				@Override
+				public void onSuccess() {
+					
+					
+				}
+
+				@Override
+				public void onError(OpenMIDaaSException exception) {
+					
+					
+				}
+				
+			});
+			Assert.fail("Expected UnsupportedOperationException");
+		} catch(UnsupportedOperationException e) {
 			
 		}
 	}
