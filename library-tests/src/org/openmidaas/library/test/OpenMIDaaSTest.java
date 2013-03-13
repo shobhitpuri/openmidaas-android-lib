@@ -19,12 +19,18 @@ import java.util.concurrent.CountDownLatch;
 
 import junit.framework.Assert;
 
-import org.openmidaas.library.OpenMIDaaS;
+import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.model.EmailAttribute;
+import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.core.InitializationCallback;
-import org.openmidaas.library.model.core.OpenMIDaaSException;
+import org.openmidaas.library.model.core.InitializeVerificationCallback;
+import org.openmidaas.library.model.core.MIDaaSException;
+
+import com.google.mockwebserver.RecordedRequest;
 
 import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 
 public class OpenMIDaaSTest extends ActivityInstrumentationTestCase2{
 	private Context mContext;
@@ -47,7 +53,7 @@ public class OpenMIDaaSTest extends ActivityInstrumentationTestCase2{
 	}
 	
 	public void testLibraryInitialization() throws Exception {
-		OpenMIDaaS.initialize(mContext, new InitializationCallback() {
+		MIDaaS.initialize(mContext, new InitializationCallback() {
 
 			@Override
 			public void onSuccess() {
@@ -56,7 +62,7 @@ public class OpenMIDaaSTest extends ActivityInstrumentationTestCase2{
 			}
 
 			@Override
-			public void onError(OpenMIDaaSException exception) {
+			public void onError(MIDaaSException exception) {
 				
 			}
 			
@@ -64,4 +70,5 @@ public class OpenMIDaaSTest extends ActivityInstrumentationTestCase2{
 		mLatch.await();
 		Assert.assertTrue(notificationSuccess);
 	}
+	
 }

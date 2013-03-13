@@ -69,7 +69,7 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	 */
 	@Override
 	public void startVerification(InitializeVerificationCallback callback) {
-		mInitVerificationDelegate.startVerification(callback);
+		mInitVerificationDelegate.startVerification(this, callback);
 	}
 	
 	/**
@@ -78,6 +78,6 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	 */
 	@Override
 	public void completeVerification(String code, CompleteVerificationCallback callback)  {
-		mCompleteVerificationDelegate.completeVerification(code, callback);
+		mCompleteVerificationDelegate.completeVerification(this, code, callback);
 	}
 }

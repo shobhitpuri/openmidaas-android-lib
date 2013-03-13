@@ -15,26 +15,22 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
-public enum OpenMIDaaSError {
+public class MIDaaSException extends Exception {
+
+	private static final long serialVersionUID = 3928915108062731435L;
 	
-	SERVER_ERROR(101, "Error with the attribute server. "),
-	ERROR_AUTHENTICATING_DEVICE(100, "There was an error authenticating the device. ");
-	
-	private final int mErrorCode;
-	
-	private final String mErrorMessage;
-	
-	private OpenMIDaaSError(int errorCode, String errorMessage) {
+	private MIDaaSError mErrorCode;
+
+	public MIDaaSException(MIDaaSError errorCode) {
 		this.mErrorCode = errorCode;
-		this.mErrorMessage = errorMessage;
-	}
-	
-	public String getErrorMessage() {
-		return mErrorMessage;
-	}
-	
-	public int getErrorCode() {
-		return mErrorCode;
 	}
 
+	public MIDaaSError getErrorError() {
+		return mErrorCode;
+	}
+	
+	@Override
+	public String toString() {
+		return (mErrorCode.getErrorCode() + " - " + mErrorCode.getErrorMessage());
+	}
 }

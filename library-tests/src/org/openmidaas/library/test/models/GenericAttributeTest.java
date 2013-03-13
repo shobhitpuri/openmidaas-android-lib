@@ -24,7 +24,7 @@ import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
-import org.openmidaas.library.model.core.OpenMIDaaSException;
+import org.openmidaas.library.model.core.MIDaaSException;
 
 import android.test.suitebuilder.annotation.SmallTest;
 
@@ -72,7 +72,7 @@ public class GenericAttributeTest extends TestCase {
 				}
 
 				@Override
-				public void onError(OpenMIDaaSException exception) {
+				public void onError(MIDaaSException exception) {
 					
 					
 				}
@@ -95,7 +95,7 @@ public class GenericAttributeTest extends TestCase {
 				}
 
 				@Override
-				public void onError(OpenMIDaaSException exception) {
+				public void onError(MIDaaSException exception) {
 					
 					
 				}

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 
 /**
@@ -115,5 +117,17 @@ public abstract class AbstractAttribute<T> {
 	 */
 	public void completeVerification(String code, CompleteVerificationCallback callback) throws UnsupportedOperationException  {
 		throw new UnsupportedOperationException("Cannot complete verification");
+	}
+	
+	/**
+	 * Returns an attribute in its JSON representable form.
+	 * @return the attribute in JSON format
+	 * @throws JSONException 
+	 */
+	public JSONObject getAttributeAsJSONObject() throws JSONException {
+		JSONObject attributeObject = new JSONObject();
+		attributeObject.put("type", getName());
+		attributeObject.put("value", getValue());
+		return attributeObject;
 	}
 }

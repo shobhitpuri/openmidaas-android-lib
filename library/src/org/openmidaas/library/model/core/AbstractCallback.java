@@ -33,6 +33,6 @@ public abstract class AbstractCallback {
 	 * @param exception - The OpenMIDaaSException containing 
 	 * the error code and description. 
 	 */
-	public abstract void onError(OpenMIDaaSException exception);
+	public abstract void onError(MIDaaSException exception);
 	
 }

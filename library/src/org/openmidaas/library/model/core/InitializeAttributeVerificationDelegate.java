@@ -28,6 +28,6 @@ public interface InitializeAttributeVerificationDelegate {
 	 * @param callback - callback that returns the result of the start
 	 * 					 verification process.
 	 */
-	public void startVerification(InitializeVerificationCallback callback);
+	public void startVerification(AbstractAttribute<?> attribute, InitializeVerificationCallback callback);
 
 }

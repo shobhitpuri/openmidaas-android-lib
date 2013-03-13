@@ -16,7 +16,6 @@
 package org.openmidaas.library;
 
 import org.openmidaas.library.model.core.InitializationCallback;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -25,7 +24,7 @@ import android.util.Log;
 /**
  * Class that controls device registration
  */
-public final class OpenMIDaaS {
+public final class MIDaaS {
 	
 	private static int currentLoggingLevel = 6;
 	public static final int LOG_LEVEL_VERBOSE = 2;
@@ -64,6 +63,10 @@ public final class OpenMIDaaS {
 			isRegistered = false;
 		}
 		return isRegistered;
+	}
+	
+	public static Context getContext() {
+		return mContext;
 	}
 	
 	/**

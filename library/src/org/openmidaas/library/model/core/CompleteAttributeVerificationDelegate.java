@@ -29,6 +29,6 @@ public interface CompleteAttributeVerificationDelegate {
 	 * @param pin
 	 * @param callback
 	 */
-	public void completeVerification(String pin, CompleteVerificationCallback callback);
+	public void completeVerification(AbstractAttribute<?> attribute, String pin, CompleteVerificationCallback callback);
 
 }

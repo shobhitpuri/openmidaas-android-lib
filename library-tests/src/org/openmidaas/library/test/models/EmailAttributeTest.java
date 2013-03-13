@@ -27,18 +27,24 @@ import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
-import org.openmidaas.library.model.core.OpenMIDaaSException;
+import org.openmidaas.library.model.core.MIDaaSException;
+
+import com.google.mockwebserver.MockResponse;
+import com.google.mockwebserver.MockWebServer;
+import com.google.mockwebserver.RecordedRequest;
 
 import android.test.suitebuilder.annotation.SmallTest;
+import android.util.Log;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class EmailAttributeTest extends TestCase{
 		static EmailAttribute emailAttribute;
 		private boolean notificationSuccess = false;
-		
+		private  MockWebServer server = new MockWebServer();
 		public void setUp() {
 			emailAttribute = new EmailAttributeFactory().createAttribute();
+			server = new MockWebServer();
 		}
 		
 		@SmallTest
@@ -100,49 +106,51 @@ public class EmailAttributeTest extends TestCase{
 		}
 		
 		
-		@SmallTest
-		public void testInitializeEmailVerification() throws Exception {
-			final CountDownLatch mLatch = new CountDownLatch(1);
-			emailAttribute.startVerification(new InitializeVerificationCallback() {
-
-				@Override
-				public void onSuccess() {
-					notificationSuccess = true;
-					mLatch.countDown();
-					
-				}
-
-				@Override
-				public void onError(OpenMIDaaSException exception) {
-					notificationSuccess = false;
-					mLatch.countDown();
-				}
-				
-			});
-			mLatch.await();
-			Assert.assertTrue(notificationSuccess);
-		}
+//		@SmallTest
+//		public void testInitializeEmailVerification() throws Exception {
+//			final CountDownLatch mLatch = new CountDownLatch(1);
+//			emailAttribute.startVerification(new InitializeVerificationCallback() {
+//
+//				@Override
+//				public void onSuccess() {
+//					notificationSuccess = true;
+//					mLatch.countDown();
+//					
+//				}
+//
+//				@Override
+//				public void onError(MIDaaSException exception) {
+//					notificationSuccess = false;
+//					mLatch.countDown();
+//				}
+//				
+//			});
+//			mLatch.await();
+//			Assert.assertTrue(notificationSuccess);
+//		}
+//		
+//		@SmallTest
+//		public void testCompleteEmailVerification() throws Exception {
+//			final CountDownLatch mLatch = new CountDownLatch(1);
+//			notificationSuccess = false;
+//			emailAttribute.completeVerification("1234", new CompleteVerificationCallback() {
+//
+//				@Override
+//				public void onSuccess() {
+//					notificationSuccess = true;
+//					mLatch.countDown();
+//				}
+//
+//				@Override
+//				public void onError(MIDaaSException exception) {
+//					notificationSuccess = false;
+//					mLatch.countDown();
+//				}
+//				
+//			});
+//			mLatch.await();
+//			Assert.assertTrue(notificationSuccess);
+//		}
 		
-		@SmallTest
-		public void testCompleteEmailVerification() throws Exception {
-			final CountDownLatch mLatch = new CountDownLatch(1);
-			notificationSuccess = false;
-			emailAttribute.completeVerification("1234", new CompleteVerificationCallback() {
-
-				@Override
-				public void onSuccess() {
-					notificationSuccess = true;
-					mLatch.countDown();
-				}
-
-				@Override
-				public void onError(OpenMIDaaSException exception) {
-					notificationSuccess = false;
-					mLatch.countDown();
-				}
-				
-			});
-			mLatch.await();
-			Assert.assertTrue(notificationSuccess);
-		}
+		
 }

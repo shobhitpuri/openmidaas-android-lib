@@ -15,8 +15,19 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openmidaas.library.common.Constants;
+import org.openmidaas.library.common.network.ConnectionManager;
+import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
+import org.openmidaas.library.model.core.MIDaaSError;
+import org.openmidaas.library.model.core.MIDaaSException;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+
 
 /**
  * This class implements the delegate class that completes the 
@@ -30,11 +41,30 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 	 * This methods is an implementation of the interface that 
 	 * completes an attribute verification. 
 	 * Here the one-time code is send to the server and the result
-	 * is send back to the callver via a callback.
+	 * is send back to the caller via a callback.
 	 */
 	@Override
-	public void completeVerification(String code, CompleteVerificationCallback callback) {
-		callback.onSuccess();
+	public void completeVerification(AbstractAttribute<?> attribute, String code, final CompleteVerificationCallback callback) {
+		JSONObject postData = new JSONObject();
+		try {
+			postData.put("attribute", attribute.getAttributeAsJSONObject());
+			postData.put("code", code);
+		} catch (JSONException e1) {
+			callback.onError(null);
+		}
+		ConnectionManager.getInstance().postRequest(Constants.COMPLETE_AUTH_URL, postData, new AsyncHttpResponseHandler() {
+			
+			@Override
+			public void onSuccess(String response) {
+				//TODO: persist the response before sending the callback success here. 
+				callback.onSuccess();
+			}
+			
+			@Override
+			public void onFailure(Throwable e, String response){
+				callback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+			}
+		});
 	}
 
 }
