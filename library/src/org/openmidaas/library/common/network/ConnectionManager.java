@@ -5,6 +5,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONObject;
+import org.openmidaas.library.common.Constants;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -37,17 +39,9 @@ public class ConnectionManager {
 		mIsSSLDisabled = enableSSL;
 	}
 	
-	public String getHostname() {
-		return mHost;
-	}
-
-	public void setHostname(String hostName) {
-		mHost = hostName;
-	}
-	
 	public void postRequest(String path, JSONObject data, AsyncHttpResponseHandler responseHandler) {
 		AsyncHttpClient client = new AsyncHttpClient();
-		client.post(null, getAbsoluteUrl(path), getJSONDataAsEntity(data), "application/json", responseHandler);
+		client.post(null, path, getJSONDataAsEntity(data), "application/json", responseHandler);
 	}
 	
 	public void getRequest(String path, Map<String, String> requestParams, AsyncHttpResponseHandler responseHandler) {
@@ -58,7 +52,7 @@ public class ConnectionManager {
 				params.put(entry.getKey(), entry.getValue());
 		    }
 		}
-		client.get(getAbsoluteUrl(path), params, responseHandler);
+		client.get(path, params, responseHandler);
 	}
 	
 	private StringEntity getJSONDataAsEntity(JSONObject jsonData) {
@@ -68,9 +62,5 @@ public class ConnectionManager {
 			e.printStackTrace();
 			return null;
 		}
-	}
-	
-	private String getAbsoluteUrl(String url) {
-		return (mHost + url);
 	}
 }

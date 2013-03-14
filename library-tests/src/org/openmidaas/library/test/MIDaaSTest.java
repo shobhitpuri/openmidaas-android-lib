@@ -32,12 +32,12 @@ import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
-public class OpenMIDaaSTest extends ActivityInstrumentationTestCase2{
+public class MIDaaSTest extends ActivityInstrumentationTestCase2{
 	private Context mContext;
 	private CountDownLatch mLatch = new CountDownLatch(1);
 	private boolean notificationSuccess = false;
 	
-	public OpenMIDaaSTest() {
+	public MIDaaSTest() {
 		super("org.openmidaas.library.test", TestActivity.class);
 	}
 	
@@ -70,5 +70,4 @@ public class OpenMIDaaSTest extends ActivityInstrumentationTestCase2{
 		mLatch.await();
 		Assert.assertTrue(notificationSuccess);
 	}
-	
 }

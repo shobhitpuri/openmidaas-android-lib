@@ -16,6 +16,7 @@
 package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttributeFactory;
+import org.openmidaas.library.model.core.DeviceIdAuthentication;
 
 /**
  * Creates a new email attribute
@@ -24,6 +25,6 @@ public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttr
 
 	@Override
 	public EmailAttribute createAttribute() {
-		return new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification());
+		return new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication());
 	}
 }

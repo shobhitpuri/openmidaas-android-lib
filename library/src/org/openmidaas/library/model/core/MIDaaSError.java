@@ -20,6 +20,7 @@ public enum MIDaaSError {
 	SERVER_ERROR(101, "Error with the attribute server. "),
 	ERROR_AUTHENTICATING_DEVICE(100, "There was an error authenticating the device. ");
 	
+	
 	private final int mErrorCode;
 	
 	private final String mErrorMessage;

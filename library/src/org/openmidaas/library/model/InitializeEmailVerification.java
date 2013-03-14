@@ -17,9 +17,11 @@ package org.openmidaas.library.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
@@ -30,7 +32,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  * Class that implements the delegate that initializes
  * attribute verification. 
  */
-public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate {
+public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate, AuthenticationCallback {
 
 	
 	/**
@@ -41,6 +43,7 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 	@Override
 	public void startVerification(AbstractAttribute<?> attribute,
 			final InitializeVerificationCallback callback) {
+		attribute.performAuthentication(this);
 		JSONObject postData = new JSONObject();
 		try {
 			postData.put("attribute", attribute.getAttributeAsJSONObject());
@@ -48,18 +51,19 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 		} catch (JSONException e) {
 			callback.onError(null);
 		}
-		
-		ConnectionManager.getInstance().postRequest(Constants.INIT_AUTH_URL, postData, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(String response) {
-				//TODO: persist the response before sending the callback success here. 
-				callback.onSuccess();
-			}
-			
-			@Override
-			public void onFailure(Throwable e, String response){
-				callback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
-			}
-		});
 	}
+
+	@Override
+	public <T> void onSuccess(T deviceId) {
+		
+		
+	}
+
+	@Override
+	public void onError(MIDaaSException exception) {
+		
+		
+	}
+
+	
 }

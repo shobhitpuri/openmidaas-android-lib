@@ -19,6 +19,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.model.core.AuthenticationCallback;
+import org.openmidaas.library.model.core.AuthenticationStrategy;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
@@ -42,11 +44,12 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	 * @param completeEmailDelegate - the delegate class that completes the email verification process.
 	 */
 	protected EmailAttribute(InitializeAttributeVerificationDelegate initEmailDelegate,
-			CompleteAttributeVerificationDelegate completeEmailDelegate) {
+			CompleteAttributeVerificationDelegate completeEmailDelegate, AuthenticationStrategy authenticationStrategy) {
 		mIsVerifiable = true;
 		mName = ATTRIBUTE_NAME;
 		mInitVerificationDelegate = initEmailDelegate;
 		mCompleteVerificationDelegate = completeEmailDelegate;
+		mAuthenticationStrategy = authenticationStrategy;
 	}
 
 	/**
@@ -79,5 +82,10 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	@Override
 	public void completeVerification(String code, CompleteVerificationCallback callback)  {
 		mCompleteVerificationDelegate.completeVerification(this, code, callback);
+	}
+	
+	@Override
+	public void performAuthentication(AuthenticationCallback authenticationcallback) {
+		mAuthenticationStrategy.performAuthentication(authenticationcallback);
 	}
 }

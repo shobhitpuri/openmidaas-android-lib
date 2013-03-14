@@ -30,6 +30,8 @@ public abstract class AbstractAttribute<T> {
 	
 	protected CompleteAttributeVerificationDelegate mCompleteVerificationDelegate = null;
 	
+	protected AuthenticationStrategy mAuthenticationStrategy = null;
+	
 	protected String mName;
 	
 	protected T mValue;
@@ -117,6 +119,11 @@ public abstract class AbstractAttribute<T> {
 	 */
 	public void completeVerification(String code, CompleteVerificationCallback callback) throws UnsupportedOperationException  {
 		throw new UnsupportedOperationException("Cannot complete verification");
+	}
+	
+	//XXX: Experimental
+	public void performAuthentication(AuthenticationCallback authenticationcallback) {
+		throw new UnsupportedOperationException("Cannot authenticate");
 	}
 	
 	/**
