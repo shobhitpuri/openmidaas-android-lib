@@ -81,7 +81,6 @@ public final class MIDaaS {
 		mContext = context.getApplicationContext();
 		if (isAlreadyRegistered()) {
 			callback.onSuccess();
-			
 			return;
 		} else {
 			registerDevice(callback);
