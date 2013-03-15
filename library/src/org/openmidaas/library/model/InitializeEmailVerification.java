@@ -17,17 +17,12 @@ package org.openmidaas.library.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.common.Constants;
-import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
-import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
 /**
  * Class that implements the delegate that initializes
  * attribute verification. 
@@ -54,7 +49,7 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 	}
 
 	@Override
-	public <T> void onSuccess(T deviceId) {
+	public void onSuccess(String deviceId) {
 		
 		
 	}

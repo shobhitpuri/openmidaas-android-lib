@@ -28,7 +28,6 @@ import org.openmidaas.library.model.core.MIDaaSException;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 
-
 /**
  * This class implements the delegate class that completes the 
  * attribute verification process. It sends the one-time code 

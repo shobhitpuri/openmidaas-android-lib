@@ -17,10 +17,7 @@ public class ConnectionManager {
 	
 	private boolean mIsSSLDisabled;
 	
-	private String mHost;
-	
 	protected ConnectionManager() {
-		mHost = "";
 		mIsSSLDisabled = false;
 	}
 	
@@ -41,7 +38,7 @@ public class ConnectionManager {
 	
 	public void postRequest(String path, JSONObject data, AsyncHttpResponseHandler responseHandler) {
 		AsyncHttpClient client = new AsyncHttpClient();
-		client.post(null, path, getJSONDataAsEntity(data), "application/json", responseHandler);
+		client.post(null, Constants.AVP_SB_BASE_URL + path, getJSONDataAsEntity(data), "application/json", responseHandler);
 	}
 	
 	public void getRequest(String path, Map<String, String> requestParams, AsyncHttpResponseHandler responseHandler) {

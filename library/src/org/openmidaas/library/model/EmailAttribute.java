@@ -31,7 +31,7 @@ import org.openmidaas.library.model.core.InitializeVerificationCallback;
  */
 public class EmailAttribute extends AbstractAttribute<String> {
 	
-	//Credit for regex rule: http://www.mkyong.com/regular-expressions/how-to-validate-email-address-with-regular-expression/
+	//Credit for REGEX rule: http://www.mkyong.com/regular-expressions/how-to-validate-email-address-with-regular-expression/
 	private final String EMAIL_REGEX_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"; 
 	
@@ -84,6 +84,9 @@ public class EmailAttribute extends AbstractAttribute<String> {
 		mCompleteVerificationDelegate.completeVerification(this, code, callback);
 	}
 	
+	/**
+	 * Performs the authentication.
+	 */
 	@Override
 	public void performAuthentication(AuthenticationCallback authenticationcallback) {
 		mAuthenticationStrategy.performAuthentication(authenticationcallback);

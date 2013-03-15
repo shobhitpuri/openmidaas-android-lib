@@ -123,7 +123,7 @@ public abstract class AbstractAttribute<T> {
 	
 	//XXX: Experimental
 	public void performAuthentication(AuthenticationCallback authenticationcallback) {
-		throw new UnsupportedOperationException("Cannot authenticate");
+		throw new UnsupportedOperationException("Cannot perform authentication");
 	}
 	
 	/**

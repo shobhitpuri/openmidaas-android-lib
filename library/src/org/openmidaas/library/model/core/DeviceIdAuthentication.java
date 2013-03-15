@@ -1,8 +1,6 @@
 package org.openmidaas.library.model.core;
 
 import org.openmidaas.library.MIDaaS;
-
-import android.content.Context;
 import android.provider.Settings.Secure;
 
 public class DeviceIdAuthentication implements AuthenticationStrategy{

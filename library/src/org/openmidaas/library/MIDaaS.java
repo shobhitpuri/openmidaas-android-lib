@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library;
 
+import org.openmidaas.library.model.core.DeviceIdAuthentication;
+import org.openmidaas.library.model.core.DeviceRegistration;
 import org.openmidaas.library.model.core.InitializationCallback;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,7 +26,7 @@ import android.util.Log;
 /**
  * Class that controls device registration
  */
-public final class MIDaaS {
+public final class MIDaaS{
 	
 	private static int currentLoggingLevel = 6;
 	public static final int LOG_LEVEL_VERBOSE = 2;
@@ -56,13 +58,11 @@ public final class MIDaaS {
 	
 	private static boolean isAlreadyRegistered() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-		boolean isRegistered = true;
 		if (prefs.contains("REGISTERED_KEY_NAME")) {
-			isRegistered = true;
+			return true;
 		} else {
-			isRegistered = false;
+			return false;
 		}
-		return isRegistered;
 	}
 	
 	public static Context getContext() {
@@ -75,23 +75,19 @@ public final class MIDaaS {
 	 * method. Otherwise, it tries to register the device with the server and calls
 	 * onSuccess() or onError() accordingly. 
 	 * @param context - the Android context. 
-	 * @param callback - the Initialization callback. 
+	 * @param initCallback - the Initialization callback. 
 	 */
-	public static void initialize(Context context, InitializationCallback callback) {
+	public static void initialize(Context context, InitializationCallback initCallback) {
 		mContext = context.getApplicationContext();
 		if (isAlreadyRegistered()) {
-			callback.onSuccess();
+			initCallback.onSuccess();
 			return;
 		} else {
-			registerDevice(callback);
+			DeviceRegistration registration = new DeviceRegistration(new DeviceIdAuthentication());
+			registration.registerDevice(initCallback);
 		}
 	}
 	
-	
-	private static void registerDevice(InitializationCallback callback) {
-		//TODO: Actual registration
-		callback.onSuccess();
-	}
 	
 	private static void log(int logLevel, String tag, String message, Throwable throwable) {
 		if(logLevel >= currentLoggingLevel) {
