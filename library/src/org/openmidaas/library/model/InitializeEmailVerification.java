@@ -17,17 +17,22 @@ package org.openmidaas.library.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.common.Constants;
+import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
+import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 /**
  * Class that implements the delegate that initializes
  * attribute verification. 
  */
-public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate, AuthenticationCallback {
+public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate{
 
 	
 	/**
@@ -36,29 +41,39 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 	 * the caller. 
 	 */
 	@Override
-	public void startVerification(AbstractAttribute<?> attribute,
-			final InitializeVerificationCallback callback) {
-		attribute.performAuthentication(this);
-		JSONObject postData = new JSONObject();
-		try {
-			postData.put("attribute", attribute.getAttributeAsJSONObject());
-			postData.put("deviceToken", "some token");
-		} catch (JSONException e) {
-			callback.onError(null);
-		}
-	}
+	public void startVerification(final AbstractAttribute<?> attribute,
+			final InitializeVerificationCallback initVerificationCallback) {
+		attribute.performAuthentication(new AuthenticationCallback() {
 
-	@Override
-	public void onSuccess(String deviceId) {
-		
-		
-	}
+			@Override
+			public void onSuccess(String deviceId) {
+				JSONObject postData = new JSONObject();
+				try {
+					postData.put("attribute", attribute.getAttributeAsJSONObject());
+					postData.put("deviceToken", deviceId);
+					ConnectionManager.getInstance().postRequest(Constants.INIT_AUTH_URL, postData, new AsyncHttpResponseHandler() {
+						
+						@Override
+						public void onSuccess(String response) { 
+							initVerificationCallback.onSuccess();
+						}
+						
+						@Override
+						public void onFailure(Throwable e, String response){
+							initVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+						}
+					});
+					
+				} catch (JSONException e) {
+					initVerificationCallback.onError(null);
+				}
+			}
 
-	@Override
-	public void onError(MIDaaSException exception) {
-		
-		
+			@Override
+			public void onError(MIDaaSException exception) {
+				initVerificationCallback.onError(exception);
+			}
+			
+		});
 	}
-
-	
 }

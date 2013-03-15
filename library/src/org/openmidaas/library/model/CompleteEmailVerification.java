@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
@@ -43,27 +44,41 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 	 * is send back to the caller via a callback.
 	 */
 	@Override
-	public void completeVerification(AbstractAttribute<?> attribute, String code, final CompleteVerificationCallback callback) {
-		JSONObject postData = new JSONObject();
-		try {
-			postData.put("attribute", attribute.getAttributeAsJSONObject());
-			postData.put("code", code);
-		} catch (JSONException e1) {
-			callback.onError(null);
-		}
-		ConnectionManager.getInstance().postRequest(Constants.COMPLETE_AUTH_URL, postData, new AsyncHttpResponseHandler() {
-			
+	public void completeVerification(final AbstractAttribute<?> attribute, final String code, final CompleteVerificationCallback completeVerificationCallback) {
+		attribute.performAuthentication(new AuthenticationCallback() {
+
 			@Override
-			public void onSuccess(String response) {
-				//TODO: persist the response before sending the callback success here. 
-				callback.onSuccess();
+			public void onSuccess(String deviceId) {
+				JSONObject postData = new JSONObject();
+				try {
+					postData.put("attribute", attribute.getAttributeAsJSONObject());
+					postData.put("deviceToken", deviceId);
+					postData.put("code", code);
+				} catch (JSONException e1) {
+					completeVerificationCallback.onError(null);
+				}
+				ConnectionManager.getInstance().postRequest(Constants.COMPLETE_AUTH_URL, postData, new AsyncHttpResponseHandler() {
+					
+					@Override
+					public void onSuccess(String response) {
+						//TODO: persist the response before sending the callback success here. 
+						completeVerificationCallback.onSuccess();
+					}
+					
+					@Override
+					public void onFailure(Throwable e, String response){
+						completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+					}
+				});
+			}
+
+			@Override
+			public void onError(MIDaaSException exception) {
+				completeVerificationCallback.onError(exception);
 			}
 			
-			@Override
-			public void onFailure(Throwable e, String response){
-				callback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
-			}
 		});
+		
 	}
 
 }
