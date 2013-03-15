@@ -41,10 +41,10 @@ import junit.framework.TestCase;
 public class EmailAttributeTest extends TestCase{
 		static EmailAttribute emailAttribute;
 		private boolean notificationSuccess = false;
-		private  MockWebServer server = new MockWebServer();
+		//private  MockWebServer server = new MockWebServer();
 		public void setUp() {
 			emailAttribute = new EmailAttributeFactory().createAttribute();
-			server = new MockWebServer();
+			//server = new MockWebServer();
 		}
 		
 		@SmallTest
