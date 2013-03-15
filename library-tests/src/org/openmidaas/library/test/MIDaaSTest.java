@@ -51,23 +51,4 @@ public class MIDaaSTest extends ActivityInstrumentationTestCase2{
 		mContext = this.getInstrumentation().getContext();
 		
 	}
-	
-	public void testLibraryInitialization() throws Exception {
-//		MIDaaS.initialize(mContext, new InitializationCallback() {
-//
-//			@Override
-//			public void onSuccess() {
-//				notificationSuccess = true;
-//				mLatch.countDown();
-//			}
-//
-//			@Override
-//			public void onError(MIDaaSException exception) {
-//				
-//			}
-//			
-//		});
-//		mLatch.await();
-//		Assert.assertTrue(notificationSuccess);
-	}
 }
