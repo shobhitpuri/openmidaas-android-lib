@@ -20,13 +20,6 @@
     android:versionName="1.0" >
 
     <uses-sdk android:minSdkVersion="15" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" ></uses-permission>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" ></uses-permission>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    
 
  <!--    <instrumentation
         android:name="android.test.InstrumentationTestRunner"
@@ -36,8 +29,6 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" android:debuggable="true">
         <uses-library android:name="android.test.runner" />
-        <activity android:name="TestActivity"></activity>
-        
     </application>
     
     <instrumentation android:label="All Tests" 

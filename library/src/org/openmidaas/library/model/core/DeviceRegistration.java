@@ -17,12 +17,16 @@ package org.openmidaas.library.model.core;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.ConnectionManager;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 
 public class DeviceRegistration {
 	
@@ -53,7 +57,9 @@ public class DeviceRegistration {
 			@Override
 			public void onSuccess(String response) {
 				//TODO: Persist the signed user ID token. 
-				
+				SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MIDaaS.getContext()).edit();
+				editor.putBoolean("REGISTERED_KEY_NAME", true);
+				editor.commit();
 				mInitCallback.onSuccess();
 			}
 			

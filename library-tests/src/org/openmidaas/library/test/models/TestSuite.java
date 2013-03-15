@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.openmidaas.library.test.models;
 
-import org.openmidaas.library.test.MIDaaSTest;
+
 
 import android.test.InstrumentationTestRunner;
 import android.test.InstrumentationTestSuite;
@@ -27,7 +27,6 @@ public class TestSuite extends InstrumentationTestRunner {
 		InstrumentationTestSuite suite = new InstrumentationTestSuite(this);
 		suite.addTestSuite(EmailAttributeTest.class);
 		suite.addTestSuite(GenericAttributeTest.class);
-		suite.addTestSuite(MIDaaSTest.class);
 		return suite;
 	}
 
