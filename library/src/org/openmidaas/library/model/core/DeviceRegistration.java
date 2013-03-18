@@ -18,8 +18,7 @@ package org.openmidaas.library.model.core;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.common.Constants;
-import org.openmidaas.library.common.network.ConnectionManager;
+import org.openmidaas.library.common.network.AVSServer;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -50,7 +49,7 @@ public class DeviceRegistration {
 		} catch (JSONException e) {
 			mInitCallback.onError(null);
 		}
-		ConnectionManager.getInstance().postRequest(Constants.REGISTRATION_URL, registrationData, new AsyncHttpResponseHandler() {
+		AVSServer.registerDevice(registrationData, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
 				//TODO: Persist the signed user ID token. 

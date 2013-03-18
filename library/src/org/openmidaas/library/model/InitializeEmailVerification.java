@@ -17,8 +17,7 @@ package org.openmidaas.library.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openmidaas.library.common.Constants;
-import org.openmidaas.library.common.network.ConnectionManager;
+import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
@@ -51,7 +50,7 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 				try {
 					postData.put("attribute", attribute.getAttributeAsJSONObject());
 					postData.put("deviceToken", deviceId);
-					ConnectionManager.getInstance().postRequest(Constants.INIT_AUTH_URL, postData, new AsyncHttpResponseHandler() {
+					AVSServer.startAttributeVerification(postData, new AsyncHttpResponseHandler() {
 						
 						@Override
 						public void onSuccess(String response) { 

@@ -9,16 +9,22 @@ import org.openmidaas.library.MIDaaS;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-public class AndroidNetworkTransport implements INetworkTransport{
+public final class AndroidNetworkTransport implements INetworkTransport {
 
 	private final String TAG = "AndroidNetworkTransport";
+	
+	private String mHostUrl;
+	
+	protected AndroidNetworkTransport(String hostUrl){
+		this.mHostUrl = hostUrl;
+	}
 	
 	@Override
 	public void doPostRequest(boolean withSSL, String url, JSONObject data,
 			AsyncHttpResponseHandler responseHandler) {
 		try {
 			AsyncHttpClient client = new AsyncHttpClient();
-			client.post(null, url, new StringEntity(data.toString()), "application/json", responseHandler);
+			client.post(null, mHostUrl + url, new StringEntity(data.toString()), "application/json", responseHandler);
 		} catch (UnsupportedEncodingException e) {
 			MIDaaS.logError(TAG, e.getMessage());
 			responseHandler.onFailure(e, e.getMessage());

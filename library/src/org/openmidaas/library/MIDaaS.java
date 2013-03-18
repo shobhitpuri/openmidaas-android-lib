@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.openmidaas.library;
 
+import org.openmidaas.library.common.Constants;
+import org.openmidaas.library.common.network.AndroidNetworkFactory;
+import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.core.DeviceIdAuthentication;
 import org.openmidaas.library.model.core.DeviceRegistration;
 import org.openmidaas.library.model.core.InitializationCallback;
@@ -43,6 +46,10 @@ public final class MIDaaS{
 	 */
 	public static int getLoggingLevel() {
 		return currentLoggingLevel;
+	}
+	
+	public static void setContext(Context context) {
+		mContext = context;
 	}
 	
 	/**
@@ -79,6 +86,7 @@ public final class MIDaaS{
 	 */
 	public static void initialize(Context context, InitializationCallback initCallback) {
 		mContext = context.getApplicationContext();
+		ConnectionManager.setNetworkFactory(new AndroidNetworkFactory(Constants.AVP_SB_BASE_URL));
 		if (isAlreadyRegistered()) {
 			initCallback.onSuccess();
 			return;

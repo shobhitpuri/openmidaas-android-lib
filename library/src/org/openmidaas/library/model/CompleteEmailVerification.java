@@ -17,8 +17,7 @@ package org.openmidaas.library.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openmidaas.library.common.Constants;
-import org.openmidaas.library.common.network.ConnectionManager;
+import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
@@ -57,7 +56,7 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 				} catch (JSONException e1) {
 					completeVerificationCallback.onError(null);
 				}
-				ConnectionManager.getInstance().postRequest(Constants.COMPLETE_AUTH_URL, postData, new AsyncHttpResponseHandler() {
+				AVSServer.completeAttributeVerification(postData, new AsyncHttpResponseHandler() {
 					
 					@Override
 					public void onSuccess(String response) {
