@@ -32,6 +32,10 @@ public class ConnectionManager {
 	
 	private boolean mIsSSLDisabled;
 	
+	private INetworkFactory mNetworkFactory;
+	
+	private INetworkTransport mNetworkTransport;
+	
 	protected ConnectionManager() {
 		mIsSSLDisabled = false;
 	}
@@ -43,6 +47,11 @@ public class ConnectionManager {
 		return mInstance;
 	}
 	
+	public void setNetworkFactory(INetworkFactory networkFactory) {
+		mNetworkFactory = networkFactory;
+		mNetworkTransport = mNetworkFactory.createTransport();
+	}
+	
 	public boolean isSSLDisabled() {
 		return mIsSSLDisabled;
 	}
@@ -51,28 +60,11 @@ public class ConnectionManager {
 		mIsSSLDisabled = enableSSL;
 	}
 	
-	public void postRequest(String path, JSONObject data, AsyncHttpResponseHandler responseHandler) {
-		AsyncHttpClient client = new AsyncHttpClient();
-		client.post(null, Constants.AVP_SB_BASE_URL + path, getJSONDataAsEntity(data), "application/json", responseHandler);
+	public void postRequest(String url, JSONObject data, AsyncHttpResponseHandler responseHandler) {
+		mNetworkTransport.doPostRequest(true, url, data, responseHandler);
 	}
 	
-	public void getRequest(String path, Map<String, String> requestParams, AsyncHttpResponseHandler responseHandler) {
-		AsyncHttpClient client = new AsyncHttpClient();
-		RequestParams params = new RequestParams();
-		if(requestParams != null) {
-			for(Map.Entry<String, String> entry : requestParams.entrySet()) {
-				params.put(entry.getKey(), entry.getValue());
-		    }
-		}
-		client.get(path, params, responseHandler);
-	}
-	
-	private StringEntity getJSONDataAsEntity(JSONObject jsonData) {
-		try {
-			return (new StringEntity(jsonData.toString()));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public void getRequest(String url, Map<String, String> requestParams, AsyncHttpResponseHandler responseHandler) {
+		mNetworkTransport.doGetRequest(true, url, requestParams, responseHandler);
 	}
 }

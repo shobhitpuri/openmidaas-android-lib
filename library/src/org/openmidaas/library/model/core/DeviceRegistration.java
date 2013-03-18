@@ -20,10 +20,7 @@ import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.ConnectionManager;
-
 import com.loopj.android.http.AsyncHttpResponseHandler;
-
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
