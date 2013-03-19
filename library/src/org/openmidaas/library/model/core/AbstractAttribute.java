@@ -18,6 +18,7 @@ package org.openmidaas.library.model.core;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmidaas.library.model.InvalidAttributeValueException;
+import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 
 /**
  * Abstract class that defines an attribute
@@ -26,11 +27,15 @@ import org.openmidaas.library.model.InvalidAttributeValueException;
 
 public abstract class AbstractAttribute<T> {
 	
+	protected long mId;
+	
 	protected InitializeAttributeVerificationDelegate mInitVerificationDelegate = null;
 	
 	protected CompleteAttributeVerificationDelegate mCompleteVerificationDelegate = null;
 	
 	protected AuthenticationStrategy mAuthenticationStrategy = null;
+	
+	protected AttributePersistenceDelegate mPersistenceDelegate = null;
 	
 	protected String mName;
 	
@@ -39,6 +44,8 @@ public abstract class AbstractAttribute<T> {
 	private String mLabel;
 	
 	protected boolean mIsVerifiable = false;
+	
+	protected String mSignedToken = null;
 	
 	/**
 	 * Returns the attribute name
@@ -65,6 +72,14 @@ public abstract class AbstractAttribute<T> {
 		this.mLabel = label;
 	}
 
+	public String getSignedToken() {
+		return mSignedToken;
+	}
+	
+	public void setSignedToken(String token) {
+		mSignedToken = token;
+	}
+	
 	/**
 	 * Returns the attribute's value
 	 * @return - the attribute's value.
@@ -121,9 +136,16 @@ public abstract class AbstractAttribute<T> {
 		throw new UnsupportedOperationException("Cannot complete verification");
 	}
 	
-	//XXX: Experimental
+	/**
+	 * Method that performs authentication. 
+	 * @param authenticationcallback
+	 */
 	public void performAuthentication(AuthenticationCallback authenticationcallback) {
 		throw new UnsupportedOperationException("Cannot perform authentication");
+	}
+	
+	public void save() {
+		mPersistenceDelegate.saveAttribute(this);
 	}
 	
 	/**

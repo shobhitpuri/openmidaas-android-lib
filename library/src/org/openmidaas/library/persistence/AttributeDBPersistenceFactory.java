@@ -15,31 +15,25 @@
  ******************************************************************************/
 package org.openmidaas.library.persistence;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.persistence.core.PersistenceDelegate;
+import org.openmidaas.library.persistence.core.PersistenceFactory;
 
-public class AttributeSQLiteHelper extends SQLiteOpenHelper{
+public class AttributeDBPersistenceFactory implements PersistenceFactory<AbstractAttribute<?>>{
 
-	public static final String ATTRIBUTES_TABLE = "attributes";
+	private String dbName;
 	
-	private static final String ATTRIBUTES_DB = "attribute_db";
-	
-	private static String CREATE_DB_SQL = null;
-	
-	public AttributeSQLiteHelper(Context context, String databaseName) {
-		super(context, databaseName, null, 1);
-		CREATE_DB_SQL = "";
-	}
-
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-		db.execSQL(CREATE_DB_SQL);
-	}
-
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
+	public AttributeDBPersistenceFactory(String dbName) {
+		this.dbName = dbName;
 		
 	}
+
+	@Override
+	public PersistenceDelegate<AbstractAttribute<?>> createPersistenceStore() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+
 }

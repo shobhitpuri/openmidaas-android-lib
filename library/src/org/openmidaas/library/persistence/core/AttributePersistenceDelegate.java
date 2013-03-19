@@ -13,19 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.model;
+package org.openmidaas.library.persistence.core;
 
-import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.model.core.AbstractAttributeFactory;
-import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
+import org.openmidaas.library.model.core.AbstractAttribute;
 
-/**
- * Creates a new email attribute
- */
-public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute>{
+public interface AttributePersistenceDelegate extends PersistenceDelegate<AbstractAttribute<?>>{
+	
 
-	@Override
-	public EmailAttribute createAttribute() {
-		return new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication(), new AttributeDBPersistenceDelegate(MIDaaS.getContext()));
-	}
 }

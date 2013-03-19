@@ -15,22 +15,13 @@
  ******************************************************************************/
 package org.openmidaas.library.persistence;
 
-import org.openmidaas.library.model.core.AbstractAttribute;
-import org.openmidaas.library.persistence.core.PersistenceDelegate;
-import org.openmidaas.library.persistence.core.PersistenceFactory;
+import android.provider.BaseColumns;
 
-public class AttributePersistenceFactory implements PersistenceFactory<AbstractAttribute<?>>{
-
-	private String dbName;
+public abstract class AttributeEntry implements BaseColumns {
 	
-	public AttributePersistenceFactory(String dbName) {
-		this.dbName = dbName;
-	}
+	public static final String TABLE_NAME 			= "attributes";
+	public static final String COLUMN_NAME_NAME		= "name";
+	public static final String COLUMN_NAME_VALUE 	= "value";
+	public static final String COLUMN_NAME_TOKEN	= "token";
 	
-	@Override
-	public PersistenceDelegate<AbstractAttribute<?>> createPersistenceStore() {
-		
-		return null;
-	}
-
 }

@@ -25,6 +25,7 @@ import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
+import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
 
 /**
  * Email Attribute class.
@@ -44,12 +45,14 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	 * @param completeEmailDelegate - the delegate class that completes the email verification process.
 	 */
 	protected EmailAttribute(InitializeAttributeVerificationDelegate initEmailDelegate,
-			CompleteAttributeVerificationDelegate completeEmailDelegate, AuthenticationStrategy authenticationStrategy) {
+			CompleteAttributeVerificationDelegate completeEmailDelegate, AuthenticationStrategy authenticationStrategy,
+			AttributeDBPersistenceDelegate persistenceDelegate) {
 		mIsVerifiable = true;
 		mName = ATTRIBUTE_NAME;
 		mInitVerificationDelegate = initEmailDelegate;
 		mCompleteVerificationDelegate = completeEmailDelegate;
 		mAuthenticationStrategy = authenticationStrategy;
+		mPersistenceDelegate = persistenceDelegate;
 	}
 
 	/**
@@ -90,5 +93,10 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	@Override
 	public void performAuthentication(AuthenticationCallback authenticationcallback) {
 		mAuthenticationStrategy.performAuthentication(authenticationcallback);
+	}
+	
+	@Override
+	public String toString() {
+		return getValue();
 	}
 }

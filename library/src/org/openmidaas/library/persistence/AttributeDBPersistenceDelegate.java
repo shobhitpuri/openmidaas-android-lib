@@ -16,42 +16,43 @@
 package org.openmidaas.library.persistence;
 
 import org.openmidaas.library.model.core.AbstractAttribute;
-import org.openmidaas.library.persistence.core.PersistenceDelegate;
-
+import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-public class AttributeDBPersistenceDelegate implements PersistenceDelegate<AbstractAttribute<?>>{
+public class AttributeDBPersistenceDelegate implements AttributePersistenceDelegate{
 
 	private SQLiteDatabase database;
 	
-	private AttributeSQLiteHelper dbHelper;
+	private AttributeDBHelper dbHelper;
 
-	protected AttributeDBPersistenceDelegate(Context context, String dbName) {
-		dbHelper = new AttributeSQLiteHelper(context, dbName);
-	}
-	
-	public void open() throws SQLException {
-		database = dbHelper.getWritableDatabase();
+	public AttributeDBPersistenceDelegate(Context context) {
+		dbHelper = new AttributeDBHelper(context);
+		
 	}
 	
 	public void close() {
 		dbHelper.close();
 	}
-	
 	@Override
 	public void saveAttribute(AbstractAttribute<?> data) {
-		// TODO Auto-generated method stub
-		
+		try {
+			database = dbHelper.getWritableDatabase();
+			ContentValues contentValues = new ContentValues();
+			contentValues.put("name", data.getName());
+			contentValues.put("value", data.getValue().toString());
+			contentValues.put("token", data.getSignedToken());
+			database.insert(AttributeEntry.TABLE_NAME, null, contentValues);
+		} finally {
+			database.endTransaction();
+			database.close();
+		}
 	}
 
 	@Override
 	public void deleteAttribute(AbstractAttribute<?> data) {
-		// TODO Auto-generated method stub
-		
+		database.delete(AttributeEntry.TABLE_NAME, "_id = ", null);
 	}
-	
-	
-
 }
