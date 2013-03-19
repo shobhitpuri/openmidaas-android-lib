@@ -16,4 +16,5 @@
 package org.openmidaas.library.model.core;
 
 public abstract class InitializationCallback extends AbstractCallback {
+	
 }
