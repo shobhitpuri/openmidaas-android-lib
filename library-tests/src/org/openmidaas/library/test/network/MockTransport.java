@@ -46,7 +46,8 @@ public class MockTransport implements INetworkTransport{
 			AsyncHttpResponseHandler responseHandler) {
 		try {
 			JSONObject mData = Utils.readFileAsJSON(mContext, mFilename);
-			if(mData.getJSONObject("http").getString("statusCode").equalsIgnoreCase("200 OK")) {
+			if(mData.getJSONObject("http").getString("statusCode").equalsIgnoreCase("200 OK") ||
+					mData.getJSONObject("http").getString("statusCode").equalsIgnoreCase("201 Created")) {
 				if(!(mData.getJSONObject("http").getString("body").isEmpty())) {
 					responseHandler.onSuccess(mData.getJSONObject("http").getString("body").toString());
 				} else {
