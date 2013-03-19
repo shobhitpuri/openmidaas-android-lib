@@ -21,7 +21,7 @@ import junit.framework.Assert;
 
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.network.ConnectionManager;
-import org.openmidaas.library.model.core.DeviceIdAuthentication;
+import org.openmidaas.library.model.DeviceIdAuthentication;
 import org.openmidaas.library.model.core.DeviceRegistration;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;

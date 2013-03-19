@@ -15,15 +15,25 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-import org.openmidaas.library.model.core.AbstractAttributeFactory;
+import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.model.core.AuthenticationCallback;
+import org.openmidaas.library.model.core.AuthenticationStrategy;
+import org.openmidaas.library.model.core.MIDaaSError;
+import org.openmidaas.library.model.core.MIDaaSException;
 
-/**
- * Creates a new email attribute
- */
-public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute>{
+import android.provider.Settings.Secure;
+
+public class DeviceIdAuthentication implements AuthenticationStrategy{
 
 	@Override
-	public EmailAttribute createAttribute() {
-		return new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication());
+	public void performAuthentication(
+			AuthenticationCallback callback) {
+		String deviceId = Secure.getString(MIDaaS.getContext().getContentResolver(),
+                Secure.ANDROID_ID); 
+		if(deviceId != null) {
+			callback.onSuccess(deviceId);
+		} else {
+			callback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
+		}
 	}
 }

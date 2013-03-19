@@ -18,7 +18,7 @@ package org.openmidaas.library;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
-import org.openmidaas.library.model.core.DeviceIdAuthentication;
+import org.openmidaas.library.model.DeviceIdAuthentication;
 import org.openmidaas.library.model.core.DeviceRegistration;
 import org.openmidaas.library.model.core.InitializationCallback;
 import android.content.Context;

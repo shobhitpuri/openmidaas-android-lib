@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.db;
+package org.openmidaas.library.persistence.core;
 
-public class AttributeDB {
+public interface PersistenceDelegate<T> {
+
+	public void saveAttribute(T data);
+	
+	public void deleteAttribute(T data);
 
 }

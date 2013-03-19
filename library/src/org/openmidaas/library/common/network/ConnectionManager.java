@@ -21,17 +21,34 @@ import java.util.Map;
 import org.json.JSONObject;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+/**
+ * 
+ * Helper class that uses the specified network transport to issue
+ * GET and POST requests.
+ * 
+ */
 public class ConnectionManager {
 	
 	private static INetworkFactory mNetworkFactory;
 	
 	private static INetworkTransport mNetworkTransport;
 	
+	/**
+	 * Sets the network factory and creates the transport. 
+	 * @param networkFactory - the network factory implementation of INetworkFactory
+	 */
 	public static void setNetworkFactory(INetworkFactory networkFactory) {
 		mNetworkFactory = networkFactory;
 		mNetworkTransport = mNetworkFactory.createTransport();
 	}
 	
+	/**
+	 * Sends a POST request using the specific network factory
+	 * @param withSSL
+	 * @param url
+	 * @param data
+	 * @param responseHandler
+	 */
 	public static void postRequest(boolean withSSL, String url, JSONObject data, AsyncHttpResponseHandler responseHandler) {
 		mNetworkTransport.doPostRequest(withSSL, url, data, responseHandler);
 	}

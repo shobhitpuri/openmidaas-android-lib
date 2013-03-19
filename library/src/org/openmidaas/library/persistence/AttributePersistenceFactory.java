@@ -13,15 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.common.network;
+package org.openmidaas.library.persistence;
 
-/**
- * Factory interface to create a transport
- */
-public interface INetworkFactory {
-	/**
-	 * Creates a new network transport and returns it. 
-	 * @return returns the network transport
-	 */
-	 INetworkTransport createTransport();
+import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.persistence.core.PersistenceDelegate;
+import org.openmidaas.library.persistence.core.PersistenceFactory;
+
+public class AttributePersistenceFactory implements PersistenceFactory<AbstractAttribute<?>>{
+
+	private String dbName;
+	
+	public AttributePersistenceFactory(String dbName) {
+		this.dbName = dbName;
+	}
+	
+	@Override
+	public PersistenceDelegate<AbstractAttribute<?>> createPersistenceStore() {
+		
+		return null;
+	}
+
 }

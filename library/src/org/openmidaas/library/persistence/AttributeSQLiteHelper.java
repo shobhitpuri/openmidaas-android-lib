@@ -13,15 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.common.network;
+package org.openmidaas.library.persistence;
 
-/**
- * Factory interface to create a transport
- */
-public interface INetworkFactory {
-	/**
-	 * Creates a new network transport and returns it. 
-	 * @return returns the network transport
-	 */
-	 INetworkTransport createTransport();
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class AttributeSQLiteHelper extends SQLiteOpenHelper{
+
+	public static final String ATTRIBUTES_TABLE = "attributes";
+	
+	private static final String ATTRIBUTES_DB = "attribute_db";
+	
+	private static String CREATE_DB_SQL = null;
+	
+	public AttributeSQLiteHelper(Context context, String databaseName) {
+		super(context, databaseName, null, 1);
+		CREATE_DB_SQL = "";
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		db.execSQL(CREATE_DB_SQL);
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		// TODO Auto-generated method stub
+		
+	}
 }

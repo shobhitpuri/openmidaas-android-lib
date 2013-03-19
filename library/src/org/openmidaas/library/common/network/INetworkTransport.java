@@ -21,10 +21,31 @@ import org.json.JSONObject;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+/**
+ * Interface that specifies the methods of the network 
+ * transport. 
+ * Implement this interface to create your own transport. 
+ */
 public interface INetworkTransport {
 	
+	/**
+	 * Performs a POST request to the URL path specified. 
+	 * @param disableSSL - disables SSL.
+	 * @param url - the path to post the data to.
+	 * @param data - the data to post of type JSONObject.
+	 * @param responseHandler - the async handler to receive success/error
+	 * 							from the requested operation.
+	 */
 	public void doPostRequest(boolean disableSSL, String url, JSONObject data, AsyncHttpResponseHandler responseHandler);
 	
+	/**
+	 * Performs a GET request to the URL path specified. 
+	 * @param disableSSL - disables SSL
+	 * @param url - the path to get the data from.
+	 * @param requestParams - the request parameters
+	 * @param responseHandler - the async handler to receive success/error 
+	 * 							from the requested operation
+	 */
 	public void doGetRequest(boolean disableSSL, String url, Map<String, String> requestParams, AsyncHttpResponseHandler responseHandler);
 
 }

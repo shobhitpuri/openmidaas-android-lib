@@ -13,22 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.model.core;
+package org.openmidaas.library.persistence.core;
 
-import org.openmidaas.library.MIDaaS;
-import android.provider.Settings.Secure;
+public interface PersistenceFactory<T> {
+	
+	PersistenceDelegate<T> createPersistenceStore();
 
-public class DeviceIdAuthentication implements AuthenticationStrategy{
-
-	@Override
-	public void performAuthentication(
-			AuthenticationCallback callback) {
-		String deviceId = Secure.getString(MIDaaS.getContext().getContentResolver(),
-                Secure.ANDROID_ID); 
-		if(deviceId != null) {
-			callback.onSuccess(deviceId);
-		} else {
-			callback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
-		}
-	}
 }

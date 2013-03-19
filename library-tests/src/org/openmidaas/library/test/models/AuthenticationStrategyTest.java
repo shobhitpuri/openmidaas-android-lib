@@ -19,8 +19,8 @@ import java.util.concurrent.CountDownLatch;
 
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.model.DeviceIdAuthentication;
 import org.openmidaas.library.model.core.AuthenticationCallback;
-import org.openmidaas.library.model.core.DeviceIdAuthentication;
 import org.openmidaas.library.model.core.MIDaaSException;
 
 import android.content.Context;
