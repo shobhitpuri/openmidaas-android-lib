@@ -18,7 +18,9 @@ package org.openmidaas.library.test.models;
 import java.util.concurrent.CountDownLatch;
 
 
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -38,25 +40,28 @@ import com.google.mockwebserver.RecordedRequest;
 
 import android.content.Context;
 import android.test.InstrumentationTestCase;
+import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 public class EmailAttributeTest extends InstrumentationTestCase{
-		static EmailAttribute emailAttribute;
+		static EmailAttribute emailAttribute; 
 		private boolean notificationSuccess = false;
 		private Context mContext;
-
+		static boolean isInit = false;
 		private MockTransportFactory mockFactory;
 		
 		protected void setUp() throws Exception {
-			mContext = getInstrumentation().getContext();
-			MIDaaS.setContext(mContext);
-			emailAttribute = new EmailAttributeFactory().createAttribute();
-			
-			mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
-			ConnectionManager.setNetworkFactory(mockFactory);
+			if(!isInit) {
+				mContext = getInstrumentation().getContext();
+				MIDaaS.setContext(mContext);
+				emailAttribute =  new EmailAttributeFactory().createAttribute();
+				mContext.deleteDatabase("attributes.db");
+				mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
+				ConnectionManager.setNetworkFactory(mockFactory);
+				isInit = true;
+			}
 		}
 		
 		@SmallTest
@@ -100,13 +105,6 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 		}
 		
 		@SmallTest
-		public void testSetCorrectEmailValue () throws Exception {
-			String correctEmail = "rob@gmail.com";
-			emailAttribute.setValue(correctEmail);
-			Assert.assertEquals(correctEmail, emailAttribute.getValue());	
-		}
-		
-		@SmallTest
 		public void testSetInvalidEmailValue() {
 			String incorrectEmail = "rob@";
 			try {
@@ -118,10 +116,11 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 		}
 		
 		
-		@SmallTest
-		public void testInitializeEmailVerificationSuccess() throws Exception {
+		
+		private void initializeEmailVerificationSuccess() throws Exception {
 			final CountDownLatch mLatch = new CountDownLatch(1);
-			
+			mContext.deleteDatabase("attributes.db");
+			emailAttribute.setValue("rob@gmail.com");
 			emailAttribute.startVerification(new InitializeVerificationCallback() {
 
 				@Override
@@ -142,44 +141,23 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			Assert.assertTrue(notificationSuccess);
 		}
 		
-		@SmallTest
-		public void testInitializeEmailVerificationFailure() throws Exception {
-			final CountDownLatch mLatch = new CountDownLatch(1);
-			mockFactory.setFilename("init_email_ver_fail.json");
-			emailAttribute.startVerification(new InitializeVerificationCallback() {
-
-				@Override
-				public void onSuccess() {
-					notificationSuccess = true;
-					mLatch.countDown();
-					
-				}
-
-				@Override
-				public void onError(MIDaaSException exception) {
-					notificationSuccess = false;
-					mLatch.countDown();
-				}
-				
-			});
-			mLatch.await();
-			Assert.assertEquals(false, notificationSuccess);
+		@MediumTest
+		public void testEmailVerification() throws Exception {
+			initializeEmailVerificationSuccess();
+			completeEmailVerificationSuccess();
 		}
-		
+
 //		@SmallTest
-//		public void testCompleteEmailVerificationSuccess() throws Exception {
+//		public void testInitializeEmailVerificationFailure() throws Exception {
 //			final CountDownLatch mLatch = new CountDownLatch(1);
-//			MIDaaS.setContext(mContext);
-//			mockFactory.setFilename("complete_email_ver_success.json");
-//			notificationSuccess = false;
-//			//mContext.deleteDatabase("attributes.db");
-//			emailAttribute.setValue("rob@gmail.com");
-//			emailAttribute.completeVerification("1234", new CompleteVerificationCallback() {
+//			mockFactory.setFilename("init_email_ver_fail.json");
+//			emailAttribute.startVerification(new InitializeVerificationCallback() {
 //
 //				@Override
 //				public void onSuccess() {
 //					notificationSuccess = true;
 //					mLatch.countDown();
+//					
 //				}
 //
 //				@Override
@@ -190,6 +168,32 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 //				
 //			});
 //			mLatch.await();
-//			Assert.assertTrue(notificationSuccess);
+//			Assert.assertEquals(false, notificationSuccess);
 //		}
+		
+		private void completeEmailVerificationSuccess() throws Exception {
+			final CountDownLatch mLatch = new CountDownLatch(1);
+			MIDaaS.setContext(mContext);
+			mockFactory.setFilename("complete_email_ver_success.json");
+			notificationSuccess = false;
+			//mContext.deleteDatabase("attributes.db");
+			//emailAttribute.setValue("rob@gmail.com");
+			emailAttribute.completeVerification("1234", new CompleteVerificationCallback() {
+
+				@Override
+				public void onSuccess() {
+					notificationSuccess = true;
+					mLatch.countDown();
+				}
+
+				@Override
+				public void onError(MIDaaSException exception) {
+					notificationSuccess = false;
+					mLatch.countDown();
+				}
+				
+			});
+			mLatch.await();
+			Assert.assertTrue(notificationSuccess);
+		}
 }

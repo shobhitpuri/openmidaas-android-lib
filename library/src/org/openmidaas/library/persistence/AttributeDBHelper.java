@@ -40,6 +40,7 @@ public class AttributeDBHelper extends SQLiteOpenHelper{
 	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		MIDaaS.logDebug(TAG, "Creating database and tables");
 		db.execSQL("CREATE TABLE " + AttributeEntry.TABLE_NAME + " (" + 
 				AttributeEntry._ID 					+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
 				AttributeEntry.COLUMN_NAME_NAME 	+ " TEXT NOT NULL, " +

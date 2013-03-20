@@ -13,14 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.persistence.core;
+package org.openmidaas.library.model.core;
 
-import org.openmidaas.library.model.core.PersistenceCallback;
-
-public interface PersistenceDelegate<T> {
-
-	public void saveAttribute(T data, PersistenceCallback callback);
-	
-	public void deleteAttribute(T data);
+public abstract class PersistenceCallback extends AbstractCallback {
 
 }

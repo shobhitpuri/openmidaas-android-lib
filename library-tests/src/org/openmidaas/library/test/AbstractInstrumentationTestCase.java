@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.persistence.core;
+package org.openmidaas.library.test;
 
-import org.openmidaas.library.model.core.PersistenceCallback;
+import android.test.InstrumentationTestCase;
 
-public interface PersistenceDelegate<T> {
-
-	public void saveAttribute(T data, PersistenceCallback callback);
-	
-	public void deleteAttribute(T data);
+public class AbstractInstrumentationTestCase extends InstrumentationTestCase{
 
 }

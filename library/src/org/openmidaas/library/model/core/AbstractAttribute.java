@@ -27,7 +27,7 @@ import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 
 public abstract class AbstractAttribute<T> {
 	
-	protected long mId;
+	protected long mId = -1;
 	
 	protected InitializeAttributeVerificationDelegate mInitVerificationDelegate = null;
 	
@@ -78,6 +78,15 @@ public abstract class AbstractAttribute<T> {
 	
 	public void setSignedToken(String token) {
 		mSignedToken = token;
+		save();
+	}
+	
+	public long getId() {
+		return mId;
+	}
+	
+	public void setId(long id) {
+		this.mId = id;
 	}
 	
 	/**
@@ -96,6 +105,7 @@ public abstract class AbstractAttribute<T> {
 	public final  void setValue(T value) throws InvalidAttributeValueException {
 		if(validateAttribute(value)) {
 			this.mValue = value;
+			save();
 		} else {
 			throw new InvalidAttributeValueException();
 		}
@@ -144,8 +154,18 @@ public abstract class AbstractAttribute<T> {
 		throw new UnsupportedOperationException("Cannot perform authentication");
 	}
 	
-	public void save() {
-		mPersistenceDelegate.saveAttribute(this);
+	private void save() {
+		mPersistenceDelegate.saveAttribute(this, new PersistenceCallback() {
+
+			@Override
+			public void onSuccess() {}
+
+			@Override
+			public void onError(MIDaaSException exception) {
+				//TODO: Flag as FATAL error here. 
+			}
+			
+		});
 	}
 	
 	/**

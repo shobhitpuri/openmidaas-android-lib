@@ -26,6 +26,6 @@ public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttr
 
 	@Override
 	public EmailAttribute createAttribute() {
-		return new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication(), new AttributeDBPersistenceDelegate(MIDaaS.getContext()));
+		return new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication(), AttributeDBPersistenceDelegate.getInstance());
 	}
 }

@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.persistence.core;
+package org.openmidaas.library.model;
 
-import org.openmidaas.library.model.core.PersistenceCallback;
+public class PersistenceException extends Exception {
 
-public interface PersistenceDelegate<T> {
-
-	public void saveAttribute(T data, PersistenceCallback callback);
-	
-	public void deleteAttribute(T data);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8725174701260043886L;
 
 }

@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.persistence.core;
+package org.openmidaas.library.common;
 
-import org.openmidaas.library.model.core.PersistenceCallback;
+import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 
-public interface PersistenceDelegate<T> {
-
-	public void saveAttribute(T data, PersistenceCallback callback);
+public class AttributePersistenceCoordinator {
 	
-	public void deleteAttribute(T data);
+	private static AttributePersistenceDelegate mDelegate;
+	
+	public static void setAttributePersistenceDelegate(AttributePersistenceDelegate delegate) {
+		mDelegate = delegate;
+	}
+	
+	public static void removeAttribute(AbstractAttribute<?> attribute) {
+
+	}
 
 }

@@ -61,7 +61,6 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 					@Override
 					public void onSuccess(String response) {
 						attribute.setSignedToken(response);
-						attribute.save();
 						completeVerificationCallback.onSuccess();
 					}
 					

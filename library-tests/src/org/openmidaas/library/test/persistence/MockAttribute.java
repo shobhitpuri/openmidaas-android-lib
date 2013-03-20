@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.persistence.core;
+package org.openmidaas.library.test.persistence;
 
-import org.openmidaas.library.model.core.PersistenceCallback;
+import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 
-public interface PersistenceDelegate<T> {
-
-	public void saveAttribute(T data, PersistenceCallback callback);
+public class MockAttribute extends AbstractAttribute<String>{
 	
-	public void deleteAttribute(T data);
+	protected MockAttribute(String name, AttributePersistenceDelegate persistenceDelegate) {
+		mName = name;
+		mPersistenceDelegate = persistenceDelegate;
+	}
+
+	@Override
+	protected boolean validateAttribute(String value) {
+		return true;
+	}
 
 }
