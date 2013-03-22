@@ -15,9 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
-public interface AbstractAttributeFactory<T, S> {
-	
-	public T createAttribute(S value) throws Exception;
-	
+import org.openmidaas.library.model.EmailAttribute;
+
+public abstract class EmailDataCallback extends AttributeDataCallback<EmailAttribute>{
 
 }

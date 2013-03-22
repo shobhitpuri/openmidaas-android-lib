@@ -16,6 +16,7 @@
 package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
 
 /**
  * Defines a generic attribute type. 
@@ -27,6 +28,7 @@ public class GenericAttribute extends AbstractAttribute<String>{
 	
 	protected GenericAttribute(String name) {
 		mName = name;
+		//mPersistenceDelegate = persistenceDelegate;
 	}
 
 	/**

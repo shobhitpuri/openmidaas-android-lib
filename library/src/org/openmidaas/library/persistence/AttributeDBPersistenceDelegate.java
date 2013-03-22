@@ -15,17 +15,30 @@
  ******************************************************************************/
 package org.openmidaas.library.persistence;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.model.EmailAttribute;
+import org.openmidaas.library.model.EmailAttributeFactory;
+import org.openmidaas.library.model.GenericAttribute;
+import org.openmidaas.library.model.GenericAttributeFactory;
+import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.model.core.AttributeDataCallback;
+import org.openmidaas.library.model.core.EmailDataCallback;
+import org.openmidaas.library.model.core.GenericDataCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 
 public class AttributeDBPersistenceDelegate implements AttributePersistenceDelegate{
 
@@ -54,9 +67,9 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 	@Override
 	public void saveAttribute(final AbstractAttribute<?> data, final PersistenceCallback callback) {
 		// DB operation is an async operation. Needs to be done on a separate thread.
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
 				try {
 					// id we don't have a PK, create a row in the db.
 					if(data.getId() == -1) {
@@ -65,7 +78,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 						long rowId = database.insertOrThrow(AttributeEntry.TABLE_NAME, null, getContentValuesForAttribute(data));
 						if(rowId == -1) {
 							// error saving record;
-							// TODO: Retry save
+							// TODO: Retry save. keep a watchdog timer/check on the status of the operation
 						} else {
 							data.setId(rowId);
 						}
@@ -75,29 +88,39 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 						database.update(AttributeEntry.TABLE_NAME, getContentValuesForAttribute(data), "_id=" + data.getId(), null);
 					}
 				} catch (SQLiteConstraintException exception) {
-					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_ALREADY_EXISTS));
+					if(callback != null) {
+						callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_ALREADY_EXISTS));
+					}
 				} finally {
 					database.close();
 				}
-			}
-			
-		}).start();
+//			}
+//			
+//		}).start();
 	}
 
 	@Override
-	public void deleteAttribute(final AbstractAttribute<?> data) {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
+	public void deleteAttribute(final AbstractAttribute<?> data, PersistenceCallback callback) {
+		database = dbHelper.getWritableDatabase();
+//		new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
 				if (data.getId() != -1) {
 					database.delete(AttributeEntry.TABLE_NAME, "_id = " + data.getId(), null);
+					dbHelper.close();
+				} else {
+					if(callback != null) {
+						// data was never persisted so just return success. 
+						callback.onSuccess();
+					}
 				}
-			}
-			
-		}).start();
+//			}
+//			
+//		}).start();
 		
 	}
+	
 	
 	private ContentValues getContentValuesForAttribute(AbstractAttribute<?> data) {
 		ContentValues contentValues = new ContentValues();
@@ -109,5 +132,64 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 			contentValues.put("token", data.getSignedToken());
 		}
 		return contentValues;
+	}
+
+	@Override
+	public void getEmails(final EmailDataCallback callback) {
+		
+//		new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+				//XXX: in the future, it would seem prudent to create a work queue. 
+				List<EmailAttribute> list = new ArrayList<EmailAttribute>();
+				Cursor cursor = fetchByAttributeName("email");
+				boolean isDataAvailable = cursor.moveToFirst();
+				if(isDataAvailable) {
+					EmailAttributeFactory emailFactory = new EmailAttributeFactory();
+					while(!(cursor.isAfterLast())) {
+						list.add(emailFactory.createAttributeFromCursor(cursor));
+						cursor.moveToNext();
+					}
+				} else {
+					callback.onSuccess(list);
+				}
+				cursor.close();
+				callback.onSuccess(list);
+		//	}
+			
+		//}).start();
+		
+	}
+
+	@Override
+	public void getGenerics(final String attributeName, final GenericDataCallback callback) {
+//		new Thread(new Runnable() {
+			//
+//						@Override
+//						public void run() {
+							List<GenericAttribute> list = new ArrayList<GenericAttribute>();
+							Cursor cursor = fetchByAttributeName(attributeName);
+							boolean isDataAvailable = cursor.moveToFirst();
+							if(isDataAvailable) {
+								GenericAttributeFactory af = new GenericAttributeFactory();
+								while(!(cursor.isAfterLast())) {
+									list.add(af.createAttributeFromCursor(cursor));
+									 cursor.moveToNext();
+								}
+							} else {
+								callback.onSuccess(list);
+							}
+							cursor.close();
+							callback.onSuccess(list);
+					//	}
+						
+					//}).start();
+	}
+	
+	private Cursor fetchByAttributeName(String name) {
+		database = dbHelper.getWritableDatabase();
+		Cursor cursor = database.query(AttributeEntry.TABLE_NAME, null, "name=?", new String[] { name }, null, null, null);
+		return cursor;
 	}
 }

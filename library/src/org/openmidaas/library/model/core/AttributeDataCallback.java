@@ -13,27 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.persistence;
+package org.openmidaas.library.model.core;
 
-import org.openmidaas.library.model.core.AbstractAttribute;
-import org.openmidaas.library.persistence.core.PersistenceDelegate;
-import org.openmidaas.library.persistence.core.PersistenceFactory;
+import java.util.List;
 
-public class AttributeDBPersistenceFactory implements PersistenceFactory<AbstractAttribute<?>>{
-
-	private String dbName;
+public abstract class AttributeDataCallback<T>  {
 	
-	public AttributeDBPersistenceFactory(String dbName) {
-		this.dbName = dbName;
-		
-	}
-
-	@Override
-	public PersistenceDelegate<AbstractAttribute<?>> createPersistenceStore() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
+	public abstract void onSuccess(List<T> list);
 
 }

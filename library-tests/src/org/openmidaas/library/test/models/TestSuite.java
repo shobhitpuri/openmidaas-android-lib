@@ -26,7 +26,7 @@ public class TestSuite extends InstrumentationTestRunner {
 	public junit.framework.TestSuite getAllTests() {
 		InstrumentationTestSuite suite = new InstrumentationTestSuite(this);
 		suite.addTestSuite(EmailAttributeTest.class);
-		suite.addTestSuite(GenericAttributeTest.class);
+		//suite.addTestSuite(GenericAttributeTest.class);
 		return suite;
 	}
 

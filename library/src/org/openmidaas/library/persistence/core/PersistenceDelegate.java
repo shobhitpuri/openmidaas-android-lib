@@ -21,6 +21,6 @@ public interface PersistenceDelegate<T> {
 
 	public void saveAttribute(T data, PersistenceCallback callback);
 	
-	public void deleteAttribute(T data);
+	public void deleteAttribute(T data, PersistenceCallback callback);
 
 }

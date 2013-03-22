@@ -13,21 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.common;
+package org.openmidaas.library.persistence;
+
 
 import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.model.core.EmailDataCallback;
+import org.openmidaas.library.model.core.GenericDataCallback;
+import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 
 public class AttributePersistenceCoordinator {
 	
-	private static AttributePersistenceDelegate mDelegate;
+	private static AttributePersistenceDelegate mDelegate = AttributeDBPersistenceDelegate.getInstance();
 	
-	public static void setAttributePersistenceDelegate(AttributePersistenceDelegate delegate) {
-		mDelegate = delegate;
+	public static void removeAttribute(AbstractAttribute<?> attribute, PersistenceCallback callback) {
+		mDelegate.deleteAttribute(attribute, callback);
 	}
 	
-	public static void removeAttribute(AbstractAttribute<?> attribute) {
-
+	public static void saveAttribute(AbstractAttribute<?> attribute, PersistenceCallback callback) {
+		mDelegate.saveAttribute(attribute, callback);
+	}
+	
+	public static void getEmails(EmailDataCallback callback) {
+		mDelegate.getEmails(callback);
+	}
+	
+	public static void getGenericAttributes(String attributeName, GenericDataCallback callback) {
+		mDelegate.getGenerics(attributeName, callback);
 	}
 
 }

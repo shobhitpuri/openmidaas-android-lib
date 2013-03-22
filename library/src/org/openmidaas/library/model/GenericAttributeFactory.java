@@ -16,22 +16,63 @@
 package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttributeFactory;
+import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.model.core.PersistenceCallback;
+import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
+import org.openmidaas.library.persistence.AttributeEntry;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+
+import android.database.Cursor;
 
 /**
  * Creates a new generic attribute
  */
-public class GenericAttributeFactory implements AbstractAttributeFactory<GenericAttribute>{
+public class GenericAttributeFactory implements AbstractAttributeFactory<GenericAttribute, String>{
 
 	private String mAttributeName;
+	
+	private String mValue;
+	
+	public GenericAttributeFactory() {
+		
+	}
+	
+	public void setAttributeName(String name, String value) {
+		mAttributeName = name;
+		mValue = value;
+	}
 	
 	public GenericAttributeFactory(String attributeName) {
 		if (attributeName == null) { throw new IllegalArgumentException(); }
 		mAttributeName = attributeName;
 	}
 	
+	public GenericAttribute createAttributeFromCursor(Cursor cursor) {
+		GenericAttribute attribute = new GenericAttribute(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_NAME)));
+		attribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributeEntry._ID))));
+		attribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_TOKEN)));
+		try {
+			attribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
+		} catch (InvalidAttributeValueException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return attribute;
+		
+	}
+	
 	@Override
-	public GenericAttribute createAttribute() {
-		return new GenericAttribute(mAttributeName);
+	public GenericAttribute createAttribute(String value) {
+		GenericAttribute attribute = new GenericAttribute(mAttributeName);
+		try {
+			attribute.setValue(value);
+		} catch (InvalidAttributeValueException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// saves to the DB in the background.
+		AttributePersistenceCoordinator.saveAttribute(attribute, null);
+		return (attribute);
 	}
 
 }

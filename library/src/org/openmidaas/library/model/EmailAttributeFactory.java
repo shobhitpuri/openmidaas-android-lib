@@ -15,17 +15,37 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.core.AbstractAttributeFactory;
-import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
+import org.openmidaas.library.persistence.AttributeEntry;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+
+import android.database.Cursor;
 
 /**
  * Creates a new email attribute
  */
-public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute>{
+public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute, String>{
 
+	
+	public EmailAttribute createAttributeFromCursor(Cursor cursor) {
+		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication());
+		emailAttribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributeEntry._ID))));
+		emailAttribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_TOKEN)));
+		try {
+			emailAttribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
+		} catch (InvalidAttributeValueException e) {
+			// should not get an exception here, otherwise we have a serious bug. 
+			e.printStackTrace();
+		}
+		return emailAttribute;
+	}
+	
 	@Override
-	public EmailAttribute createAttribute() {
-		return new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication(), AttributeDBPersistenceDelegate.getInstance());
+	public EmailAttribute createAttribute(String email) throws InvalidAttributeValueException {
+		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication());
+		emailAttribute.setValue(email);
+		// saves attribute to the DB in background. 
+		AttributePersistenceCoordinator.saveAttribute(emailAttribute, null);
+		return emailAttribute;
 	}
 }

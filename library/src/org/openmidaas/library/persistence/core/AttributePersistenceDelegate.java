@@ -15,9 +15,16 @@
  ******************************************************************************/
 package org.openmidaas.library.persistence.core;
 
+
 import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.model.core.AttributeDataCallback;
+import org.openmidaas.library.model.core.EmailDataCallback;
+import org.openmidaas.library.model.core.GenericDataCallback;
 
 public interface AttributePersistenceDelegate extends PersistenceDelegate<AbstractAttribute<?>>{
 	
+	public void getEmails(EmailDataCallback callback);
+	
+	public void getGenerics(String attributeName, GenericDataCallback callback);
 
 }

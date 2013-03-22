@@ -31,9 +31,9 @@ import android.test.suitebuilder.annotation.SmallTest;
 public class GenericAttributeTest extends TestCase {
 	private GenericAttribute genericAttribute;
 	private String attributeName = "firstName";
-	
+	private String attributeValue = "Rob";
 	public void setUp() {
-		genericAttribute = new GenericAttributeFactory(attributeName).createAttribute();
+		genericAttribute = new GenericAttributeFactory(attributeName).createAttribute(attributeValue);
 	}
 	
 	@SmallTest
@@ -44,7 +44,7 @@ public class GenericAttributeTest extends TestCase {
 	@SmallTest
 	public void testCreateAttributeWithNullName() {
 		try {
-			GenericAttribute genericAttribute = new GenericAttributeFactory(null).createAttribute();
+			GenericAttribute genericAttribute = new GenericAttributeFactory(null).createAttribute(attributeValue);
 			Assert.fail("Expected IllegalArgumentException");
 		} catch(IllegalArgumentException e) {
 			

@@ -18,6 +18,7 @@ package org.openmidaas.library.model.core;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmidaas.library.model.InvalidAttributeValueException;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 
 /**
@@ -78,7 +79,7 @@ public abstract class AbstractAttribute<T> {
 	
 	public void setSignedToken(String token) {
 		mSignedToken = token;
-		save();
+		//save();
 	}
 	
 	public long getId() {
@@ -105,7 +106,7 @@ public abstract class AbstractAttribute<T> {
 	public final  void setValue(T value) throws InvalidAttributeValueException {
 		if(validateAttribute(value)) {
 			this.mValue = value;
-			save();
+			//save();
 		} else {
 			throw new InvalidAttributeValueException();
 		}
@@ -163,6 +164,24 @@ public abstract class AbstractAttribute<T> {
 			@Override
 			public void onError(MIDaaSException exception) {
 				//TODO: Flag as FATAL error here. 
+			}
+			
+		});
+	}
+	
+	public void delete() {
+		AttributePersistenceCoordinator.removeAttribute(this, new PersistenceCallback() {
+
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onError(MIDaaSException exception) {
+				// TODO Auto-generated method stub
+				
 			}
 			
 		});

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.persistence.core;
+package org.openmidaas.library.model.core;
 
-public interface PersistenceFactory<T> {
-	
-	PersistenceDelegate<T> createPersistenceStore();
+import org.openmidaas.library.model.GenericAttribute;
+
+public abstract class GenericDataCallback extends AttributeDataCallback<GenericAttribute>{
 
 }

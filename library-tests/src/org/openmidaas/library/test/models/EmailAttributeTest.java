@@ -56,7 +56,7 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			if(!isInit) {
 				mContext = getInstrumentation().getContext();
 				MIDaaS.setContext(mContext);
-				emailAttribute =  new EmailAttributeFactory().createAttribute();
+				emailAttribute =  new EmailAttributeFactory().createAttribute("rob@gmail.com");
 				mContext.deleteDatabase("attributes.db");
 				mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
 				ConnectionManager.setNetworkFactory(mockFactory);
@@ -146,30 +146,6 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			initializeEmailVerificationSuccess();
 			completeEmailVerificationSuccess();
 		}
-
-//		@SmallTest
-//		public void testInitializeEmailVerificationFailure() throws Exception {
-//			final CountDownLatch mLatch = new CountDownLatch(1);
-//			mockFactory.setFilename("init_email_ver_fail.json");
-//			emailAttribute.startVerification(new InitializeVerificationCallback() {
-//
-//				@Override
-//				public void onSuccess() {
-//					notificationSuccess = true;
-//					mLatch.countDown();
-//					
-//				}
-//
-//				@Override
-//				public void onError(MIDaaSException exception) {
-//					notificationSuccess = false;
-//					mLatch.countDown();
-//				}
-//				
-//			});
-//			mLatch.await();
-//			Assert.assertEquals(false, notificationSuccess);
-//		}
 		
 		private void completeEmailVerificationSuccess() throws Exception {
 			final CountDownLatch mLatch = new CountDownLatch(1);

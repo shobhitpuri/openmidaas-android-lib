@@ -15,48 +15,60 @@
  ******************************************************************************/
 package org.openmidaas.library.test.persistence;
 
-import java.io.File;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.common.network.ConnectionManager;
-import org.openmidaas.library.model.EmailAttributeFactory;
-import org.openmidaas.library.model.InvalidAttributeValueException;
-import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
-import org.openmidaas.library.persistence.AttributeEntry;
-import org.openmidaas.library.test.network.MockTransportFactory;
-
+import org.openmidaas.library.model.GenericAttribute;
+import org.openmidaas.library.model.GenericAttributeFactory;
+import org.openmidaas.library.model.core.GenericDataCallback;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
 public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase {
 	
-	private static final String TEST_VALUE = "TEST_VALUE";
+	private static final String TEST_VALUE_1 = "TEST_VALUE_1";
+	private static final String TEST_VALUE_2 = "TEST_VALUE_2";
+	private static final String TEST_VALUE_3 = "TEST_VALUE_3";
+	
 	private Context mContext;
-	private MockAttribute mAttribute;
+	private GenericAttribute mAttribute;
+	private GenericAttributeFactory factory = new GenericAttributeFactory("test");
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
 		MIDaaS.setContext(mContext);
-		mAttribute = new MockAttribute("MockAttribute", AttributeDBPersistenceDelegate.getInstance());
-		// destroy any existing databases before beginning the tests. 
-		mContext.deleteDatabase("attributes.db");
 	}
 	
 	@SmallTest
-	public void testSave() {
+	public void testDelete() {
 		mContext.deleteDatabase("attributes.db");
-		
-		// this call persists the value in the database
-		try {
-			mAttribute.setValue(TEST_VALUE);
-			
-		} catch (InvalidAttributeValueException e) {
-			Assert.fail();
-		} catch(Exception e) {
-			Assert.fail();
-		}
+		GenericAttribute a1 = factory.createAttribute("1");
+		a1.delete();
+	}
+	
+	@SmallTest
+	public void testGetGenericAttributes() throws Exception {
+		GenericAttribute a1 = factory.createAttribute("TEST_VALUE_1");
+		GenericAttribute a2 = factory.createAttribute("TEST_VALUE_2");
+		GenericAttribute a3 = factory.createAttribute("TEST_VALUE_3");
+		CountDownLatch mLatch = new CountDownLatch(1);
+		// Retrieve all the "test" attributes
+		AttributePersistenceCoordinator.getGenericAttributes("test", new GenericDataCallback() {
+
+			@Override
+			public void onSuccess(List<GenericAttribute> list) {
+				for(GenericAttribute a: list) {
+					if((a.getValue() == TEST_VALUE_1) || (a.getValue() == TEST_VALUE_2) || (a.getValue() == TEST_VALUE_3) ) {
+						continue;
+					} else {
+						Assert.fail();
+					}
+				}
+			}
+		});
+		mLatch.await();
 	}
 }
