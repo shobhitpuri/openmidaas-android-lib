@@ -51,7 +51,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 	private static AttributeDBPersistenceDelegate mInstance = null;
 	
 	private AttributeDBPersistenceDelegate(){
-		dbHelper = new AttributeDBHelper(MIDaaS.getContext());
+		dbHelper = AttributeDBHelper.getInstance();
 	}
 	
 	public static synchronized AttributeDBPersistenceDelegate getInstance() {

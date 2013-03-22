@@ -24,11 +24,25 @@ public class AttributeDBHelper extends SQLiteOpenHelper{
 
 	private final String TAG = "AttributeSQLiteHelper";
 
+	private static AttributeDBHelper mInstance = null;
+	
 	private static final String DATABASE_NAME = "attributes.db";
 	
-	public AttributeDBHelper(final Context context) {
-		super(context, DATABASE_NAME, null, 1);
+	private AttributeDBHelper() {
+		super(MIDaaS.getContext(), DATABASE_NAME, null, 1);
 	}
+	
+	public static synchronized AttributeDBHelper getInstance() {
+		if(mInstance == null) {
+			mInstance = new AttributeDBHelper();
+		}
+		return mInstance;
+	}
+	
+	
+//	public AttributeDBHelper(final Context context) {
+//		super(context, DATABASE_NAME, null, 1);
+//	}
 
 	/**
 	 * Creates the Attributes table.
