@@ -19,7 +19,8 @@ public enum MIDaaSError {
 	
 	SERVER_ERROR(101, "Error with the attribute server. "),
 	ERROR_AUTHENTICATING_DEVICE(100, "There was an error authenticating the device. "),
-	ATTRIBUTE_ALREADY_EXISTS(200, "The current attribute already exists. ");
+	ATTRIBUTE_ALREADY_EXISTS(200, "The current attribute already exists. "),
+	DATABASE_ERROR(201, "There was an error with the database");
 	
 	private final int mErrorCode;
 	

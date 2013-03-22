@@ -37,9 +37,8 @@ public class GenericAttributeFactory implements AbstractAttributeFactory<Generic
 		
 	}
 	
-	public void setAttributeName(String name, String value) {
+	public void setAttributeName(String name) {
 		mAttributeName = name;
-		mValue = value;
 	}
 	
 	public GenericAttributeFactory(String attributeName) {

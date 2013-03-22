@@ -71,9 +71,10 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 //			@Override
 //			public void run() {
 				try {
+					database = dbHelper.getWritableDatabase();
 					// id we don't have a PK, create a row in the db.
 					if(data.getId() == -1) {
-						database = dbHelper.getWritableDatabase();
+						
 					
 						long rowId = database.insertOrThrow(AttributeEntry.TABLE_NAME, null, getContentValuesForAttribute(data));
 						if(rowId == -1) {
@@ -81,17 +82,32 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 							// TODO: Retry save. keep a watchdog timer/check on the status of the operation
 						} else {
 							data.setId(rowId);
+							if(callback != null) {
+								callback.onSuccess();
+							}
 						}
 					}
 					// id we have a PK, update the corresponding row. 
 					else {
-						database.update(AttributeEntry.TABLE_NAME, getContentValuesForAttribute(data), "_id=" + data.getId(), null);
+						
+						int v = database.update(AttributeEntry.TABLE_NAME, getContentValuesForAttribute(data), "_id =" + data.getId(), null);
+						// only 1 row should be updated!
+						if (v == 1) {
+							if (callback != null) {
+								callback.onSuccess();
+							}
+						}
 					}
 				} catch (SQLiteConstraintException exception) {
 					if(callback != null) {
 						callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_ALREADY_EXISTS));
 					}
-				} finally {
+				} catch(Exception e) {
+					if(callback != null) {
+						callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+					}
+				}
+				finally {
 					database.close();
 				}
 //			}
@@ -109,6 +125,9 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 				if (data.getId() != -1) {
 					database.delete(AttributeEntry.TABLE_NAME, "_id = " + data.getId(), null);
 					dbHelper.close();
+					if(callback != null) {
+						callback.onSuccess();
+					}
 				} else {
 					if(callback != null) {
 						// data was never persisted so just return success. 
