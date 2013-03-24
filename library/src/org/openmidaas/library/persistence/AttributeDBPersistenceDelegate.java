@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.model.DeviceToken;
+import org.openmidaas.library.model.DeviceTokenFactory;
 import org.openmidaas.library.model.EmailAttribute;
 import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.GenericAttribute;
@@ -26,6 +28,7 @@ import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.AttributeDataCallback;
+import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.EmailDataCallback;
 import org.openmidaas.library.model.core.GenericDataCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
@@ -170,6 +173,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 						list.add(emailFactory.createAttributeFromCursor(cursor));
 						cursor.moveToNext();
 					}
+					cursor.close();
 				} else {
 					callback.onSuccess(list);
 				}
@@ -196,6 +200,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 									list.add(af.createAttributeFromCursor(cursor));
 									 cursor.moveToNext();
 								}
+								cursor.close();
 							} else {
 								callback.onSuccess(list);
 							}
@@ -210,5 +215,20 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 		database = dbHelper.getWritableDatabase();
 		Cursor cursor = database.query(AttributeEntry.TABLE_NAME, null, "name=?", new String[] { name }, null, null, null);
 		return cursor;
+	}
+
+	@Override
+	public void getDeviceToken(final DeviceTokenCallback callback) {
+		List<DeviceToken> list = new ArrayList<DeviceToken>();
+		DeviceTokenFactory factory = new DeviceTokenFactory();
+		Cursor cursor = fetchByAttributeName("device");
+		if(cursor.moveToFirst()) {
+			// this loop should run only once. 
+			while(!(cursor.isAfterLast())) {
+				list.add(factory.createAttributeFromCursor(cursor));
+				cursor.moveToNext();
+			}
+			cursor.close();
+		}
 	}
 }

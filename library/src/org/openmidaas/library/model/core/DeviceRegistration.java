@@ -19,6 +19,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.network.AVSServer;
+import org.openmidaas.library.model.DeviceToken;
+import org.openmidaas.library.model.DeviceTokenFactory;
+import org.openmidaas.library.model.InvalidAttributeValueException;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -29,6 +34,8 @@ public class DeviceRegistration {
 	private AuthenticationStrategy mAuthenticationStrategy;
 	
 	private InitializationCallback mInitCallback;
+	
+	private DeviceToken deviceToken;
 	
 	public DeviceRegistration(AuthenticationStrategy authenticationStrategy) {
 		mAuthenticationStrategy = authenticationStrategy;
@@ -53,10 +60,26 @@ public class DeviceRegistration {
 			@Override
 			public void onSuccess(String response) {
 				//TODO: Persist the signed user ID token. 
-				SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MIDaaS.getContext()).edit();
-				editor.putBoolean("REGISTERED_KEY_NAME", true);
-				editor.commit();
-				mInitCallback.onSuccess();
+				try {
+					deviceToken = new DeviceTokenFactory().createAttribute("device");
+					deviceToken.setSignedToken(response);
+				} catch (InvalidAttributeValueException e) {
+					// should never get here b/c we're returning true. 
+				}
+				
+				AttributePersistenceCoordinator.saveAttribute(deviceToken, new PersistenceCallback() {
+
+					@Override
+					public void onSuccess() {
+						mInitCallback.onSuccess();					
+						}
+
+					@Override
+					public void onError(MIDaaSException exception) {
+						mInitCallback.onError(exception);				
+						}
+				
+				});
 			}
 			
 			@Override
