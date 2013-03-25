@@ -20,5 +20,7 @@ import java.util.List;
 public abstract class AttributeDataCallback<T>  {
 	
 	public abstract void onSuccess(List<T> list);
+	
+	public abstract void onError(MIDaaSException exception);
 
 }

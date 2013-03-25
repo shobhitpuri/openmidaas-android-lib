@@ -16,10 +16,27 @@
 package org.openmidaas.library.model.core;
 
 import org.openmidaas.library.model.InvalidAttributeValueException;
+import android.database.Cursor;
 
-public interface AbstractAttributeFactory<T, S> {
+/**
+ * Implement this interface to create your custom attributes.
+ * @param <T> - the type of attribute. 
+ */
+public interface AbstractAttributeFactory<T extends AbstractAttribute<?>> {
 	
-	public T createAttribute(S value) throws InvalidAttributeValueException;
+	/**
+	 * Creates an attribute of type T with the specified value.
+	 * @param value -  the attribute value
+	 * @return - the attribute of type T
+	 * @throws InvalidAttributeValueException
+	 */
+	public T createAttribute(String value) throws InvalidAttributeValueException;
 	
-
+	/**
+	 * Creates an attribute of type T with the specified cursor. 
+	 * @param cursor - the cursor containing the data. 
+	 * @return - the attribute of type T
+	 * @throws InvalidAttributeValueException
+	 */
+	public T createAttributeFromCursor(Cursor cursor) throws InvalidAttributeValueException;
 }

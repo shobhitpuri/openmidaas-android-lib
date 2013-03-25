@@ -17,17 +17,13 @@ package org.openmidaas.library.model.core;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.network.AVSServer;
-import org.openmidaas.library.model.DeviceToken;
-import org.openmidaas.library.model.DeviceTokenFactory;
+import org.openmidaas.library.model.AttributeFactory;
+import org.openmidaas.library.model.DeviceAttribute;
+import org.openmidaas.library.model.DeviceAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.preference.PreferenceManager;
 
 public class DeviceRegistration {
 	
@@ -35,7 +31,7 @@ public class DeviceRegistration {
 	
 	private InitializationCallback mInitCallback;
 	
-	private DeviceToken deviceToken;
+	private DeviceAttribute deviceToken;
 	
 	public DeviceRegistration(AuthenticationStrategy authenticationStrategy) {
 		mAuthenticationStrategy = authenticationStrategy;
@@ -52,7 +48,6 @@ public class DeviceRegistration {
 		JSONObject registrationData = new JSONObject();
 		try {
 			registrationData.put("deviceToken", deviceId);
-			registrationData.put("nickname", Build.MODEL);
 		} catch (JSONException e) {
 			mInitCallback.onError(null);
 		}
@@ -61,7 +56,7 @@ public class DeviceRegistration {
 			public void onSuccess(String response) {
 				//TODO: Persist the signed user ID token. 
 				try {
-					deviceToken = new DeviceTokenFactory().createAttribute("device");
+					deviceToken = AttributeFactory.createDeviceAttributeFactory().createAttribute("device");
 					deviceToken.setSignedToken(response);
 				} catch (InvalidAttributeValueException e) {
 					// should never get here b/c we're returning true. 

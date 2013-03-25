@@ -17,6 +17,12 @@ package org.openmidaas.library.persistence;
 
 import android.provider.BaseColumns;
 
+/**
+ * 
+ * This abstract class specifies the table and 
+ * column names of the attributes table. 
+ *
+ */
 public abstract class AttributeEntry implements BaseColumns {
 	
 	public static final String TABLE_NAME 			= "attributes";

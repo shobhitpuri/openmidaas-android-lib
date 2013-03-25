@@ -25,7 +25,7 @@ public class MIDaaSException extends Exception {
 		this.mErrorCode = errorCode;
 	}
 
-	public MIDaaSError getErrorError() {
+	public MIDaaSError getError() {
 		return mErrorCode;
 	}
 	

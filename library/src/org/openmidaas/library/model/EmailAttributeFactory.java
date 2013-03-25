@@ -22,21 +22,19 @@ import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import android.database.Cursor;
 
 /**
- * Creates a new email attribute
+ * Email attribute factory implementation that creates new attributes. 
  */
-public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute, String>{
+public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute> {
 
+	protected EmailAttributeFactory(){}
 	
-	public EmailAttribute createAttributeFromCursor(Cursor cursor) {
+	
+	@Override
+	public EmailAttribute createAttributeFromCursor(Cursor cursor) throws InvalidAttributeValueException {
 		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication());
 		emailAttribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributeEntry._ID))));
 		emailAttribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_TOKEN)));
-		try {
-			emailAttribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
-		} catch (InvalidAttributeValueException e) {
-			// should not get an exception here, otherwise we have a serious bug. 
-			e.printStackTrace();
-		}
+		emailAttribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
 		return emailAttribute;
 	}
 	

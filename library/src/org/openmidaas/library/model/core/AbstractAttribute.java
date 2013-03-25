@@ -155,20 +155,6 @@ public abstract class AbstractAttribute<T> {
 		throw new UnsupportedOperationException("Cannot perform authentication");
 	}
 	
-	private void save() {
-		mPersistenceDelegate.saveAttribute(this, new PersistenceCallback() {
-
-			@Override
-			public void onSuccess() {}
-
-			@Override
-			public void onError(MIDaaSException exception) {
-				//TODO: Flag as FATAL error here. 
-			}
-			
-		});
-	}
-	
 	public void delete() {
 		AttributePersistenceCoordinator.removeAttribute(this, new PersistenceCallback() {
 

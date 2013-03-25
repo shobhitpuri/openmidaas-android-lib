@@ -22,6 +22,11 @@ import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.EmailDataCallback;
 import org.openmidaas.library.model.core.GenericDataCallback;
 
+/**
+ * This interface 
+ * 
+ *
+ */
 public interface AttributePersistenceDelegate extends PersistenceDelegate<AbstractAttribute<?>>{
 	
 	public void getEmails(EmailDataCallback callback);

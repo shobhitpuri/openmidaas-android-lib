@@ -16,32 +16,28 @@
 package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttributeFactory;
-import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.AttributeEntry;
-import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+
 
 import android.database.Cursor;
 
-public class DeviceTokenFactory implements AbstractAttributeFactory<DeviceToken, String>{
+public class DeviceAttributeFactory implements AbstractAttributeFactory<DeviceAttribute>{
 
+	protected DeviceAttributeFactory(){}
+	
 	@Override
-	public DeviceToken createAttribute(String value) throws InvalidAttributeValueException {
-		DeviceToken token = new DeviceToken();
+	public DeviceAttribute createAttribute(String value) throws InvalidAttributeValueException {
+		DeviceAttribute token = new DeviceAttribute();
 		token.setValue(value);
 		return token;
 	}
 	
-	public DeviceToken createAttributeFromCursor(Cursor cursor) {
-		DeviceToken attribute = new DeviceToken();
+	@Override
+	public DeviceAttribute createAttributeFromCursor(Cursor cursor) throws InvalidAttributeValueException {
+		DeviceAttribute attribute = new DeviceAttribute();
 		attribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributeEntry._ID))));
 		attribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_TOKEN)));
-		try {
-			attribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
-		} catch (InvalidAttributeValueException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		attribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
 		return attribute;
 	}
 }

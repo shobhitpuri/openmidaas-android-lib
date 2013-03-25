@@ -17,9 +17,9 @@ package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttribute;
 
-public class DeviceToken extends AbstractAttribute<String>{
+public class DeviceAttribute extends AbstractAttribute<String>{
 	
-	protected DeviceToken(){
+	protected DeviceAttribute(){
 		mName = "device";
 	}
 

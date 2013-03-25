@@ -16,10 +16,13 @@
 package org.openmidaas.library.persistence;
 
 import org.openmidaas.library.MIDaaS;
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * Helper class required by SQLite
+ * to do db operations.
+ */
 public class AttributeDBHelper extends SQLiteOpenHelper{
 
 	private final String TAG = "AttributeSQLiteHelper";
@@ -32,17 +35,16 @@ public class AttributeDBHelper extends SQLiteOpenHelper{
 		super(MIDaaS.getContext(), DATABASE_NAME, null, 1);
 	}
 	
+	/**
+	 * Return only one instance of this class. 
+	 * @return - this class.
+	 */
 	public static synchronized AttributeDBHelper getInstance() {
 		if(mInstance == null) {
 			mInstance = new AttributeDBHelper();
 		}
 		return mInstance;
 	}
-	
-	
-//	public AttributeDBHelper(final Context context) {
-//		super(context, DATABASE_NAME, null, 1);
-//	}
 
 	/**
 	 * Creates the Attributes table.

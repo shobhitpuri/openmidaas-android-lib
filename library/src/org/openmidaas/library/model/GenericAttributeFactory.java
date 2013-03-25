@@ -16,62 +16,69 @@
 package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttributeFactory;
-import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.model.core.PersistenceCallback;
-import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
 import org.openmidaas.library.persistence.AttributeEntry;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 import android.database.Cursor;
 
 /**
- * Creates a new generic attribute
+ * Creates a new generic attribute factory
  */
-public class GenericAttributeFactory implements AbstractAttributeFactory<GenericAttribute, String>{
+public class GenericAttributeFactory implements AbstractAttributeFactory<GenericAttribute>{
 
 	private String mAttributeName;
 	
-	private String mValue;
 	
-	public GenericAttributeFactory() {
-		
-	}
 	
-	public void setAttributeName(String name) {
+	protected GenericAttributeFactory() {}
+	
+	public GenericAttributeFactory setAttributeName(String name) {
 		mAttributeName = name;
-	}
-	
-	public GenericAttributeFactory(String attributeName) {
-		if (attributeName == null) { throw new IllegalArgumentException(); }
-		mAttributeName = attributeName;
-	}
-	
-	public GenericAttribute createAttributeFromCursor(Cursor cursor) {
-		GenericAttribute attribute = new GenericAttribute(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_NAME)));
-		attribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributeEntry._ID))));
-		attribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_TOKEN)));
-		try {
-			attribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
-		} catch (InvalidAttributeValueException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return attribute;
-		
+		return this;
 	}
 	
 	@Override
-	public GenericAttribute createAttribute(String value) {
-		GenericAttribute attribute = new GenericAttribute(mAttributeName);
-		try {
-			attribute.setValue(value);
-		} catch (InvalidAttributeValueException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public GenericAttribute createAttributeFromCursor(Cursor cursor) throws InvalidAttributeValueException {
+		GenericAttribute attribute = new GenericAttribute(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_NAME)));
+		attribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributeEntry._ID))));
+		attribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_TOKEN)));
+		attribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
+		return attribute;
+	}
+	
+	/**
+	 * @deprecated Use the method createAttribute(String name, String value) to create a GenericAttribute instead. Otherwise, call
+	 * "setAttributeName(String name)" before calling createAttribute(String value).
+	 */
+	@Override
+	@Deprecated
+	public GenericAttribute createAttribute(String value) throws InvalidAttributeValueException, IllegalArgumentException {
+		if(mAttributeName == null || mAttributeName.isEmpty()) {
+			throw new IllegalArgumentException("Attribute value cannot be set when attribute name is null. Try calling \"setAttributeName()\" first");
 		}
+		GenericAttribute attribute = new GenericAttribute(mAttributeName);
+		attribute.setValue(value);
 		// saves to the DB in the background.
 		AttributePersistenceCoordinator.saveAttribute(attribute, null);
 		return (attribute);
 	}
-
+	
+	/**
+	 * 
+	 * @param name
+	 * @param value
+	 * @return
+	 * @throws InvalidAttributeValueException
+	 * @throws IllegalArgumentException
+	 */
+	public GenericAttribute createAttribute(String name, String value) throws InvalidAttributeValueException, IllegalArgumentException {
+		if (name == null || name.isEmpty()) {
+			throw new IllegalArgumentException("Attribute value cannot be set when attribute name is null. Try calling \"setAttributeName()\" first");
+		}
+		GenericAttribute attribute = new GenericAttribute(name);
+		attribute.setValue(value);
+		// saves to the DB in the background.
+		AttributePersistenceCoordinator.saveAttribute(attribute, null);
+		return attribute;
+	}
 }

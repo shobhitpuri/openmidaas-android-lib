@@ -17,17 +17,15 @@ package org.openmidaas.library.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.model.DeviceToken;
-import org.openmidaas.library.model.DeviceTokenFactory;
+import org.openmidaas.library.model.AttributeFactory;
+import org.openmidaas.library.model.DeviceAttribute;
+import org.openmidaas.library.model.DeviceAttributeFactory;
 import org.openmidaas.library.model.EmailAttribute;
 import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.AbstractAttribute;
-import org.openmidaas.library.model.core.AttributeDataCallback;
 import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.EmailDataCallback;
 import org.openmidaas.library.model.core.GenericDataCallback;
@@ -36,12 +34,10 @@ import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
+
 
 public class AttributeDBPersistenceDelegate implements AttributePersistenceDelegate{
 
@@ -67,80 +63,67 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 	public void close() {
 		dbHelper.close();
 	}
+	
 	@Override
-	public void saveAttribute(final AbstractAttribute<?> data, final PersistenceCallback callback) {
-		// DB operation is an async operation. Needs to be done on a separate thread.
-//		new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-				try {
-					database = dbHelper.getWritableDatabase();
-					// id we don't have a PK, create a row in the db.
-					if(data.getId() == -1) {
-						
-					
-						long rowId = database.insertOrThrow(AttributeEntry.TABLE_NAME, null, getContentValuesForAttribute(data));
-						if(rowId == -1) {
-							// error saving record;
-							// TODO: Retry save. keep a watchdog timer/check on the status of the operation
-						} else {
-							data.setId(rowId);
-							if(callback != null) {
-								callback.onSuccess();
-							}
-						}
-					}
-					// id we have a PK, update the corresponding row. 
-					else {
-						
-						int v = database.update(AttributeEntry.TABLE_NAME, getContentValuesForAttribute(data), "_id =" + data.getId(), null);
-						// only 1 row should be updated!
-						if (v == 1) {
-							if (callback != null) {
-								callback.onSuccess();
-							}
-						}
-					}
-				} catch (SQLiteConstraintException exception) {
+	public void save(final AbstractAttribute<?> data, final PersistenceCallback callback) {
+		try {
+			database = dbHelper.getWritableDatabase();
+			// id we don't have a PK, create a row in the db.
+			if(data.getId() == -1) {
+				
+			
+				long rowId = database.insertOrThrow(AttributeEntry.TABLE_NAME, null, getContentValuesForAttribute(data));
+				if(rowId == -1) {
+					// error saving record;
+					// TODO: Retry save. keep a watchdog timer/check on the status of the operation
+				} else {
+					data.setId(rowId);
 					if(callback != null) {
-						callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_ALREADY_EXISTS));
-					}
-				} catch(Exception e) {
-					if(callback != null) {
-						callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+						callback.onSuccess();
+						
 					}
 				}
-				finally {
-					database.close();
+			}
+			// id we have a PK, update the corresponding row. 
+			else {
+				
+				int v = database.update(AttributeEntry.TABLE_NAME, getContentValuesForAttribute(data), "_id =" + data.getId(), null);
+				// only 1 row should be updated!
+				if (v == 1) {
+					if (callback != null) {
+						callback.onSuccess();
+					}
 				}
-//			}
-//			
-//		}).start();
+			}
+		} catch (SQLiteConstraintException exception) {
+			if(callback != null) {
+				callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_ALREADY_EXISTS));
+			}
+		} catch(Exception e) {
+			if(callback != null) {
+				callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+			}
+		}
+		finally {
+			dbHelper.close();
+		}
 	}
 
 	@Override
-	public void deleteAttribute(final AbstractAttribute<?> data, PersistenceCallback callback) {
+	public void delete(final AbstractAttribute<?> data, PersistenceCallback callback) {
 		database = dbHelper.getWritableDatabase();
-//		new Thread(new Runnable() {
-//
-//			@Override
-//			public void run() {
-				if (data.getId() != -1) {
-					database.delete(AttributeEntry.TABLE_NAME, "_id = " + data.getId(), null);
-					dbHelper.close();
-					if(callback != null) {
-						callback.onSuccess();
-					}
-				} else {
-					if(callback != null) {
-						// data was never persisted so just return success. 
-						callback.onSuccess();
-					}
-				}
-//			}
-//			
-//		}).start();
-		
+		if (data.getId() != -1) {
+			database.delete(AttributeEntry.TABLE_NAME, "_id = " + data.getId(), null);
+			dbHelper.close();
+			if(callback != null) {
+				callback.onSuccess();
+			}
+		} else {
+			if(callback != null) {
+				// data was never persisted so just return success. 
+				callback.onSuccess();
+			}
+		}
 	}
 	
 	
@@ -158,57 +141,51 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 
 	@Override
 	public void getEmails(final EmailDataCallback callback) {
-		
-//		new Thread(new Runnable() {
-//
-//			@Override
-//			public void run() {
-				//XXX: in the future, it would seem prudent to create a work queue. 
-				List<EmailAttribute> list = new ArrayList<EmailAttribute>();
-				Cursor cursor = fetchByAttributeName("email");
-				boolean isDataAvailable = cursor.moveToFirst();
-				if(isDataAvailable) {
-					EmailAttributeFactory emailFactory = new EmailAttributeFactory();
-					while(!(cursor.isAfterLast())) {
-						list.add(emailFactory.createAttributeFromCursor(cursor));
-						cursor.moveToNext();
-					}
-					cursor.close();
-				} else {
-					callback.onSuccess(list);
+		//XXX: in the future, it would seem prudent to create a work queue. 
+		List<EmailAttribute> list = new ArrayList<EmailAttribute>();
+		Cursor cursor = fetchByAttributeName("email");
+		boolean isDataAvailable = cursor.moveToFirst();
+		if(isDataAvailable) {
+			EmailAttributeFactory emailFactory = AttributeFactory.createEmailAttributeFactory();
+			while(!(cursor.isAfterLast())) {
+				try {
+					list.add(emailFactory.createAttributeFromCursor(cursor));
+				} catch (InvalidAttributeValueException e) {
+					// we should never get to this point otherwise we have a bug storing the data.
+					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
 				}
-				cursor.close();
-				callback.onSuccess(list);
-		//	}
-			
-		//}).start();
-		
+				cursor.moveToNext();
+			}
+			cursor.close();
+		} else {
+			callback.onSuccess(list);
+		}
+		cursor.close();
+		callback.onSuccess(list);
 	}
 
 	@Override
 	public void getGenerics(final String attributeName, final GenericDataCallback callback) {
-//		new Thread(new Runnable() {
-			//
-//						@Override
-//						public void run() {
-							List<GenericAttribute> list = new ArrayList<GenericAttribute>();
-							Cursor cursor = fetchByAttributeName(attributeName);
-							boolean isDataAvailable = cursor.moveToFirst();
-							if(isDataAvailable) {
-								GenericAttributeFactory af = new GenericAttributeFactory();
-								while(!(cursor.isAfterLast())) {
-									list.add(af.createAttributeFromCursor(cursor));
-									 cursor.moveToNext();
-								}
-								cursor.close();
-							} else {
-								callback.onSuccess(list);
-							}
-							cursor.close();
-							callback.onSuccess(list);
-					//	}
-						
-					//}).start();
+		List<GenericAttribute> list = new ArrayList<GenericAttribute>();
+		Cursor cursor = fetchByAttributeName(attributeName);
+		boolean isDataAvailable = cursor.moveToFirst();
+		if(isDataAvailable) {
+			GenericAttributeFactory af = AttributeFactory.createGenericAttributeFactory();
+			while(!(cursor.isAfterLast())) {
+				try {
+					list.add(af.createAttributeFromCursor(cursor));
+				} catch (InvalidAttributeValueException e) {
+					// we should never get to this point otherwise we have a bug storing the data.
+					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+				}
+				 cursor.moveToNext();
+			}
+			cursor.close();
+		} else {
+			callback.onSuccess(list);
+		}
+		cursor.close();
+		callback.onSuccess(list);
 	}
 	
 	private Cursor fetchByAttributeName(String name) {
@@ -219,16 +196,25 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 
 	@Override
 	public void getDeviceToken(final DeviceTokenCallback callback) {
-		List<DeviceToken> list = new ArrayList<DeviceToken>();
-		DeviceTokenFactory factory = new DeviceTokenFactory();
+		List<DeviceAttribute> list = new ArrayList<DeviceAttribute>();
+		DeviceAttributeFactory factory = AttributeFactory.createDeviceAttributeFactory();
 		Cursor cursor = fetchByAttributeName("device");
-		if(cursor.moveToFirst()) {
+		if(cursor.getCount()>0) {
+			cursor.moveToFirst();
 			// this loop should run only once. 
 			while(!(cursor.isAfterLast())) {
-				list.add(factory.createAttributeFromCursor(cursor));
+				try {
+					list.add(factory.createAttributeFromCursor(cursor));
+				} catch (InvalidAttributeValueException e) {
+					// we should never get to this point otherwise we have a bug storing the data.
+					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+				}
 				cursor.moveToNext();
 			}
 			cursor.close();
+			callback.onSuccess(list);
+		} else {
+			callback.onSuccess(list);
 		}
 	}
 }

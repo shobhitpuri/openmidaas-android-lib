@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.network.ConnectionManager;
+import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.EmailAttribute;
 import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
@@ -56,7 +57,7 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			if(!isInit) {
 				mContext = getInstrumentation().getContext();
 				MIDaaS.setContext(mContext);
-				emailAttribute =  new EmailAttributeFactory().createAttribute("rob@gmail.com");
+				emailAttribute =  AttributeFactory.createEmailAttributeFactory().createAttribute("rob@gmail.com");
 				mContext.deleteDatabase("attributes.db");
 				mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
 				ConnectionManager.setNetworkFactory(mockFactory);

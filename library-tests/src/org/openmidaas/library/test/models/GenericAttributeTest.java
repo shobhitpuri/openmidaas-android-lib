@@ -17,11 +17,9 @@ package org.openmidaas.library.test.models;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.GenericAttribute;
-import org.openmidaas.library.model.GenericAttributeFactory;
+import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
@@ -29,24 +27,57 @@ import org.openmidaas.library.model.core.MIDaaSException;
 import android.test.suitebuilder.annotation.SmallTest;
 
 public class GenericAttributeTest extends TestCase {
-	private GenericAttribute genericAttribute;
 	private String attributeName = "firstName";
 	private String attributeValue = "Rob";
-	public void setUp() {
-		genericAttribute = new GenericAttributeFactory(attributeName).createAttribute(attributeValue);
+	public void setUp() {	
+	}
+	
+	
+	@SmallTest
+	public void testDeprecatedMethodCallWithNameNotSet() {
+		try {
+			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeValue);
+			Assert.fail("Expected IllegalArgumentException");
+		} catch(IllegalArgumentException e) {
+			
+		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
+			e.printStackTrace();
+		}
+	}
+	
+	@SmallTest
+	public void testDeperecatedMethodCallWithNameSet() {
+		try {
+			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().setAttributeName(attributeName).createAttribute(attributeValue);
+			
+		} catch(IllegalArgumentException e) {
+			Assert.fail();
+		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
+			e.printStackTrace();
+		}
 	}
 	
 	@SmallTest
 	public void testAttributeName() {
+		try {
+		GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
 		Assert.assertEquals(genericAttribute.getName(), attributeName);
+		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
+		}
+		
 	}
 	
 	@SmallTest
 	public void testCreateAttributeWithNullName() {
 		try {
-			GenericAttribute genericAttribute = new GenericAttributeFactory(null).createAttribute(attributeValue);
+			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(null, attributeValue);
 			Assert.fail("Expected IllegalArgumentException");
-		} catch(IllegalArgumentException e) {
+		} catch(IllegalArgumentException ex) {
+			
+		} catch(InvalidAttributeValueException e) {
 			
 		}
 	}
@@ -54,16 +85,20 @@ public class GenericAttributeTest extends TestCase {
 	@SmallTest
 	public void testStartVerificationWithoutCallback() {
 		try {
+			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
 			genericAttribute.startVerification(null);
 			Assert.fail("Expected UnsupportedOperationException");
 		} catch (UnsupportedOperationException e) {
 			
+		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
 		}
 	}
 	
 	@SmallTest
 	public void testStartVerificationWithCallback() {
 		try {
+			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
 			genericAttribute.startVerification(new InitializeVerificationCallback() {
 
 				@Override
@@ -80,12 +115,15 @@ public class GenericAttributeTest extends TestCase {
 			Assert.fail("Expected UnsupportedOperationException");
 		} catch (UnsupportedOperationException e) {
 			
+		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
 		}
 	}
 	
 	@SmallTest
 	public void testCompleteVerification() {
 		try {
+			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
 			genericAttribute.completeVerification("1234", new CompleteVerificationCallback() {
 
 				@Override
@@ -103,7 +141,8 @@ public class GenericAttributeTest extends TestCase {
 			});
 			Assert.fail("Expected UnsupportedOperationException");
 		} catch(UnsupportedOperationException e) {
-			
+		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
 		}
 	}
 }

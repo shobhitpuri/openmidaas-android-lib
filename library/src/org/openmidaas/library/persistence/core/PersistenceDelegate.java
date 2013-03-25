@@ -17,10 +17,25 @@ package org.openmidaas.library.persistence.core;
 
 import org.openmidaas.library.model.core.PersistenceCallback;
 
+/**
+ * Interface that persists data of type T and
+ * notifies whether persistence was successful via
+ * the persistence callback
+ * @param <T> - the type of object to persist
+ */
 public interface PersistenceDelegate<T> {
 
-	public void saveAttribute(T data, PersistenceCallback callback);
+	/**
+	 * This method saves the data of type T.
+	 * @param data - the data to save
+	 * @param callback - the persistence callback
+	 */
+	public void save(T data, PersistenceCallback callback);
 	
-	public void deleteAttribute(T data, PersistenceCallback callback);
-
+	/**
+	 * This method deletes the data of type T.
+	 * @param data - the data to delete
+	 * @param callback - the persistence callback
+	 */
+	public void delete(T data, PersistenceCallback callback);
 }

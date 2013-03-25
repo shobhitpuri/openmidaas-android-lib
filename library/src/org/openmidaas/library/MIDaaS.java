@@ -21,10 +21,11 @@ import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.DeviceIdAuthentication;
-import org.openmidaas.library.model.DeviceToken;
+import org.openmidaas.library.model.DeviceAttribute;
 import org.openmidaas.library.model.core.DeviceRegistration;
 import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.InitializationCallback;
+import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
@@ -90,7 +91,7 @@ public final class MIDaaS{
 		AttributePersistenceCoordinator.getDeviceAttribute(new DeviceTokenCallback() {
 
 			@Override
-			public void onSuccess(List<DeviceToken> list) {
+			public void onSuccess(List<DeviceAttribute> list) {
 				if (list.isEmpty()) {
 					DeviceRegistration registration = new DeviceRegistration(new DeviceIdAuthentication());
 					registration.registerDevice(initCallback);
@@ -98,6 +99,11 @@ public final class MIDaaS{
 					initCallback.onSuccess();
 				}
 				
+			}
+
+			@Override
+			public void onError(MIDaaSException exception) {
+				initCallback.onError(exception);
 			}
 			
 		});	

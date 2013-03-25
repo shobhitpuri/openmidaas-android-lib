@@ -15,8 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
-import org.openmidaas.library.model.DeviceToken;
+import org.openmidaas.library.model.DeviceAttribute;
 
-public abstract class DeviceTokenCallback extends AttributeDataCallback<DeviceToken>{
+public abstract class DeviceTokenCallback extends AttributeDataCallback<DeviceAttribute>{
 
 }

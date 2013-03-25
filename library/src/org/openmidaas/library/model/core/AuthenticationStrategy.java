@@ -15,8 +15,18 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
+/**
+ * Implement this interface to use your
+ * specific authentication strategy.
+ */
 public interface AuthenticationStrategy {
 	
+	/**
+	 * This method performs the actual authentication and 
+	 * returns the result via the callback handler. 
+	 * Make sure that this method is thread safe.
+	 * @param callback - the authentication callback handler. 
+	 */
 	public void performAuthentication(AuthenticationCallback callback);
 	
 }

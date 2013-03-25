@@ -20,6 +20,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.core.GenericDataCallback;
@@ -37,7 +38,7 @@ import android.test.suitebuilder.annotation.SmallTest;
  * persist the data, i.e., the AttributeDBPersistenceDelegate. 
  */
 public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase {
-	
+	private static final String TEST_NAME 	 = "test";
 	private static final String TEST_VALUE_1 = "TEST_VALUE_1";
 	private static final String TEST_VALUE_2 = "TEST_VALUE_2";
 	private static final String TEST_VALUE_3 = "TEST_VALUE_3";
@@ -45,7 +46,8 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	private boolean mNotification = false;
 	private Context mContext;
 	// create a generic attribute of type "test"
-	private GenericAttributeFactory factory = new GenericAttributeFactory("test");
+	
+	private GenericAttributeFactory factory = AttributeFactory.createGenericAttributeFactory();
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
 		MIDaaS.setContext(mContext);
@@ -56,7 +58,7 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	public void testUpdate() throws Exception {
 		mContext.deleteDatabase("attributes.db");
 		final CountDownLatch mLatch = new CountDownLatch(1);
-		GenericAttribute a1 = factory.createAttribute("a1");
+		GenericAttribute a1 = factory.createAttribute(TEST_NAME, "a1");
 		a1.setSignedToken(SIGNED_TOKEN);
 		mNotification = false;
 		AttributePersistenceCoordinator.saveAttribute(a1, new PersistenceCallback() {
@@ -78,6 +80,12 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 							}
 						}
 					}
+
+					@Override
+					public void onError(MIDaaSException exception) {
+						// TODO Auto-generated method stub
+						
+					}
 				});
 			}
 
@@ -94,7 +102,7 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	@SmallTest
 	public void testDelete() throws Exception {
 		mContext.deleteDatabase("attributes.db");
-		GenericAttribute a1 = factory.createAttribute("1");
+		GenericAttribute a1 = factory.createAttribute(TEST_NAME, "a1");
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		mNotification = false;
 		AttributePersistenceCoordinator.removeAttribute(a1, new PersistenceCallback() {
@@ -118,6 +126,7 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	@SmallTest
 	public void testSaveAndRetrieval() throws Exception {
 		// store the following values that are of type "test"
+		factory.setAttributeName(TEST_NAME);
 		GenericAttribute a1 = factory.createAttribute("TEST_VALUE_1");
 		GenericAttribute a2 = factory.createAttribute("TEST_VALUE_2");
 		GenericAttribute a3 = factory.createAttribute("TEST_VALUE_3");
@@ -135,6 +144,11 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 					}
 				}
 				mLatch.countDown();
+			}
+
+			@Override
+			public void onError(MIDaaSException exception) {
+				
 			}
 		});
 		mLatch.await();
