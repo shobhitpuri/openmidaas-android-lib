@@ -15,12 +15,19 @@
  ******************************************************************************/
 package org.openmidaas.library;
 
+import java.util.List;
+
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.DeviceIdAuthentication;
+import org.openmidaas.library.model.DeviceToken;
 import org.openmidaas.library.model.core.DeviceRegistration;
+import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.InitializationCallback;
+import org.openmidaas.library.model.core.PersistenceCallback;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -63,14 +70,7 @@ public final class MIDaaS{
 		}
 	}
 	
-	private static boolean isAlreadyRegistered() {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-		if (prefs.contains("REGISTERED_KEY_NAME")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+	
 	
 	public static Context getContext() {
 		return mContext;
@@ -84,16 +84,23 @@ public final class MIDaaS{
 	 * @param context - the Android context. 
 	 * @param initCallback - the Initialization callback. 
 	 */
-	public static void initialize(Context context, InitializationCallback initCallback) {
+	public static void initialize(Context context, final InitializationCallback initCallback) {
 		mContext = context.getApplicationContext();
 		ConnectionManager.setNetworkFactory(new AndroidNetworkFactory(Constants.AVP_SB_BASE_URL));
-		if (isAlreadyRegistered()) {
-			initCallback.onSuccess();
-			return;
-		} else {
-			DeviceRegistration registration = new DeviceRegistration(new DeviceIdAuthentication());
-			registration.registerDevice(initCallback);
-		}
+		AttributePersistenceCoordinator.getDeviceAttribute(new DeviceTokenCallback() {
+
+			@Override
+			public void onSuccess(List<DeviceToken> list) {
+				if (list.isEmpty()) {
+					DeviceRegistration registration = new DeviceRegistration(new DeviceIdAuthentication());
+					registration.registerDevice(initCallback);
+				} else {
+					initCallback.onSuccess();
+				}
+				
+			}
+			
+		});	
 	}
 	
 	

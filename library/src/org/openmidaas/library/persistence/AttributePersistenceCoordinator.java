@@ -17,6 +17,7 @@ package org.openmidaas.library.persistence;
 
 
 import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.EmailDataCallback;
 import org.openmidaas.library.model.core.GenericDataCallback;
 import org.openmidaas.library.model.core.PersistenceCallback;
@@ -40,6 +41,10 @@ public class AttributePersistenceCoordinator {
 	
 	public static void getGenericAttributes(String attributeName, GenericDataCallback callback) {
 		mDelegate.getGenerics(attributeName, callback);
+	}
+	
+	public static void getDeviceAttribute(DeviceTokenCallback callback){
+		mDelegate.getDeviceToken(callback);
 	}
 
 }
