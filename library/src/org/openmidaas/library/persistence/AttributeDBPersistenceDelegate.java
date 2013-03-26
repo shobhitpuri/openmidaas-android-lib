@@ -126,15 +126,22 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 		}
 	}
 	
-	
+	/**
+	 * Helper function to get content values object from attribute data. 
+	 * @param data -  the attribute data to persist. 
+	 * @return the content values object that is eventually stored in the DB.
+	 */
 	private ContentValues getContentValuesForAttribute(AbstractAttribute<?> data) {
 		ContentValues contentValues = new ContentValues();
-		contentValues.put("name", data.getName());
-		contentValues.put("value", data.getValue().toString());
+		contentValues.put(AttributeEntry.COLUMN_NAME_NAME, data.getName());
+		contentValues.put(AttributeEntry.COLUMN_NAME_VALUE, data.getValue().toString());
+		contentValues.put(AttributeEntry.COLUMN_NAME_TOKEN, data.getSignedToken());
+		contentValues.put(AttributeEntry.COLUMN_NAME_PENDING, data.getPendingData());
 		if(data.getSignedToken() == null) {
-			contentValues.putNull("token");
-		} else {
-			contentValues.put("token", data.getSignedToken());
+			contentValues.putNull(AttributeEntry.COLUMN_NAME_TOKEN);
+		} 
+		if(data.getPendingData() == null) {
+			contentValues.putNull(AttributeEntry.COLUMN_NAME_PENDING);
 		}
 		return contentValues;
 	}

@@ -18,7 +18,6 @@ package org.openmidaas.library.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmidaas.library.common.network.AVSServer;
-import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
@@ -34,7 +33,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  * collected via a GUI to the server for verification. 
  * The result is returned via a callback.
  */
-public class CompleteEmailVerification implements CompleteAttributeVerificationDelegate{
+public class CompleteEmailVerification implements CompleteAttributeVerificationDelegate<EmailAttribute>{
 
 	/**
 	 * This methods is an implementation of the interface that 
@@ -43,7 +42,7 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 	 * is send back to the caller via a callback.
 	 */
 	@Override
-	public void completeVerification(final AbstractAttribute<?> attribute, final String code, final CompleteVerificationCallback completeVerificationCallback) {
+	public void completeVerification(final EmailAttribute attribute, final String code, final CompleteVerificationCallback completeVerificationCallback) {
 		attribute.performAuthentication(new AuthenticationCallback() {
 
 			@Override
@@ -53,6 +52,7 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 					postData.put("attribute", attribute.getAttributeAsJSONObject());
 					postData.put("deviceToken", deviceId);
 					postData.put("code", code);
+					postData.put("verificationToken", attribute.getPendingData());
 				} catch (JSONException e1) {
 					completeVerificationCallback.onError(null);
 				}

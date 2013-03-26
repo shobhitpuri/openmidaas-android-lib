@@ -32,6 +32,28 @@ public class GenericAttributeTest extends TestCase {
 	public void setUp() {	
 	}
 	
+	@SmallTest
+	public void testPendingDataIsNull() {
+		try {
+			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			Assert.assertEquals(null, genericAttribute.getPendingData());
+			} catch (InvalidAttributeValueException e) {
+				Assert.fail();
+			}
+	}
+	
+	@SmallTest
+	public void testSetPendingDataThrowsException() {
+		try {
+			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			genericAttribute.setPendingData("blob");
+			Assert.fail();
+			} catch (InvalidAttributeValueException e) {
+				Assert.fail();
+			} catch (UnsupportedOperationException ex) {
+				
+			}
+	}
 	
 	@SmallTest
 	public void testDeprecatedMethodCallWithNameNotSet() {

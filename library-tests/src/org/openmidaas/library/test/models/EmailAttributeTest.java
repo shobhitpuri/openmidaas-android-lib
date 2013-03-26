@@ -57,13 +57,36 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			if(!isInit) {
 				mContext = getInstrumentation().getContext();
 				MIDaaS.setContext(mContext);
-				emailAttribute =  AttributeFactory.createEmailAttributeFactory().createAttribute("rob@gmail.com");
 				mContext.deleteDatabase("attributes.db");
+				emailAttribute =  AttributeFactory.createEmailAttributeFactory().createAttribute("rob@gmail.com");
+			
 				mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
 				ConnectionManager.setNetworkFactory(mockFactory);
 				isInit = true;
 			}
 		}
+		
+		@SmallTest
+		public void testSetPendingData() {
+			try {
+				emailAttribute.setPendingData("blob");
+			} catch(Exception e) {
+				Assert.fail();
+			}
+			
+		}
+		
+		@SmallTest
+		public void testGetPendingData() {
+			String data = "blob";
+			try {
+				emailAttribute.setPendingData(data);
+				Assert.assertEquals(data, emailAttribute.getPendingData());
+			} catch(Exception e) {
+				Assert.fail();
+			}
+		}
+		
 		
 		@SmallTest
 		public void testIsVerifiableIsSet() {
@@ -116,12 +139,16 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			}
 		}
 		
-		
+		@MediumTest
+		public void testEmailVerification() throws Exception {
+			initializeEmailVerificationSuccess();
+			completeEmailVerificationSuccess();
+		}
 		
 		private void initializeEmailVerificationSuccess() throws Exception {
 			final CountDownLatch mLatch = new CountDownLatch(1);
-			mContext.deleteDatabase("attributes.db");
-			emailAttribute.setValue("rob@gmail.com");
+			
+			//emailAttribute = AttributeFactory.createEmailAttributeFactory().createAttribute("rob@gmail.com");
 			emailAttribute.startVerification(new InitializeVerificationCallback() {
 
 				@Override
@@ -142,19 +169,13 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			Assert.assertTrue(notificationSuccess);
 		}
 		
-		@MediumTest
-		public void testEmailVerification() throws Exception {
-			initializeEmailVerificationSuccess();
-			completeEmailVerificationSuccess();
-		}
+		
 		
 		private void completeEmailVerificationSuccess() throws Exception {
 			final CountDownLatch mLatch = new CountDownLatch(1);
 			MIDaaS.setContext(mContext);
 			mockFactory.setFilename("complete_email_ver_success.json");
 			notificationSuccess = false;
-			//mContext.deleteDatabase("attributes.db");
-			//emailAttribute.setValue("rob@gmail.com");
 			emailAttribute.completeVerification("1234", new CompleteVerificationCallback() {
 
 				@Override

@@ -18,12 +18,13 @@ package org.openmidaas.library.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmidaas.library.common.network.AVSServer;
-import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.model.core.PersistenceCallback;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -31,7 +32,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  * Class that implements the delegate that initializes
  * attribute verification. 
  */
-public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate{
+public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate<EmailAttribute>{
 
 	
 	/**
@@ -40,7 +41,7 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 	 * the caller. 
 	 */
 	@Override
-	public void startVerification(final AbstractAttribute<?> attribute,
+	public void startVerification(final EmailAttribute attribute,
 			final InitializeVerificationCallback initVerificationCallback) {
 		attribute.performAuthentication(new AuthenticationCallback() {
 
@@ -54,7 +55,26 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 						
 						@Override
 						public void onSuccess(String response) { 
-							initVerificationCallback.onSuccess();
+							if((!(response.isEmpty())) ) {
+								attribute.setPendingData(response);
+								AttributePersistenceCoordinator.saveAttribute(attribute, new PersistenceCallback() {
+
+									@Override
+									public void onSuccess() {
+										initVerificationCallback.onSuccess();
+									}
+
+									@Override
+									public void onError(
+											MIDaaSException exception) {
+										initVerificationCallback.onError(exception);
+									}
+									
+								});
+								
+							} else {
+								initVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+							}
 						}
 						
 						@Override

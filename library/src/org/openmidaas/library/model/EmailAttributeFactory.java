@@ -42,8 +42,6 @@ public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttr
 	public EmailAttribute createAttribute(String email) throws InvalidAttributeValueException {
 		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication());
 		emailAttribute.setValue(email);
-		// saves attribute to the DB in background. 
-		AttributePersistenceCoordinator.saveAttribute(emailAttribute, null);
 		return emailAttribute;
 	}
 }

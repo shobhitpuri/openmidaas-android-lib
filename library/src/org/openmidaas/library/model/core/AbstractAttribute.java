@@ -48,6 +48,8 @@ public abstract class AbstractAttribute<T> {
 	
 	protected String mSignedToken = null;
 	
+	protected String mPendingData = null;
+	
 	/**
 	 * Returns the attribute name
 	 * @return attribute name
@@ -88,6 +90,14 @@ public abstract class AbstractAttribute<T> {
 	
 	public void setId(long id) {
 		this.mId = id;
+	}
+	
+	public void setPendingData(String data) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("Cannot set pending data for a unverifiable attribute.");
+	}
+	
+	public String getPendingData() {
+		return mPendingData;
 	}
 	
 	/**

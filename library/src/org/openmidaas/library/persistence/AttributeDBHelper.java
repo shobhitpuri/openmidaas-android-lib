@@ -21,7 +21,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Helper class required by SQLite
- * to do db operations.
+ * to do DB-related operations.
  */
 public class AttributeDBHelper extends SQLiteOpenHelper{
 
@@ -61,7 +61,8 @@ public class AttributeDBHelper extends SQLiteOpenHelper{
 				AttributeEntry._ID 					+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
 				AttributeEntry.COLUMN_NAME_NAME 	+ " TEXT NOT NULL, " +
 				AttributeEntry.COLUMN_NAME_VALUE 	+ " TEXT UNIQUE, " +
-				AttributeEntry.COLUMN_NAME_TOKEN 	+ " TEXT);");
+				AttributeEntry.COLUMN_NAME_TOKEN 	+ " TEXT, " + 
+				AttributeEntry.COLUMN_NAME_PENDING 	+ " TEXT);");
 	}
 
 	@Override

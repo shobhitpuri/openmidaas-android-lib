@@ -13,22 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.model.core;
 
-/**
- * Delegate class that completes an attribute verification. 
- * Verification is specific to the type of attribute. For 
- * example, an email attribute will implement this class. 
- * For now it is assumed that the verification process uses a 
- * one-time code. 
- */
-public interface CompleteAttributeVerificationDelegate<T extends AbstractAttribute<?>> {
+package org.openmidaas.library.model;
+
+import org.openmidaas.library.model.core.AuthenticationStrategy;
+
+public class Authentication {
+	
+	private AuthenticationStrategy mAuthenticationStrategy;
+	
+	private Authentication() {}
+	
+	private static Authentication mInstance = null;
+	
+	public static synchronized Authentication getInstance() {
+		if(mInstance == null) {
+			mInstance = new Authentication();
+		}
+		return mInstance;
+	}
+	
+	public void setAuthenticationStrategy(AuthenticationStrategy strategy) {
+		mAuthenticationStrategy = strategy;
+	}
 	
 	/**
-	 * This method completes the verification 
-	 * @param pin
-	 * @param callback
+	 * Blocking operation that returns an access token. 
+	 * @return
 	 */
-	public void completeVerification(T attribute, String pin, CompleteVerificationCallback callback);
-
+	public String getAccessToken() {
+		return null;
+	}
 }
