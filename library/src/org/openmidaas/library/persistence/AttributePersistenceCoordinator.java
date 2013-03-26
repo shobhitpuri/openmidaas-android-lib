@@ -22,14 +22,15 @@ import org.openmidaas.library.model.core.EmailDataCallback;
 import org.openmidaas.library.model.core.GenericDataCallback;
 import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
-import org.openmidaas.library.persistence.core.PersistenceDelegate;
 
 public class AttributePersistenceCoordinator {
 	
-	private static AttributePersistenceDelegate mDelegate = AttributeDBPersistenceDelegate.getInstance();
+	private static AttributePersistenceDelegate mDelegate = null;
 	
-	static void setPersistenceDelegate(AttributePersistenceDelegate delegate) {
-		mDelegate = delegate;
+	public static void setPersistenceDelegate(AttributePersistenceDelegate delegate) {
+		if(mDelegate == null) {
+			mDelegate = delegate;
+		}
 	}
 	
 	public static void removeAttribute(AbstractAttribute<?> attribute, PersistenceCallback callback) {

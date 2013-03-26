@@ -19,7 +19,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.model.DeviceIdAuthentication;
+import org.openmidaas.library.model.Level0Authentication;
 import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
 
@@ -40,7 +40,7 @@ public class AuthenticationStrategyTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testDeviceIDAuthenticationStrategy() throws Exception {
 		final CountDownLatch mLatch = new CountDownLatch(1);
-		DeviceIdAuthentication deviceAuth = new DeviceIdAuthentication();
+		Level0Authentication deviceAuth = new Level0Authentication();
 		deviceAuth.performAuthentication(new AuthenticationCallback() {
 
 			@Override

@@ -33,6 +33,8 @@ import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.test.network.MockTransportFactory;
 
 import com.google.mockwebserver.MockResponse;
@@ -58,6 +60,7 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 				mContext = getInstrumentation().getContext();
 				MIDaaS.setContext(mContext);
 				mContext.deleteDatabase("attributes.db");
+				AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
 				emailAttribute =  AttributeFactory.createEmailAttributeFactory().createAttribute("rob@gmail.com");
 			
 				mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");

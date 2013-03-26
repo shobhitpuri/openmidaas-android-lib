@@ -21,10 +21,12 @@ import junit.framework.Assert;
 
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.network.ConnectionManager;
-import org.openmidaas.library.model.DeviceIdAuthentication;
+import org.openmidaas.library.model.Level0Authentication;
 import org.openmidaas.library.model.core.DeviceRegistration;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.test.network.MockTransportFactory;
 
 import android.content.Context;
@@ -41,6 +43,7 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 		mContext = getInstrumentation().getContext();
 		mockFactory = new MockTransportFactory(mContext, "device_reg_success.json");
 		MIDaaS.setContext(mContext);
+		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
 		ConnectionManager.setNetworkFactory(mockFactory);
 	}
 	
@@ -48,7 +51,7 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 	public void testRegistrationSuccess() throws Exception {
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		
-		DeviceRegistration deviceRegistration = new DeviceRegistration(new DeviceIdAuthentication());
+		DeviceRegistration deviceRegistration = new DeviceRegistration(new Level0Authentication());
 		deviceRegistration.registerDevice(new InitializationCallback() {
 
 			@Override
@@ -72,7 +75,7 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 	public void testRegistrationFailure() throws Exception {
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		mockFactory.setFilename("device_reg_fail.json");
-		DeviceRegistration deviceRegistration = new DeviceRegistration(new DeviceIdAuthentication());
+		DeviceRegistration deviceRegistration = new DeviceRegistration(new Level0Authentication());
 		deviceRegistration.registerDevice(new InitializationCallback() {
 
 			

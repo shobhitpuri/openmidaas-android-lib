@@ -16,15 +16,29 @@
 
 package org.openmidaas.library.model;
 
+import java.util.List;
+
+import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.AuthenticationStrategy;
+import org.openmidaas.library.model.core.DeviceTokenCallback;
+import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 public class Authentication {
 	
 	private AuthenticationStrategy mAuthenticationStrategy;
 	
-	private Authentication() {}
+	private String mAccessToken;
+	
+	private final Object LOCK = new Object(){};
+	
+	private Authentication() {
+		mAccessToken = null;
+	}
 	
 	private static Authentication mInstance = null;
+	
+	private Thread accessTokenThread = new Thread();
 	
 	public static synchronized Authentication getInstance() {
 		if(mInstance == null) {
@@ -39,9 +53,43 @@ public class Authentication {
 	
 	/**
 	 * Blocking operation that returns an access token. 
-	 * @return
+	 * @return an access token
 	 */
-	public String getAccessToken() {
-		return null;
-	}
+//	public String getAccessToken() {
+//	}
+//	
+//	private void getSubjectToken() {
+//		AttributePersistenceCoordinator.getDeviceAttribute(new DeviceTokenCallback() {
+//
+//			@Override
+//			public void onSuccess(List<DeviceAttribute> list) {
+//				
+//			}
+//
+//			@Override
+//			public void onError(MIDaaSException exception) {
+//				
+//			}
+//			
+//		});
+//	}
+//	
+//	private String getDeviceAuthenticationToken() {
+//		mAuthenticationStrategy.performAuthentication(new AuthenticationCallback() {
+//
+//			@Override
+//			public void onSuccess(String deviceId) {
+//				
+//			}
+//
+//			@Override
+//			public void onError(MIDaaSException exception) {
+//				
+//			}
+//			
+//		});
+//	}
+
+	
+	
 }

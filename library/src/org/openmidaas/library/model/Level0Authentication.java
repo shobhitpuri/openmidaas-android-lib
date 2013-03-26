@@ -23,7 +23,7 @@ import org.openmidaas.library.model.core.MIDaaSException;
 
 import android.provider.Settings.Secure;
 
-public class DeviceIdAuthentication implements AuthenticationStrategy{
+public class Level0Authentication implements AuthenticationStrategy{
 
 	@Override
 	public void performAuthentication(

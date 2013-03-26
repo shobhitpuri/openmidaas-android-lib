@@ -18,7 +18,6 @@ package org.openmidaas.library.model;
 import org.openmidaas.library.model.core.AbstractAttributeFactory;
 import org.openmidaas.library.persistence.AttributeEntry;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-
 import android.database.Cursor;
 
 /**

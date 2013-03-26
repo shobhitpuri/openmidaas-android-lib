@@ -31,7 +31,7 @@ public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttr
 	
 	@Override
 	public EmailAttribute createAttributeFromCursor(Cursor cursor) throws InvalidAttributeValueException {
-		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication());
+		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new Level0Authentication());
 		emailAttribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributeEntry._ID))));
 		emailAttribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_TOKEN)));
 		emailAttribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
@@ -40,7 +40,7 @@ public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttr
 	
 	@Override
 	public EmailAttribute createAttribute(String email) throws InvalidAttributeValueException {
-		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new DeviceIdAuthentication());
+		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification(), new Level0Authentication());
 		emailAttribute.setValue(email);
 		return emailAttribute;
 	}

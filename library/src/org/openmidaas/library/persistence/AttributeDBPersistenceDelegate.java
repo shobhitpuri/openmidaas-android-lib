@@ -46,18 +46,9 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 	private AttributeDBHelper dbHelper;
 	
 	private final int MAX_RETRIES = 3;
-
-	private static AttributeDBPersistenceDelegate mInstance = null;
 	
-	private AttributeDBPersistenceDelegate(){
+	public AttributeDBPersistenceDelegate(){
 		dbHelper = AttributeDBHelper.getInstance();
-	}
-	
-	public static synchronized AttributeDBPersistenceDelegate getInstance() {
-		if (mInstance == null) {
-			return new AttributeDBPersistenceDelegate();
-		}
-		return mInstance;
 	}
 	
 	public void close() {

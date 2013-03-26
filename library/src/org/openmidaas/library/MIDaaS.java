@@ -20,13 +20,14 @@ import java.util.List;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
-import org.openmidaas.library.model.DeviceIdAuthentication;
+import org.openmidaas.library.model.Level0Authentication;
 import org.openmidaas.library.model.DeviceAttribute;
 import org.openmidaas.library.model.core.DeviceRegistration;
 import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.model.core.PersistenceCallback;
+import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 import android.content.Context;
@@ -88,12 +89,13 @@ public final class MIDaaS{
 	public static void initialize(Context context, final InitializationCallback initCallback) {
 		mContext = context.getApplicationContext();
 		ConnectionManager.setNetworkFactory(new AndroidNetworkFactory(Constants.AVP_SB_BASE_URL));
+		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
 		AttributePersistenceCoordinator.getDeviceAttribute(new DeviceTokenCallback() {
 
 			@Override
 			public void onSuccess(List<DeviceAttribute> list) {
 				if (list.isEmpty()) {
-					DeviceRegistration registration = new DeviceRegistration(new DeviceIdAuthentication());
+					DeviceRegistration registration = new DeviceRegistration(new Level0Authentication());
 					registration.registerDevice(initCallback);
 				} else {
 					initCallback.onSuccess();
