@@ -64,6 +64,12 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 			public void onError(MIDaaSException exception) {
 				notificationSuccess = false;
 				mLatch.countDown();
+			}
+
+			@Override
+			public void onRegistering() {
+				// TODO Auto-generated method stub
+				
 			}	
 		});
 		
@@ -90,6 +96,12 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 			public void onSuccess() {
 				notificationSuccess = true;
 				mLatch.countDown();
+			}
+
+			@Override
+			public void onRegistering() {
+				// TODO Auto-generated method stub
+				
 			}	
 		});
 		
@@ -116,6 +128,12 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 			public void onSuccess() {
 				notificationSuccess = true;
 				mLatch.countDown();
+			}
+
+			@Override
+			public void onRegistering() {
+				// TODO Auto-generated method stub
+				
 			}	
 		});
 		

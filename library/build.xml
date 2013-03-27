@@ -89,10 +89,11 @@
     <!-- version-tag: 1 -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
     <target name="jar" depends="debug">
+	<echo level="info">Generating JAR file...</echo>
 	<jar
 		destfile="bin/openMIDaaS.jar"
-		basedir="bin/classes"
-	/>
+		basedir="bin/classes">
+		<zipgroupfileset dir="libs/" excludes="android-support-v4.jar" includes="*.jar"/>
+	</jar>
    </target>
-
 </project>

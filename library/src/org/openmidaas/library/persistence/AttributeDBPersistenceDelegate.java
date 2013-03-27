@@ -55,49 +55,81 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 		dbHelper.close();
 	}
 	
+	/*
+	 * Helper interface to get the database object on a
+	 * separate thread. 
+	 */
+	private interface DBOpenerCallback {
+		
+		public void onSuccess(SQLiteDatabase database);
+		
+		public void onError(Exception e);
+	}
+	
+	/**
+	 * Opens the database on a separate thread as per: 
+	 * http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#getReadableDatabase()
+	 * @param callback
+	 */
+	private void openDatabase(final DBOpenerCallback callback) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					database = dbHelper.getWritableDatabase();
+					callback.onSuccess(database);
+				} catch(Exception e) {
+					callback.onError(e);
+				}
+			}
+		}).start();
+	}
+	
 	@Override
 	public void save(final AbstractAttribute<?> data, final PersistenceCallback callback) {
-		try {
-			database = dbHelper.getWritableDatabase();
-			// id we don't have a PK, create a row in the db.
-			if(data.getId() == -1) {
+			try {
 				
-			
-				long rowId = database.insertOrThrow(AttributeEntry.TABLE_NAME, null, getContentValuesForAttribute(data));
-				if(rowId == -1) {
-					// error saving record;
-					// TODO: Retry save. keep a watchdog timer/check on the status of the operation
-				} else {
-					data.setId(rowId);
-					if(callback != null) {
-						callback.onSuccess();
-						
+				database = dbHelper.getWritableDatabase();
+				// id we don't have a PK, create a row in the db.
+				if(data.getId() == -1) {
+					
+				
+					long rowId = database.insertOrThrow(AttributeEntry.TABLE_NAME, null, getContentValuesForAttribute(data));
+					if(rowId == -1) {
+						// error saving record;
+						// TODO: Retry save. keep a watchdog timer/check on the status of the operation
+					} else {
+						data.setId(rowId);
+						if(callback != null) {
+							callback.onSuccess();
+							
+						}
 					}
 				}
-			}
-			// id we have a PK, update the corresponding row. 
-			else {
-				
-				int v = database.update(AttributeEntry.TABLE_NAME, getContentValuesForAttribute(data), "_id =" + data.getId(), null);
-				// only 1 row should be updated!
-				if (v == 1) {
-					if (callback != null) {
-						callback.onSuccess();
+				// id we have a PK, update the corresponding row. 
+				else {
+					
+					int v = database.update(AttributeEntry.TABLE_NAME, getContentValuesForAttribute(data), "_id =" + data.getId(), null);
+					// only 1 row should be updated!
+					if (v == 1) {
+						if (callback != null) {
+							callback.onSuccess();
+						}
 					}
 				}
+			} catch (SQLiteConstraintException exception) {
+				if(callback != null) {
+					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_ALREADY_EXISTS));
+				}
+			} catch(Exception e) {
+				if(callback != null) {
+					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+				}
 			}
-		} catch (SQLiteConstraintException exception) {
-			if(callback != null) {
-				callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_ALREADY_EXISTS));
+			finally {
+				dbHelper.close();
 			}
-		} catch(Exception e) {
-			if(callback != null) {
-				callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
-			}
-		}
-		finally {
-			dbHelper.close();
-		}
 	}
 
 	@Override
@@ -187,6 +219,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 	}
 	
 	private Cursor fetchByAttributeName(String name) {
+		
 		database = dbHelper.getWritableDatabase();
 		Cursor cursor = database.query(AttributeEntry.TABLE_NAME, null, "name=?", new String[] { name }, null, null, null);
 		return cursor;

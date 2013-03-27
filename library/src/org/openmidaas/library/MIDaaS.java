@@ -95,6 +95,7 @@ public final class MIDaaS{
 			@Override
 			public void onSuccess(List<DeviceAttribute> list) {
 				if (list.isEmpty()) {
+					initCallback.onRegistering();
 					DeviceRegistration registration = new DeviceRegistration(new Level0Authentication());
 					registration.registerDevice(initCallback);
 				} else {

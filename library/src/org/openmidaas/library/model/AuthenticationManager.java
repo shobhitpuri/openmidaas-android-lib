@@ -17,6 +17,10 @@
 package org.openmidaas.library.model;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.AuthenticationStrategy;
@@ -24,72 +28,34 @@ import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
-public class Authentication {
+public class AuthenticationManager  {
 	
 	private AuthenticationStrategy mAuthenticationStrategy;
 	
-	private String mAccessToken;
+	private AccessToken mAccessToken;
 	
 	private final Object LOCK = new Object(){};
 	
-	private Authentication() {
+	private ExecutorService executor;
+	
+	private AuthenticationManager() {
 		mAccessToken = null;
+		executor = Executors.newSingleThreadExecutor();
 	}
 	
-	private static Authentication mInstance = null;
+	private static AuthenticationManager mInstance = null;
 	
 	private Thread accessTokenThread = new Thread();
 	
-	public static synchronized Authentication getInstance() {
+	public static synchronized AuthenticationManager getInstance() {
 		if(mInstance == null) {
-			mInstance = new Authentication();
+			mInstance = new AuthenticationManager();
+			
 		}
 		return mInstance;
 	}
 	
-	public void setAuthenticationStrategy(AuthenticationStrategy strategy) {
+	public void setDeviceAuthenticationStrategy(AuthenticationStrategy strategy) {
 		mAuthenticationStrategy = strategy;
 	}
-	
-	/**
-	 * Blocking operation that returns an access token. 
-	 * @return an access token
-	 */
-//	public String getAccessToken() {
-//	}
-//	
-//	private void getSubjectToken() {
-//		AttributePersistenceCoordinator.getDeviceAttribute(new DeviceTokenCallback() {
-//
-//			@Override
-//			public void onSuccess(List<DeviceAttribute> list) {
-//				
-//			}
-//
-//			@Override
-//			public void onError(MIDaaSException exception) {
-//				
-//			}
-//			
-//		});
-//	}
-//	
-//	private String getDeviceAuthenticationToken() {
-//		mAuthenticationStrategy.performAuthentication(new AuthenticationCallback() {
-//
-//			@Override
-//			public void onSuccess(String deviceId) {
-//				
-//			}
-//
-//			@Override
-//			public void onError(MIDaaSException exception) {
-//				
-//			}
-//			
-//		});
-//	}
-
-	
-	
 }
