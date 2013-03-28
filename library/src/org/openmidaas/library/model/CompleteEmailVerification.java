@@ -17,8 +17,8 @@ package org.openmidaas.library.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.common.network.AVSServer;
-import org.openmidaas.library.model.core.AuthenticationCallback;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
@@ -43,7 +43,7 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 	 */
 	@Override
 	public void completeVerification(final EmailAttribute attribute, final String code, final CompleteVerificationCallback completeVerificationCallback) {
-		attribute.performAuthentication(new AuthenticationCallback() {
+		attribute.performAuthentication(new DeviceAuthenticationCallback() {
 
 			@Override
 			public void onSuccess(String deviceId) {

@@ -19,8 +19,8 @@ import java.util.concurrent.CountDownLatch;
 
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.model.Level0Authentication;
-import org.openmidaas.library.model.core.AuthenticationCallback;
+import org.openmidaas.library.authentication.Level0DeviceAuthentication;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
 
 import android.content.Context;
@@ -40,8 +40,8 @@ public class AuthenticationStrategyTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testDeviceIDAuthenticationStrategy() throws Exception {
 		final CountDownLatch mLatch = new CountDownLatch(1);
-		Level0Authentication deviceAuth = new Level0Authentication();
-		deviceAuth.performAuthentication(new AuthenticationCallback() {
+		Level0DeviceAuthentication deviceAuth = new Level0DeviceAuthentication();
+		deviceAuth.performDeviceAuthentication(new DeviceAuthenticationCallback() {
 
 			@Override
 			public void onSuccess(String deviceId) {
@@ -65,7 +65,7 @@ public class AuthenticationStrategyTest extends InstrumentationTestCase {
 	public void testErrorInAuthenticationCallback() throws Exception {
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		MockAuthenticationStrategy deviceAuth = new MockAuthenticationStrategy();
-		deviceAuth.performAuthentication(new AuthenticationCallback() {
+		deviceAuth.performDeviceAuthentication(new DeviceAuthenticationCallback() {
 
 			@Override
 			public void onSuccess(String deviceId) {

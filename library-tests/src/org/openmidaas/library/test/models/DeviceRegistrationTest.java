@@ -20,8 +20,8 @@ import java.util.concurrent.CountDownLatch;
 import junit.framework.Assert;
 
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.network.ConnectionManager;
-import org.openmidaas.library.model.Level0Authentication;
 import org.openmidaas.library.model.core.DeviceRegistration;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
@@ -51,7 +51,7 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 	public void testRegistrationSuccess() throws Exception {
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		
-		DeviceRegistration deviceRegistration = new DeviceRegistration(new Level0Authentication());
+		DeviceRegistration deviceRegistration = new DeviceRegistration(new Level0DeviceAuthentication());
 		deviceRegistration.registerDevice(new InitializationCallback() {
 
 			@Override
@@ -81,7 +81,7 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 	public void testRegistrationFailure() throws Exception {
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		mockFactory.setFilename("device_reg_fail.json");
-		DeviceRegistration deviceRegistration = new DeviceRegistration(new Level0Authentication());
+		DeviceRegistration deviceRegistration = new DeviceRegistration(new Level0DeviceAuthentication());
 		deviceRegistration.registerDevice(new InitializationCallback() {
 
 			

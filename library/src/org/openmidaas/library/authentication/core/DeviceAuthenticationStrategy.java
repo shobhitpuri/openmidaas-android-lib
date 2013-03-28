@@ -13,29 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.model.core;
+package org.openmidaas.library.authentication.core;
 
-public enum MIDaaSError {
-	ERROR_AUTHENTICATING_DEVICE(100, "There was an error authenticating the device. "),
-	SERVER_ERROR(101, "Error with the attribute server. "),
-	DEVICE_REGISTRATION_ERROR(102, "There as an error with device registration."),
-	ATTRIBUTE_ALREADY_EXISTS(200, "The current attribute already exists. "),
-	DATABASE_ERROR(201, "There was an error with the database");
+
+
+/**
+ * Implement this interface to use your
+ * specific device-authentication strategy.
+ */
+public interface DeviceAuthenticationStrategy {
 	
-	private final int mErrorCode;
+	/**
+	 * This method performs the actual authentication and 
+	 * returns the result via the callback handler. 
+	 * Make sure that this method is thread safe.
+	 * @param callback - the authentication callback handler. 
+	 */
+	public void performDeviceAuthentication(DeviceAuthenticationCallback callback);
 	
-	private final String mErrorMessage;
-	
-	private MIDaaSError(int errorCode, String errorMessage) {
-		this.mErrorCode = errorCode;
-		this.mErrorMessage = errorMessage;
-	}
-	
-	public String getErrorMessage() {
-		return mErrorMessage;
-	}
-	
-	public int getErrorCode() {
-		return mErrorCode;
-	}
 }

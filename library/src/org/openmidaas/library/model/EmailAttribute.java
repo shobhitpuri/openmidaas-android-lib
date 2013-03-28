@@ -17,9 +17,10 @@ package org.openmidaas.library.model;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.model.core.AbstractAttribute;
-import org.openmidaas.library.model.core.AuthenticationCallback;
-import org.openmidaas.library.model.core.AuthenticationStrategy;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
@@ -43,7 +44,7 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	 * @param completeEmailDelegate - the delegate class that completes the email verification process.
 	 */
 	protected EmailAttribute(InitializeAttributeVerificationDelegate initEmailDelegate,
-			CompleteAttributeVerificationDelegate completeEmailDelegate, AuthenticationStrategy authenticationStrategy) {
+			CompleteAttributeVerificationDelegate completeEmailDelegate, DeviceAuthenticationStrategy authenticationStrategy) {
 		mIsVerifiable = true;
 		mName = ATTRIBUTE_NAME;
 		mInitVerificationDelegate = initEmailDelegate;
@@ -87,8 +88,8 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	 * Performs the authentication.
 	 */
 	@Override
-	public void performAuthentication(AuthenticationCallback authenticationcallback) {
-		mAuthenticationStrategy.performAuthentication(authenticationcallback);
+	public void performAuthentication(DeviceAuthenticationCallback authenticationcallback) {
+		mAuthenticationStrategy.performDeviceAuthentication(authenticationcallback);
 	}
 	
 	@Override

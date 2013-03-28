@@ -17,14 +17,17 @@ package org.openmidaas.library;
 
 import java.util.List;
 
+import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
+import org.openmidaas.library.authentication.AuthenticationManager;
+import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
-import org.openmidaas.library.model.Level0Authentication;
 import org.openmidaas.library.model.DeviceAttribute;
 import org.openmidaas.library.model.core.DeviceRegistration;
 import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.InitializationCallback;
+import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
@@ -90,14 +93,19 @@ public final class MIDaaS{
 		mContext = context.getApplicationContext();
 		ConnectionManager.setNetworkFactory(new AndroidNetworkFactory(Constants.AVP_SB_BASE_URL));
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
+		AuthenticationManager.getInstance().setAccessTokenStrategy(new AVSAccessTokenStrategy(new Level0DeviceAuthentication()));
 		AttributePersistenceCoordinator.getDeviceAttribute(new DeviceTokenCallback() {
 
 			@Override
 			public void onSuccess(List<DeviceAttribute> list) {
+				// if list is empty, it means that the device isn't registered. 
 				if (list.isEmpty()) {
 					initCallback.onRegistering();
-					DeviceRegistration registration = new DeviceRegistration(new Level0Authentication());
+					DeviceRegistration registration = new DeviceRegistration(new Level0DeviceAuthentication());
 					registration.registerDevice(initCallback);
+				} else if(list.size() > 1) {
+					// if we have more than one device attribute, we have an error. 
+					initCallback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));
 				} else {
 					initCallback.onSuccess();
 				}

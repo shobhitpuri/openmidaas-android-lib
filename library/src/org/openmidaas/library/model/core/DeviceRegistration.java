@@ -17,6 +17,8 @@ package org.openmidaas.library.model.core;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.DeviceAttribute;
@@ -27,13 +29,13 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class DeviceRegistration {
 	
-	private AuthenticationStrategy mAuthenticationStrategy;
+	private DeviceAuthenticationStrategy mAuthenticationStrategy;
 	
 	private InitializationCallback mInitCallback;
 	
 	private DeviceAttribute deviceToken;
 	
-	public DeviceRegistration(AuthenticationStrategy authenticationStrategy) {
+	public DeviceRegistration(DeviceAuthenticationStrategy authenticationStrategy) {
 		mAuthenticationStrategy = authenticationStrategy;
 		
 	}
@@ -85,7 +87,7 @@ public class DeviceRegistration {
 	}
 	
 	private void authenticateDevice() {
-		mAuthenticationStrategy.performAuthentication(new AuthenticationCallback() {
+		mAuthenticationStrategy.performDeviceAuthentication(new DeviceAuthenticationCallback() {
 
 			@Override
 			public void onSuccess(String deviceId) {

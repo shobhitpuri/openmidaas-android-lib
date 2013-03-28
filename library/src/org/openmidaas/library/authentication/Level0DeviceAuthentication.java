@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.model;
+package org.openmidaas.library.authentication;
 
 import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.model.core.AuthenticationCallback;
-import org.openmidaas.library.model.core.AuthenticationStrategy;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 
 import android.provider.Settings.Secure;
 
-public class Level0Authentication implements AuthenticationStrategy{
+/**
+ * 
+ * Just a basic device-auth routine. 
+ *
+ */
+public class Level0DeviceAuthentication implements DeviceAuthenticationStrategy{
 
 	@Override
-	public void performAuthentication(
-			AuthenticationCallback callback) {
+	public void performDeviceAuthentication(
+			DeviceAuthenticationCallback callback) {
 		String deviceId = Secure.getString(MIDaaS.getContext().getContentResolver(),
                 Secure.ANDROID_ID); 
 		if(deviceId != null) {

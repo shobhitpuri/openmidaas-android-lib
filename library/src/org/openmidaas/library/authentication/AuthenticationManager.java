@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.openmidaas.library.model;
+package org.openmidaas.library.authentication;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -22,17 +22,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.openmidaas.library.model.core.AuthenticationCallback;
-import org.openmidaas.library.model.core.AuthenticationStrategy;
+import org.openmidaas.library.authentication.core.AccessToken;
+import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
+import org.openmidaas.library.authentication.core.AccessTokenStrategy;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 public class AuthenticationManager  {
 	
-	private AuthenticationStrategy mAuthenticationStrategy;
-	
 	private AccessToken mAccessToken;
+	
+	private AccessTokenStrategy mAccessTokenStrategy;
 	
 	private final Object LOCK = new Object(){};
 	
@@ -40,22 +42,63 @@ public class AuthenticationManager  {
 	
 	private AuthenticationManager() {
 		mAccessToken = null;
-		executor = Executors.newSingleThreadExecutor();
+		executor = Executors.newFixedThreadPool(1);
 	}
 	
 	private static AuthenticationManager mInstance = null;
 	
-	private Thread accessTokenThread = new Thread();
-	
 	public static synchronized AuthenticationManager getInstance() {
 		if(mInstance == null) {
 			mInstance = new AuthenticationManager();
-			
 		}
 		return mInstance;
 	}
 	
-	public void setDeviceAuthenticationStrategy(AuthenticationStrategy strategy) {
-		mAuthenticationStrategy = strategy;
+	public void setAccessTokenStrategy(AccessTokenStrategy strategy) {
+		mAccessTokenStrategy = strategy;
+	}
+	
+	/**
+	 * Blocking operation. Waits till the access token 
+	 * is obtained. 
+	 */
+	public synchronized AccessToken getAccessToken() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				mAccessTokenStrategy.getAccessToken(new AccessTokenCallback() {
+
+					@Override
+					public void onSuccess(AccessToken accessToken) {
+						mAccessToken = accessToken;
+						synchronized(LOCK) {
+							LOCK.notify();
+						}
+					}
+
+					@Override
+					public void onError(MIDaaSException exception) {
+						
+					}
+				});
+			}
+		
+		}).start();
+		synchronized(LOCK) {
+			try {
+				LOCK.wait();
+			} catch (InterruptedException e) {
+				mAccessToken = null;
+			}
+		}
+		return mAccessToken;		
+	}
+	
+	/**
+	 * Request for an access token in the background.
+	 */
+	public void getAccessTokenInBackground() {
+		
 	}
 }

@@ -15,15 +15,15 @@
  ******************************************************************************/
 package org.openmidaas.library.test.models;
 
-import org.openmidaas.library.model.core.AuthenticationCallback;
-import org.openmidaas.library.model.core.AuthenticationStrategy;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 
-public class MockAuthenticationStrategy implements AuthenticationStrategy {
+public class MockAuthenticationStrategy implements DeviceAuthenticationStrategy {
 
 	@Override
-	public void performAuthentication(AuthenticationCallback callback) {
+	public void performDeviceAuthentication(DeviceAuthenticationCallback callback) {
 		callback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
 		
 	}
