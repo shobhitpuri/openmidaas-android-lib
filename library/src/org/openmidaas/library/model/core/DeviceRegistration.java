@@ -56,7 +56,6 @@ public class DeviceRegistration {
 		AVSServer.registerDevice(registrationData, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
-				//TODO: Persist the signed user ID token. 
 				try {
 					deviceToken = AttributeFactory.createDeviceAttributeFactory().createAttribute("device");
 					deviceToken.setSignedToken(response);

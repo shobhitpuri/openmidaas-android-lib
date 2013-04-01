@@ -45,8 +45,7 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 
 		JSONObject postData = new JSONObject();
 		try {
-			postData.put("attribute", attribute.getAttributeAsJSONObject());
-			AVSServer.startAttributeVerification(postData, new AsyncHttpResponseHandler() {
+			AVSServer.startAttributeVerification(attribute.getAttributeAsJSONObject(), new AsyncHttpResponseHandler() {
 				
 				@Override
 				public void onSuccess(String response) { 

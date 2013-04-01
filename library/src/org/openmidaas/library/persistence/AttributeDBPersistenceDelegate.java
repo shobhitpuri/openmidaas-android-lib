@@ -17,6 +17,8 @@ package org.openmidaas.library.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.DeviceAttribute;
 import org.openmidaas.library.model.DeviceAttributeFactory;
@@ -40,6 +42,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 
 public class AttributeDBPersistenceDelegate implements AttributePersistenceDelegate{
+	
+	private final String TAG = "AttributeDBPersistenceDelegate";
 
 	private SQLiteDatabase database;
 	
@@ -119,10 +123,12 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 					}
 				}
 			} catch (SQLiteConstraintException exception) {
+				MIDaaS.logError(TAG, exception.getMessage());
 				if(callback != null) {
 					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_ALREADY_EXISTS));
 				}
 			} catch(Exception e) {
+				MIDaaS.logError(TAG, e.getMessage());
 				if(callback != null) {
 					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
 				}

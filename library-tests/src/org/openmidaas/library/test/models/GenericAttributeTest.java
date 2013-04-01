@@ -17,19 +17,31 @@ package org.openmidaas.library.test.models;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
+import android.content.Context;
+import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
-public class GenericAttributeTest extends TestCase {
+public class GenericAttributeTest extends InstrumentationTestCase {
 	private String attributeName = "firstName";
 	private String attributeValue = "Rob";
-	public void setUp() {	
+	private Context mContext;
+	protected void setUp() throws Exception {
+		mContext = getInstrumentation().getContext();
+		MIDaaS.setContext(mContext);
+		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
+		getInstrumentation().getContext().deleteDatabase("attributes.db");
+		
 	}
 	
 	@SmallTest

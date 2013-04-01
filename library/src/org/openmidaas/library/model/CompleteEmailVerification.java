@@ -17,6 +17,7 @@ package org.openmidaas.library.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.common.WorkQueueManager;
 import org.openmidaas.library.common.Worker;
@@ -51,7 +52,7 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 			public void execute() {
 				JSONObject postData = new JSONObject();
 				try {
-					postData.put("attribute", attribute.getAttributeAsJSONObject());
+					postData = attribute.getAttributeAsJSONObject();
 					postData.put("code", code);
 					postData.put("verificationToken", attribute.getPendingData());
 				} catch (JSONException e1) {
@@ -61,6 +62,7 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 					
 					@Override
 					public void onSuccess(String response) {
+						MIDaaS.logDebug("CompletedEmailVerification", response);
 						attribute.setSignedToken(response);
 						completeVerificationCallback.onSuccess();
 					}

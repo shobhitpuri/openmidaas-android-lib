@@ -39,19 +39,22 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 	private Context mContext;
 	private boolean notificationSuccess = false;
 	
+	
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
-		mockFactory = new MockTransportFactory(mContext, "device_reg_success.json");
-		mContext.deleteDatabase("attributes.db");
 		MIDaaS.setContext(mContext);
-		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
+		mockFactory = new MockTransportFactory(mContext, "device_reg_success.json");
 		ConnectionManager.setNetworkFactory(mockFactory);
+		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
+		mContext.deleteDatabase("attributes.db");
 	}
+	
 	
 	@SmallTest
 	public void testRegistrationSuccess() throws Exception {
+		mContext.deleteDatabase("attributes.db");
 		final CountDownLatch mLatch = new CountDownLatch(1);
-		
+		// first register the device. 
 		DeviceRegistration deviceRegistration = new DeviceRegistration(new Level0DeviceAuthentication());
 		deviceRegistration.registerDevice(new InitializationCallback() {
 
@@ -69,11 +72,9 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 
 			@Override
 			public void onRegistering() {
-				// TODO Auto-generated method stub
 				
 			}	
 		});
-		
 		mLatch.await();
 		Assert.assertTrue(notificationSuccess);
 	}
@@ -82,6 +83,7 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 	public void testRegistrationFailure() throws Exception {
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		mockFactory.setFilename("device_reg_fail.json");
+		mContext.deleteDatabase("attributes.db");
 		DeviceRegistration deviceRegistration = new DeviceRegistration(new Level0DeviceAuthentication());
 		deviceRegistration.registerDevice(new InitializationCallback() {
 

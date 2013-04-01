@@ -21,6 +21,8 @@ import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
 import org.openmidaas.library.authentication.AuthenticationManager;
 import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.Constants;
+import org.openmidaas.library.common.WorkQueueManager;
+import org.openmidaas.library.common.Worker;
 import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.DeviceAttribute;
@@ -91,6 +93,7 @@ public final class MIDaaS{
 	 */
 	public static void initialize(Context context, final InitializationCallback initCallback) {
 		mContext = context.getApplicationContext();
+		// do some initialization.
 		ConnectionManager.setNetworkFactory(new AndroidNetworkFactory(Constants.AVP_SB_BASE_URL));
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
 		AuthenticationManager.getInstance().setAccessTokenStrategy(new AVSAccessTokenStrategy(new Level0DeviceAuthentication()));
@@ -101,8 +104,15 @@ public final class MIDaaS{
 				// if list is empty, it means that the device isn't registered. 
 				if (list.isEmpty()) {
 					initCallback.onRegistering();
-					DeviceRegistration registration = new DeviceRegistration(new Level0DeviceAuthentication());
-					registration.registerDevice(initCallback);
+					WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
+
+						@Override
+						public void execute() {
+							DeviceRegistration registration = new DeviceRegistration(new Level0DeviceAuthentication());
+							registration.registerDevice(initCallback);
+						}
+					
+					});
 				} else if(list.size() > 1) {
 					// if we have more than one device attribute, we have an error. 
 					initCallback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));

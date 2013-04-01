@@ -46,20 +46,19 @@ public class AVSServer {
 
 	public static void startAttributeVerification(JSONObject attributeData,
 			AsyncHttpResponseHandler responseHandler) {
-		headers.clear();
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
 		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.INIT_AUTH_URL, getBasicAuthHeader(token), attributeData, responseHandler);
 	}
 
 	public static void completeAttributeVerification(JSONObject attributeData,
 			AsyncHttpResponseHandler responseHandler) {
-		headers.clear();
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
 		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getBasicAuthHeader(token), attributeData, responseHandler);	
 	}
 	
 	private static HashMap<String, String> getBasicAuthHeader(AccessToken token) {
 		try {
+			headers.clear();
 			headers.put("Authorization", "Basic "+Base64.encodeToString(token.toString().getBytes("UTF-8"), Base64.NO_WRAP));
 			return headers;
 		} catch (UnsupportedEncodingException e) {
