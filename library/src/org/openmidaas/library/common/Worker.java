@@ -13,25 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.authentication.core;
+package org.openmidaas.library.common;
 
-import java.util.concurrent.Callable;
-
-
-/**
- * 
- * Implement this interface to specify your own 
- * strategy for obtaining an access token. 
- *
- */
-public interface AccessTokenStrategy{
+public interface Worker {
 	
-	/**
-	 * Method to obtain the access token in a background thread.
-	 * If this method involves a call to the 
-	 * @param callback
-	 */
-	public void getAccessToken(AccessToken.AccessTokenCallback callback);
-
+	public void execute();
 
 }

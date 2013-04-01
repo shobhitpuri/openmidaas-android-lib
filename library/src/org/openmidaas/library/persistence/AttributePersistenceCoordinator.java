@@ -52,5 +52,9 @@ public class AttributePersistenceCoordinator {
 	public static void getDeviceAttribute(DeviceTokenCallback callback){
 		mDelegate.getDeviceToken(callback);
 	}
+	
+//	public static void getAllAttributes(AttributesCallback callback) {
+//		
+//	}
 
 }

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.openmidaas.library.common.network;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -36,7 +37,7 @@ public interface INetworkTransport {
 	 * @param responseHandler - the async handler to receive success/error
 	 * 							from the requested operation.
 	 */
-	public void doPostRequest(boolean disableSSL, String url, JSONObject data, AsyncHttpResponseHandler responseHandler);
+	public void doPostRequest(boolean disableSSL, String url, HashMap<String, String> headers, JSONObject data, AsyncHttpResponseHandler responseHandler);
 	
 	/**
 	 * Performs a GET request to the URL path specified. 

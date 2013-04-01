@@ -18,6 +18,7 @@ package org.openmidaas.library.authentication;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -36,13 +37,10 @@ public class AuthenticationManager  {
 	
 	private AccessTokenStrategy mAccessTokenStrategy;
 	
-	private final Object LOCK = new Object(){};
-	
-	private ExecutorService executor;
+	private CountDownLatch MUTEX;
 	
 	private AuthenticationManager() {
 		mAccessToken = null;
-		executor = Executors.newFixedThreadPool(1);
 	}
 	
 	private static AuthenticationManager mInstance = null;
@@ -63,36 +61,35 @@ public class AuthenticationManager  {
 	 * is obtained. 
 	 */
 	public synchronized AccessToken getAccessToken() {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				mAccessTokenStrategy.getAccessToken(new AccessTokenCallback() {
-
-					@Override
-					public void onSuccess(AccessToken accessToken) {
-						mAccessToken = accessToken;
-						synchronized(LOCK) {
-							LOCK.notify();
-						}
+		MUTEX = new CountDownLatch(1);
+		if(mAccessToken == null){
+			mAccessTokenStrategy.getAccessToken(new AccessTokenCallback() {
+				@Override
+				public void onSuccess(AccessToken accessToken) {
+					mAccessToken = accessToken;
+					synchronized(MUTEX) {
+						MUTEX.countDown();
 					}
-
-					@Override
-					public void onError(MIDaaSException exception) {
-						
-					}
-				});
-			}
+				}
 		
-		}).start();
-		synchronized(LOCK) {
-			try {
-				LOCK.wait();
-			} catch (InterruptedException e) {
-				mAccessToken = null;
+				@Override
+				public void onError(MIDaaSException exception) {
+					synchronized(MUTEX) {
+						MUTEX.countDown();
+					}
+				}
+			});
+			synchronized(MUTEX) {
+				try {
+					MUTEX.await();
+				} catch (InterruptedException e) {
+					mAccessToken = null;
+				}
 			}
+			return mAccessToken;	
+		} else {
+			return mAccessToken;
 		}
-		return mAccessToken;		
 	}
 	
 	/**

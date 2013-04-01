@@ -17,6 +17,7 @@ package org.openmidaas.library.common.network;
 
 
 
+import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONObject;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -49,8 +50,8 @@ public class ConnectionManager {
 	 * @param data
 	 * @param responseHandler
 	 */
-	public static void postRequest(boolean withSSL, String url, JSONObject data, AsyncHttpResponseHandler responseHandler) {
-		mNetworkTransport.doPostRequest(withSSL, url, data, responseHandler);
+	public static void postRequest(boolean withSSL, String url, HashMap<String, String> headers, JSONObject data, AsyncHttpResponseHandler responseHandler) {
+		mNetworkTransport.doPostRequest(withSSL, url, headers, data, responseHandler);
 	}
 	
 	public static void getRequest(boolean withSSL, String url, Map<String, String> requestParams, AsyncHttpResponseHandler responseHandler) {

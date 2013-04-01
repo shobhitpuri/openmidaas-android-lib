@@ -17,7 +17,6 @@ package org.openmidaas.library.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
@@ -43,56 +42,43 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 	@Override
 	public void startVerification(final EmailAttribute attribute,
 			final InitializeVerificationCallback initVerificationCallback) {
-		attribute.performAuthentication(new DeviceAuthenticationCallback() {
 
-			@Override
-			public void onSuccess(String deviceId) {
-				JSONObject postData = new JSONObject();
-				try {
-					postData.put("attribute", attribute.getAttributeAsJSONObject());
-					postData.put("deviceToken", deviceId);
-					AVSServer.startAttributeVerification(postData, new AsyncHttpResponseHandler() {
-						
-						@Override
-						public void onSuccess(String response) { 
-							if((!(response.isEmpty())) ) {
-								attribute.setPendingData(response);
-								AttributePersistenceCoordinator.saveAttribute(attribute, new PersistenceCallback() {
-
-									@Override
-									public void onSuccess() {
-										initVerificationCallback.onSuccess();
-									}
-
-									@Override
-									public void onError(
-											MIDaaSException exception) {
-										initVerificationCallback.onError(exception);
-									}
-									
-								});
-								
-							} else {
-								initVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+		JSONObject postData = new JSONObject();
+		try {
+			postData.put("attribute", attribute.getAttributeAsJSONObject());
+			AVSServer.startAttributeVerification(postData, new AsyncHttpResponseHandler() {
+				
+				@Override
+				public void onSuccess(String response) { 
+					if((!(response.isEmpty())) ) {
+						attribute.setPendingData(response);
+						AttributePersistenceCoordinator.saveAttribute(attribute, new PersistenceCallback() {
+	
+							@Override
+							public void onSuccess() {
+								initVerificationCallback.onSuccess();
 							}
-						}
+	
+							@Override
+							public void onError(
+									MIDaaSException exception) {
+								initVerificationCallback.onError(exception);
+							}
+						});
 						
-						@Override
-						public void onFailure(Throwable e, String response){
-							initVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
-						}
-					});
-					
-				} catch (JSONException e) {
-					initVerificationCallback.onError(null);
+					} else {
+						initVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+					}
 				}
-			}
-
-			@Override
-			public void onError(MIDaaSException exception) {
-				initVerificationCallback.onError(exception);
-			}
+				
+				@Override
+				public void onFailure(Throwable e, String response){
+					initVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+				}
+			});
 			
-		});
+		} catch (JSONException e) {
+			initVerificationCallback.onError(null);
+		}
 	}
 }

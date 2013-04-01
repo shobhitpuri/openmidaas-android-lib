@@ -25,12 +25,17 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
+import org.openmidaas.library.authentication.AuthenticationManager;
+import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.EmailAttribute;
 import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
+import org.openmidaas.library.model.core.DeviceRegistration;
+import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
@@ -61,8 +66,9 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 				MIDaaS.setContext(mContext);
 				mContext.deleteDatabase("attributes.db");
 				AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
+				AuthenticationManager.getInstance().setAccessTokenStrategy(new AVSAccessTokenStrategy(new Level0DeviceAuthentication()));
 				emailAttribute =  AttributeFactory.createEmailAttributeFactory().createAttribute("rob@gmail.com");
-			
+				
 				mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
 				ConnectionManager.setNetworkFactory(mockFactory);
 				isInit = true;
@@ -144,8 +150,36 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 		
 		@MediumTest
 		public void testEmailVerification() throws Exception {
-			initializeEmailVerificationSuccess();
-			completeEmailVerificationSuccess();
+			final CountDownLatch mLatch = new CountDownLatch(1);
+			DeviceRegistration deviceRegistration = new DeviceRegistration(new Level0DeviceAuthentication());
+			deviceRegistration.registerDevice(new InitializationCallback() {
+
+				@Override
+				public void onSuccess() {
+					notificationSuccess = true;
+					mLatch.countDown();
+				}
+
+				@Override
+				public void onError(MIDaaSException exception) {
+					notificationSuccess = false;
+					mLatch.countDown();
+				}
+
+				@Override
+				public void onRegistering() {
+					
+				}	
+			});
+			mLatch.await();
+			if(notificationSuccess) {
+				initializeEmailVerificationSuccess();
+				completeEmailVerificationSuccess();
+			}
+			else {
+				Assert.fail();
+			}
+			
 		}
 		
 		private void initializeEmailVerificationSuccess() throws Exception {

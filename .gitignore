@@ -13,6 +13,7 @@ library-tests/*.xml
 # generated files
 library/bin/
 library/gen/
+library/lint.xml
 library-tests/bin/
 library-tests/gen/
 library-tests/junit-results/

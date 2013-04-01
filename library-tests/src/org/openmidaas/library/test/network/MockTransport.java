@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.openmidaas.library.test.network;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -42,7 +43,7 @@ public class MockTransport implements INetworkTransport{
 	}
 	
 	@Override
-	public void doPostRequest(boolean disableSSL, String url, JSONObject data,
+	public void doPostRequest(boolean disableSSL, String url, HashMap<String, String> header, JSONObject data,
 			AsyncHttpResponseHandler responseHandler) {
 		try {
 			JSONObject mData = Utils.readFileAsJSON(mContext, mFilename);

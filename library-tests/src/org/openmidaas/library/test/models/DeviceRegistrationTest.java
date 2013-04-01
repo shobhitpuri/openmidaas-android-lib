@@ -42,6 +42,7 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
 		mockFactory = new MockTransportFactory(mContext, "device_reg_success.json");
+		mContext.deleteDatabase("attributes.db");
 		MIDaaS.setContext(mContext);
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
 		ConnectionManager.setNetworkFactory(mockFactory);

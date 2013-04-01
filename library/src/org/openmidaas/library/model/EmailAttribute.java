@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 
 import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
+import org.openmidaas.library.common.WorkQueueManager;
+import org.openmidaas.library.common.Worker;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
@@ -44,12 +46,11 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	 * @param completeEmailDelegate - the delegate class that completes the email verification process.
 	 */
 	protected EmailAttribute(InitializeAttributeVerificationDelegate initEmailDelegate,
-			CompleteAttributeVerificationDelegate completeEmailDelegate, DeviceAuthenticationStrategy authenticationStrategy) {
+			CompleteAttributeVerificationDelegate completeEmailDelegate) {
 		mIsVerifiable = true;
 		mName = ATTRIBUTE_NAME;
 		mInitVerificationDelegate = initEmailDelegate;
 		mCompleteVerificationDelegate = completeEmailDelegate;
-		mAuthenticationStrategy = authenticationStrategy;
 	}
 
 	/**
@@ -71,8 +72,15 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	 * one-time code to the email address. 
 	 */
 	@Override
-	public void startVerification(InitializeVerificationCallback callback) {
-		mInitVerificationDelegate.startVerification(this, callback);
+	public void startVerification(final InitializeVerificationCallback callback) {
+		WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
+
+			@Override
+			public void execute() {
+				mInitVerificationDelegate.startVerification(EmailAttribute.this, callback);
+			}
+			
+		});
 	}
 	
 	/**
@@ -80,16 +88,15 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	 * Attribute Verification Service.
 	 */
 	@Override
-	public void completeVerification(String code, CompleteVerificationCallback callback)  {
-		mCompleteVerificationDelegate.completeVerification(this, code, callback);
-	}
-	
-	/**
-	 * Performs the authentication.
-	 */
-	@Override
-	public void performAuthentication(DeviceAuthenticationCallback authenticationcallback) {
-		mAuthenticationStrategy.performDeviceAuthentication(authenticationcallback);
+	public void completeVerification(final String code, final CompleteVerificationCallback callback)  {
+		WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
+
+			@Override
+			public void execute() {
+				mCompleteVerificationDelegate.completeVerification(EmailAttribute.this, code, callback);
+			}
+		});
+		
 	}
 	
 	@Override

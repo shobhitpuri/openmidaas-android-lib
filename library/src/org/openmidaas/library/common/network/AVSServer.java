@@ -15,15 +15,25 @@
  ******************************************************************************/
 package org.openmidaas.library.common.network;
 
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import org.json.JSONObject;
+import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.authentication.AuthenticationManager;
+import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.common.Constants;
+
+import android.util.Base64;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class AVSServer {
+	
+	private static String TAG = "AVSServer";
 
 	private static boolean SERVER_WITH_SSL = false;
 	
+	private static HashMap<String, String> headers = new HashMap<String, String>();
 	
 	public static void setWithSSL(boolean val) {
 		SERVER_WITH_SSL = val;
@@ -31,16 +41,30 @@ public class AVSServer {
 	
 	public static void registerDevice(JSONObject registrationData,
 			AsyncHttpResponseHandler responseHandler) {
-		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.REGISTRATION_URL, registrationData, responseHandler);
+		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.REGISTRATION_URL, null, registrationData, responseHandler);
 	}
 
 	public static void startAttributeVerification(JSONObject attributeData,
 			AsyncHttpResponseHandler responseHandler) {
-		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.INIT_AUTH_URL, attributeData, responseHandler);
+		headers.clear();
+		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
+		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.INIT_AUTH_URL, getBasicAuthHeader(token), attributeData, responseHandler);
 	}
 
 	public static void completeAttributeVerification(JSONObject attributeData,
 			AsyncHttpResponseHandler responseHandler) {
-		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, attributeData, responseHandler);	
+		headers.clear();
+		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
+		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getBasicAuthHeader(token), attributeData, responseHandler);	
+	}
+	
+	private static HashMap<String, String> getBasicAuthHeader(AccessToken token) {
+		try {
+			headers.put("Authorization", "Basic "+Base64.encodeToString(token.toString().getBytes("UTF-8"), Base64.NO_WRAP));
+			return headers;
+		} catch (UnsupportedEncodingException e) {
+			MIDaaS.logError(TAG, e.getMessage());
+		}
+		return headers;
 	}
 }

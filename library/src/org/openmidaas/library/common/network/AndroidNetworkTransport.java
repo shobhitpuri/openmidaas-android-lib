@@ -16,6 +16,7 @@
 package org.openmidaas.library.common.network;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.entity.StringEntity;
@@ -35,10 +36,17 @@ public final class AndroidNetworkTransport implements INetworkTransport {
 	}
 	
 	@Override
-	public void doPostRequest(boolean withSSL, String url, JSONObject data,
+	public void doPostRequest(boolean withSSL, String url, HashMap<String, String> headers,JSONObject data,
 			AsyncHttpResponseHandler responseHandler) {
 		try {
 			AsyncHttpClient client = new AsyncHttpClient();
+			if(headers != null) {
+				if(headers.size() > 0) {
+					for(String key: headers.keySet()) {
+						client.addHeader(key, headers.get(key));
+					}
+				}
+			}
 			client.post(null, mHostUrl + url, new StringEntity(data.toString()), "application/json", responseHandler);
 		} catch (UnsupportedEncodingException e) {
 			MIDaaS.logError(TAG, e.getMessage());

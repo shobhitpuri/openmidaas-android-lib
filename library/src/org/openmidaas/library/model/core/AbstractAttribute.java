@@ -17,8 +17,6 @@ package org.openmidaas.library.model.core;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
-import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
@@ -35,8 +33,6 @@ public abstract class AbstractAttribute<T> {
 	protected InitializeAttributeVerificationDelegate mInitVerificationDelegate = null;
 	
 	protected CompleteAttributeVerificationDelegate mCompleteVerificationDelegate = null;
-	
-	protected DeviceAuthenticationStrategy mAuthenticationStrategy = null;
 	
 	protected AttributePersistenceDelegate mPersistenceDelegate = null;
 	
@@ -157,14 +153,6 @@ public abstract class AbstractAttribute<T> {
 	 */
 	public void completeVerification(String code, CompleteVerificationCallback callback) throws UnsupportedOperationException  {
 		throw new UnsupportedOperationException("Cannot complete verification");
-	}
-	
-	/**
-	 * Method that performs authentication. 
-	 * @param authenticationcallback
-	 */
-	public void performAuthentication(DeviceAuthenticationCallback authenticationcallback) {
-		throw new UnsupportedOperationException("Cannot perform authentication");
 	}
 	
 	public void delete() {

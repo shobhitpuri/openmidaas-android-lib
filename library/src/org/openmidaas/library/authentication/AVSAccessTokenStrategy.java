@@ -52,22 +52,26 @@ public class AVSAccessTokenStrategy implements AccessTokenStrategy, DeviceAuthen
 	@Override
 	public void getAccessToken(AccessTokenCallback callback) {
 		mAccessTokenCallback = callback;
+		// first authenticate the device.
 		mDeviceAuthStrategy.performDeviceAuthentication(this);
 	}
 
 	@Override
-	public void onSuccess(final String deviceToken) {
+	public void onSuccess(final String deviceToken) {   
 		AttributePersistenceCoordinator.getDeviceAttribute(new DeviceTokenCallback() {
 
 			@Override
 			public void onSuccess(List<DeviceAttribute> list) {
+				// we now have the device token. With that, we will create an access token. 
+				// the access token is a combination of the device auth token and subject token. 
 				if(list.isEmpty()) {
 					mAccessTokenCallback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));
 				} else if(list.size() > 1) {
 					mAccessTokenCallback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));
 				} else {
 					// we should have only one entry in our list. 
-					// create and return the access token
+					// create and return the access token.
+					// XXX:Future: send the device token and subject token to the server and get the access token. 
 					mAccessTokenCallback.onSuccess(AccessToken.createAccessTokenFromDeviceAttribute(list.get(0), deviceToken));
 				}
 			}
