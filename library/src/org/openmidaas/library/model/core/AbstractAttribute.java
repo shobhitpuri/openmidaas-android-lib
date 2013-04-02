@@ -17,6 +17,7 @@ package org.openmidaas.library.model.core;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
@@ -42,11 +43,11 @@ public abstract class AbstractAttribute<T> {
 	
 	private String mLabel;
 	
-	protected boolean mIsVerifiable = false;
-	
 	protected String mSignedToken = null;
 	
 	protected String mPendingData = null;
+	
+	protected ATTRIBUTE_STATE mState = ATTRIBUTE_STATE.NOT_VERIFIABLE;
 	
 	/**
 	 * Returns the attribute name
@@ -99,6 +100,24 @@ public abstract class AbstractAttribute<T> {
 	}
 	
 	/**
+	 * Returns the state of the attribute. 
+	 * @return
+	 * if pending data is present and signed token is absent, returns pending verification
+	 * if pending data is absent and signed token is present, returns verified 
+	 * if pending data is absent and signed token is absent, returns the current state. 
+	 */
+	public ATTRIBUTE_STATE getState() {
+		if(mPendingData != null && mSignedToken == null) {
+			return ATTRIBUTE_STATE.PENDING_VERIFICATION;
+		} else if(mPendingData == null && mSignedToken != null) {
+			return ATTRIBUTE_STATE.VERIFIED;
+		} else if(mPendingData == null && mSignedToken == null) {
+			return mState;
+		}
+		return ATTRIBUTE_STATE.UNKNOWN;
+	}
+	
+	/**
 	 * Returns the attribute's value
 	 * @return - the attribute's value.
 	 */
@@ -118,14 +137,6 @@ public abstract class AbstractAttribute<T> {
 		} else {
 			throw new InvalidAttributeValueException();
 		}
-	}
-	
-	/**
-	 * Returns true if the attribute is verifiable, false otherwise.
-	 * @return true if attribute is verifiable, false otherwise. 
-	 */
-	public boolean isVerifiable() {
-		return mIsVerifiable;
 	}
 
 	/**

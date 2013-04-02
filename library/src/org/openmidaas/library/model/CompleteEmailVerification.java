@@ -18,14 +18,14 @@ package org.openmidaas.library.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
-import org.openmidaas.library.common.WorkQueueManager;
-import org.openmidaas.library.common.Worker;
+import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.model.core.PersistenceCallback;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -46,34 +46,39 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 	 */
 	@Override
 	public void completeVerification(final EmailAttribute attribute, final String code, final CompleteVerificationCallback completeVerificationCallback) {
-		WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
-
+		JSONObject postData = new JSONObject();
+		try {
+			postData = attribute.getAttributeAsJSONObject();
+			postData.put("code", code);
+			postData.put("verificationToken", attribute.getPendingData());
+		} catch (JSONException e1) {
+			completeVerificationCallback.onError(null);
+		}
+		AVSServer.completeAttributeVerification(postData, new AsyncHttpResponseHandler() {
+			
 			@Override
-			public void execute() {
-				JSONObject postData = new JSONObject();
-				try {
-					postData = attribute.getAttributeAsJSONObject();
-					postData.put("code", code);
-					postData.put("verificationToken", attribute.getPendingData());
-				} catch (JSONException e1) {
-					completeVerificationCallback.onError(null);
-				}
-				AVSServer.completeAttributeVerification(postData, new AsyncHttpResponseHandler() {
-					
+			public void onSuccess(String response) {
+				attribute.setSignedToken(response);
+				attribute.setPendingData(null);
+				AttributePersistenceCoordinator.saveAttribute(attribute, new PersistenceCallback() {
+
 					@Override
-					public void onSuccess(String response) {
-						MIDaaS.logDebug("CompletedEmailVerification", response);
-						attribute.setSignedToken(response);
+					public void onSuccess() {
 						completeVerificationCallback.onSuccess();
 					}
-					
+
 					@Override
-					public void onFailure(Throwable e, String response){
-						completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+					public void onError(MIDaaSException exception) {
+						completeVerificationCallback.onError(exception);
 					}
+					
 				});
 			}
 			
+			@Override
+			public void onFailure(Throwable e, String response){
+				completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+			}
 		});
 	}
 }

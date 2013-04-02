@@ -24,10 +24,10 @@ import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
 import org.openmidaas.library.model.DeviceAttribute;
-import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+import org.openmidaas.library.persistence.core.DeviceTokenCallback;
 
 /**
  * 

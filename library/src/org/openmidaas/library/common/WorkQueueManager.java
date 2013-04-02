@@ -26,6 +26,10 @@ import org.openmidaas.library.MIDaaS;
  */
 public class WorkQueueManager {
 	
+	public interface Worker {
+		public void execute();
+	}
+	
 	private final String TAG = "WorkQueueManager";
 	
 	private Vector<Worker> workQueue;
@@ -35,11 +39,13 @@ public class WorkQueueManager {
 	private static WorkQueueManager mInstance = null;
 
 	private WorkQueueManager() {
+		MIDaaS.logDebug(TAG, "creating new instance of work queue manager");
 		workQueue = new Vector<Worker>();
 		queueThread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
+				MIDaaS.logDebug(TAG, "starting to process queue");
 				startProcessingQueue();
 			}			
 		});
@@ -57,11 +63,12 @@ public class WorkQueueManager {
 	public void addWorkerToQueue(Worker worker) {
 		try {
 			synchronized(workQueue) {
+				MIDaaS.logDebug(TAG, "adding new worker to queue");
 				workQueue.add(worker);
 				workQueue.notify();
 			}
 		} catch(Exception e) {
-			MIDaaS.logDebug(TAG, e.getMessage());
+			MIDaaS.logError(TAG, e.getMessage());
 		}
 	}
 	
@@ -71,12 +78,15 @@ public class WorkQueueManager {
 				Worker worker = null;
 				synchronized(workQueue) {
 					while(workQueue.isEmpty()) {
+						MIDaaS.logDebug(TAG, "waiting for work...");
 						workQueue.wait();
 					}
 					worker = (Worker)workQueue.elementAt(0);
 					workQueue.removeElementAt(0);
 				}
+				MIDaaS.logDebug(TAG, "doing work...");
 				worker.execute();
+				MIDaaS.logDebug(TAG, "done work...");
 			} catch(InterruptedException intException) {
 				break;
 			} catch(Exception e) {

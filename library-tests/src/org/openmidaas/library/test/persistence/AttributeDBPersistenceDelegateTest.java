@@ -23,10 +23,11 @@ import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
-import org.openmidaas.library.model.core.GenericDataCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+import org.openmidaas.library.persistence.core.GenericDataCallback;
+
 import android.content.Context;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -47,7 +48,7 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	private Context mContext;
 	// create a generic attribute of type "test"
 	
-	private GenericAttributeFactory factory = AttributeFactory.createGenericAttributeFactory();
+	private GenericAttributeFactory factory = AttributeFactory.getGenericAttributeFactory();
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
 		MIDaaS.setContext(mContext);
@@ -127,9 +128,9 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	public void testSaveAndRetrieval() throws Exception {
 		// store the following values that are of type "test"
 		factory.setAttributeName(TEST_NAME);
-		GenericAttribute a1 = factory.createAttribute("TEST_VALUE_1");
-		GenericAttribute a2 = factory.createAttribute("TEST_VALUE_2");
-		GenericAttribute a3 = factory.createAttribute("TEST_VALUE_3");
+		GenericAttribute a1 = factory.createAttributeWithValue("TEST_VALUE_1");
+		GenericAttribute a2 = factory.createAttributeWithValue("TEST_VALUE_2");
+		GenericAttribute a3 = factory.createAttributeWithValue("TEST_VALUE_3");
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		// Retrieve all the "test" attributes
 		AttributePersistenceCoordinator.getGenericAttributes("test", new GenericDataCallback() {

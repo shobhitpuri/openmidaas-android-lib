@@ -26,7 +26,7 @@ public class DeviceAttributeFactory implements AbstractAttributeFactory<DeviceAt
 	protected DeviceAttributeFactory(){}
 	
 	@Override
-	public DeviceAttribute createAttribute(String value) throws InvalidAttributeValueException {
+	public DeviceAttribute createAttributeWithValue(String value) throws InvalidAttributeValueException {
 		DeviceAttribute token = new DeviceAttribute();
 		token.setValue(value);
 		return token;

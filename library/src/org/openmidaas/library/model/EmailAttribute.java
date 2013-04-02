@@ -17,11 +17,9 @@ package org.openmidaas.library.model;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
-import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
+import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.common.WorkQueueManager;
-import org.openmidaas.library.common.Worker;
+import org.openmidaas.library.common.WorkQueueManager.Worker;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
@@ -47,10 +45,10 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	 */
 	protected EmailAttribute(InitializeAttributeVerificationDelegate initEmailDelegate,
 			CompleteAttributeVerificationDelegate completeEmailDelegate) {
-		mIsVerifiable = true;
 		mName = ATTRIBUTE_NAME;
 		mInitVerificationDelegate = initEmailDelegate;
 		mCompleteVerificationDelegate = completeEmailDelegate;
+		mState = ATTRIBUTE_STATE.NOT_VERIFIED;
 	}
 
 	/**

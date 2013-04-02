@@ -51,7 +51,7 @@ public class GenericAttributeFactory implements AbstractAttributeFactory<Generic
 	 */
 	@Override
 	@Deprecated
-	public GenericAttribute createAttribute(String value) throws InvalidAttributeValueException, IllegalArgumentException {
+	public GenericAttribute createAttributeWithValue(String value) throws InvalidAttributeValueException, IllegalArgumentException {
 		if(mAttributeName == null || mAttributeName.isEmpty()) {
 			throw new IllegalArgumentException("Attribute value cannot be set when attribute name is null. Try calling \"setAttributeName()\" first");
 		}
@@ -63,7 +63,7 @@ public class GenericAttributeFactory implements AbstractAttributeFactory<Generic
 	}
 	
 	/**
-	 * 
+	 * Creates a generic attribute with the specified name and value. 
 	 * @param name
 	 * @param value
 	 * @return

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.DeviceAttribute;
 import org.openmidaas.library.model.DeviceAttributeFactory;
@@ -28,13 +29,15 @@ import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.AbstractAttribute;
-import org.openmidaas.library.model.core.DeviceTokenCallback;
-import org.openmidaas.library.model.core.EmailDataCallback;
-import org.openmidaas.library.model.core.GenericDataCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.model.core.PersistenceCallback;
+import org.openmidaas.library.persistence.core.AttributeDataCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
+import org.openmidaas.library.persistence.core.DeviceTokenCallback;
+import org.openmidaas.library.persistence.core.EmailDataCallback;
+import org.openmidaas.library.persistence.core.GenericDataCallback;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
@@ -55,41 +58,6 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 		dbHelper = AttributeDBHelper.getInstance();
 	}
 	
-	public void close() {
-		dbHelper.close();
-	}
-	
-	/*
-	 * Helper interface to get the database object on a
-	 * separate thread. 
-	 */
-	private interface DBOpenerCallback {
-		
-		public void onSuccess(SQLiteDatabase database);
-		
-		public void onError(Exception e);
-	}
-	
-	/**
-	 * Opens the database on a separate thread as per: 
-	 * http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#getReadableDatabase()
-	 * @param callback
-	 */
-	private void openDatabase(final DBOpenerCallback callback) {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					database = dbHelper.getWritableDatabase();
-					callback.onSuccess(database);
-				} catch(Exception e) {
-					callback.onError(e);
-				}
-			}
-		}).start();
-	}
-	
 	@Override
 	public void save(final AbstractAttribute<?> data, final PersistenceCallback callback) {
 			try {
@@ -107,7 +75,6 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 						data.setId(rowId);
 						if(callback != null) {
 							callback.onSuccess();
-							
 						}
 					}
 				}
@@ -140,18 +107,26 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 
 	@Override
 	public void delete(final AbstractAttribute<?> data, PersistenceCallback callback) {
-		database = dbHelper.getWritableDatabase();
-		if (data.getId() != -1) {
-			database.delete(AttributeEntry.TABLE_NAME, "_id = " + data.getId(), null);
+		try {
+			database = dbHelper.getWritableDatabase();
+			if (data.getId() != -1) {
+				database.delete(AttributeEntry.TABLE_NAME, "_id = " + data.getId(), null);
+				dbHelper.close();
+				if(callback != null) {
+					callback.onSuccess();
+				}
+			} else {
+				if(callback != null) {
+					// data was never persisted so just return success. 
+					callback.onSuccess();
+				}
+			}
+		} catch(Exception e) {
+			if(callback != null) {
+				callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+			}
+		} finally {
 			dbHelper.close();
-			if(callback != null) {
-				callback.onSuccess();
-			}
-		} else {
-			if(callback != null) {
-				// data was never persisted so just return success. 
-				callback.onSuccess();
-			}
 		}
 	}
 	
@@ -182,7 +157,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 		Cursor cursor = fetchByAttributeName("email");
 		boolean isDataAvailable = cursor.moveToFirst();
 		if(isDataAvailable) {
-			EmailAttributeFactory emailFactory = AttributeFactory.createEmailAttributeFactory();
+			EmailAttributeFactory emailFactory = AttributeFactory.getEmailAttributeFactory();
 			while(!(cursor.isAfterLast())) {
 				try {
 					list.add(emailFactory.createAttributeFromCursor(cursor));
@@ -206,7 +181,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 		Cursor cursor = fetchByAttributeName(attributeName);
 		boolean isDataAvailable = cursor.moveToFirst();
 		if(isDataAvailable) {
-			GenericAttributeFactory af = AttributeFactory.createGenericAttributeFactory();
+			GenericAttributeFactory af = AttributeFactory.getGenericAttributeFactory();
 			while(!(cursor.isAfterLast())) {
 				try {
 					list.add(af.createAttributeFromCursor(cursor));
@@ -225,16 +200,16 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 	}
 	
 	private Cursor fetchByAttributeName(String name) {
-		
 		database = dbHelper.getWritableDatabase();
 		Cursor cursor = database.query(AttributeEntry.TABLE_NAME, null, "name=?", new String[] { name }, null, null, null);
+		
 		return cursor;
 	}
 
 	@Override
 	public void getDeviceToken(final DeviceTokenCallback callback) {
 		List<DeviceAttribute> list = new ArrayList<DeviceAttribute>();
-		DeviceAttributeFactory factory = AttributeFactory.createDeviceAttributeFactory();
+		DeviceAttributeFactory factory = AttributeFactory.getDeviceAttributeFactory();
 		Cursor cursor = fetchByAttributeName("device");
 		if(cursor.getCount()>0) {
 			cursor.moveToFirst();
@@ -254,4 +229,43 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 			callback.onSuccess(list);
 		}
 	}
+	
+	@Override
+	public void getAllAttributes(final AttributeDataCallback callback) {
+		List<AbstractAttribute<?>> list = new ArrayList<AbstractAttribute<?>>();
+		EmailAttributeFactory emailFactory = AttributeFactory.getEmailAttributeFactory();
+		DeviceAttributeFactory deviceFactory = AttributeFactory.getDeviceAttributeFactory();
+		GenericAttributeFactory genericFactory = AttributeFactory.getGenericAttributeFactory();
+		database = dbHelper.getWritableDatabase();
+		String attributeType = null;
+		Cursor cursor = database.query(AttributeEntry.TABLE_NAME, null, null, null, null, null, null);
+		if(cursor != null) {
+			if (cursor.getCount() > 0) {
+				cursor.moveToFirst();
+				while(!(cursor.isAfterLast())) {
+					attributeType = cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_NAME));
+					try {
+						if(attributeType.equalsIgnoreCase("email")) {
+							list.add(emailFactory.createAttributeFromCursor(cursor));
+						} else if (attributeType.equalsIgnoreCase("device")) {
+							list.add(deviceFactory.createAttributeFromCursor(cursor));
+						} else {
+							list.add(genericFactory.createAttributeFromCursor(cursor));
+						}
+					} catch (InvalidAttributeValueException e) {
+							MIDaaS.logError(TAG, e.getMessage());
+					}
+					cursor.moveToNext();
+				}
+				cursor.close();
+				callback.onSuccess(list);
+			} else {
+				cursor.close();
+				callback.onSuccess(list);
+			}
+		} else {
+			callback.onSuccess(list);
+		}
+	}
+	
 }

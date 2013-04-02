@@ -22,18 +22,18 @@ import org.openmidaas.library.authentication.AuthenticationManager;
 import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.WorkQueueManager;
-import org.openmidaas.library.common.Worker;
+import org.openmidaas.library.common.WorkQueueManager.Worker;
 import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.DeviceAttribute;
 import org.openmidaas.library.model.core.DeviceRegistration;
-import org.openmidaas.library.model.core.DeviceTokenCallback;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+import org.openmidaas.library.persistence.core.DeviceTokenCallback;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -93,9 +93,12 @@ public final class MIDaaS{
 	 */
 	public static void initialize(Context context, final InitializationCallback initCallback) {
 		mContext = context.getApplicationContext();
-		// do some initialization.
+		/* *** initialization routines *** */
+		// we will target our sandbox url.
 		ConnectionManager.setNetworkFactory(new AndroidNetworkFactory(Constants.AVP_SB_BASE_URL));
+		// we will use a sqlite database to persist attributes. 
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
+		// we will use our access token strategy that depends on level 0 devic authentication
 		AuthenticationManager.getInstance().setAccessTokenStrategy(new AVSAccessTokenStrategy(new Level0DeviceAuthentication()));
 		AttributePersistenceCoordinator.getDeviceAttribute(new DeviceTokenCallback() {
 

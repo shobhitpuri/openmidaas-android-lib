@@ -22,15 +22,15 @@ package org.openmidaas.library.model;
  */
 public class AttributeFactory {
 
-	public static EmailAttributeFactory createEmailAttributeFactory() {
+	public static EmailAttributeFactory getEmailAttributeFactory() {
 		return new EmailAttributeFactory();
 	}
 	
-	public static GenericAttributeFactory createGenericAttributeFactory() {
+	public static GenericAttributeFactory getGenericAttributeFactory() {
 		return new GenericAttributeFactory();
 	}
 	
-	public static DeviceAttributeFactory createDeviceAttributeFactory() {
+	public static DeviceAttributeFactory getDeviceAttributeFactory() {
 		return new DeviceAttributeFactory();
 	}
 	

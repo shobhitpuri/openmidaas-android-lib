@@ -57,7 +57,7 @@ public class DeviceRegistration {
 			@Override
 			public void onSuccess(String response) {
 				try {
-					deviceToken = AttributeFactory.createDeviceAttributeFactory().createAttribute("device");
+					deviceToken = AttributeFactory.getDeviceAttributeFactory().createAttributeWithValue("device");
 					deviceToken.setSignedToken(response);
 				} catch (InvalidAttributeValueException e) {
 					// should never get here b/c we're returning true. 

@@ -47,7 +47,7 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testPendingDataIsNull() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
 			Assert.assertEquals(null, genericAttribute.getPendingData());
 			} catch (InvalidAttributeValueException e) {
 				Assert.fail();
@@ -57,7 +57,7 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testSetPendingDataThrowsException() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
 			genericAttribute.setPendingData("blob");
 			Assert.fail();
 			} catch (InvalidAttributeValueException e) {
@@ -70,7 +70,7 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testDeprecatedMethodCallWithNameNotSet() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeValue);
+			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttributeWithValue(attributeValue);
 			Assert.fail("Expected IllegalArgumentException");
 		} catch(IllegalArgumentException e) {
 			
@@ -83,7 +83,7 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testDeperecatedMethodCallWithNameSet() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().setAttributeName(attributeName).createAttribute(attributeValue);
+			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().setAttributeName(attributeName).createAttributeWithValue(attributeValue);
 			
 		} catch(IllegalArgumentException e) {
 			Assert.fail();
@@ -96,7 +96,7 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testAttributeName() {
 		try {
-		GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+		GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
 		Assert.assertEquals(genericAttribute.getName(), attributeName);
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
@@ -107,7 +107,7 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testCreateAttributeWithNullName() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(null, attributeValue);
+			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(null, attributeValue);
 			Assert.fail("Expected IllegalArgumentException");
 		} catch(IllegalArgumentException ex) {
 			
@@ -119,7 +119,7 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testStartVerificationWithoutCallback() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
 			genericAttribute.startVerification(null);
 			Assert.fail("Expected UnsupportedOperationException");
 		} catch (UnsupportedOperationException e) {
@@ -132,7 +132,7 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testStartVerificationWithCallback() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
 			genericAttribute.startVerification(new InitializeVerificationCallback() {
 
 				@Override
@@ -157,7 +157,7 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testCompleteVerification() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.createGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
 			genericAttribute.completeVerification("1234", new CompleteVerificationCallback() {
 
 				@Override

@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.model.core;
+package org.openmidaas.library.persistence.core;
 
-import java.util.List;
+import org.openmidaas.library.model.EmailAttribute;
 
-public abstract class AttributeDataCallback<T>  {
-	
-	public abstract void onSuccess(List<T> list);
-	
-	public abstract void onError(MIDaaSException exception);
+public abstract class EmailDataCallback extends AbstractAttributeDataCallback<EmailAttribute>{
 
 }

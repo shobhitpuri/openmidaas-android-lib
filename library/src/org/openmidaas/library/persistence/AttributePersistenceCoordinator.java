@@ -16,13 +16,20 @@
 package org.openmidaas.library.persistence;
 
 
+import org.openmidaas.library.common.WorkQueueManager;
 import org.openmidaas.library.model.core.AbstractAttribute;
-import org.openmidaas.library.model.core.DeviceTokenCallback;
-import org.openmidaas.library.model.core.EmailDataCallback;
-import org.openmidaas.library.model.core.GenericDataCallback;
 import org.openmidaas.library.model.core.PersistenceCallback;
+import org.openmidaas.library.persistence.core.AttributeDataCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
+import org.openmidaas.library.persistence.core.DeviceTokenCallback;
+import org.openmidaas.library.persistence.core.EmailDataCallback;
+import org.openmidaas.library.persistence.core.GenericDataCallback;
 
+/**
+ * 
+ * Wrapper around the persistence delegate. 
+ *
+ */
 public class AttributePersistenceCoordinator {
 	
 	private static AttributePersistenceDelegate mDelegate = null;
@@ -41,8 +48,14 @@ public class AttributePersistenceCoordinator {
 		mDelegate.save(attribute, callback);
 	}
 	
-	public static void getEmails(EmailDataCallback callback) {
-		mDelegate.getEmails(callback);
+	public static void getEmails(final EmailDataCallback callback) {
+		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
+			
+			@Override
+			public void execute() {
+				mDelegate.getEmails(callback);
+			}
+		});
 	}
 	
 	public static void getGenericAttributes(String attributeName, GenericDataCallback callback) {
@@ -53,8 +66,12 @@ public class AttributePersistenceCoordinator {
 		mDelegate.getDeviceToken(callback);
 	}
 	
-//	public static void getAllAttributes(AttributesCallback callback) {
-//		
-//	}
-
+	public static void getAllAttributes(final AttributeDataCallback callback) {
+		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
+			@Override
+			public void execute() {
+				mDelegate.getAllAttributes(callback);
+			}
+		});
+	}
 }

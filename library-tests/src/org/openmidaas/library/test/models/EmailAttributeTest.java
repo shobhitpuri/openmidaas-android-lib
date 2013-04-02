@@ -67,7 +67,7 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 				mContext.deleteDatabase("attributes.db");
 				AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
 				AuthenticationManager.getInstance().setAccessTokenStrategy(new AVSAccessTokenStrategy(new Level0DeviceAuthentication()));
-				emailAttribute =  AttributeFactory.createEmailAttributeFactory().createAttribute("rob@gmail.com");
+				emailAttribute =  AttributeFactory.getEmailAttributeFactory().createAttributeWithValue("rob@gmail.com");
 				
 				mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
 				ConnectionManager.setNetworkFactory(mockFactory);
@@ -94,12 +94,6 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			} catch(Exception e) {
 				Assert.fail();
 			}
-		}
-		
-		
-		@SmallTest
-		public void testIsVerifiableIsSet() {
-			Assert.assertEquals(true, emailAttribute.isVerifiable());
 		}
 		
 		@SmallTest

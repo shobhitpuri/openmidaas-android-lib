@@ -17,6 +17,7 @@ package org.openmidaas.library.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
@@ -42,8 +43,6 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 	@Override
 	public void startVerification(final EmailAttribute attribute,
 			final InitializeVerificationCallback initVerificationCallback) {
-
-		JSONObject postData = new JSONObject();
 		try {
 			AVSServer.startAttributeVerification(attribute.getAttributeAsJSONObject(), new AsyncHttpResponseHandler() {
 				
@@ -51,8 +50,8 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 				public void onSuccess(String response) { 
 					if((!(response.isEmpty())) ) {
 						attribute.setPendingData(response);
+						// it is important that we guarantee that the data is persisted before we return. 
 						AttributePersistenceCoordinator.saveAttribute(attribute, new PersistenceCallback() {
-	
 							@Override
 							public void onSuccess() {
 								initVerificationCallback.onSuccess();
