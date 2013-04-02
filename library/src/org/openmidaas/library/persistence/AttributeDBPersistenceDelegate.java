@@ -240,6 +240,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 		String attributeType = null;
 		Cursor cursor = database.query(AttributeEntry.TABLE_NAME, null, null, null, null, null, null);
 		if(cursor != null) {
+			
 			if (cursor.getCount() > 0) {
 				cursor.moveToFirst();
 				while(!(cursor.isAfterLast())) {
@@ -247,9 +248,9 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 					try {
 						if(attributeType.equalsIgnoreCase("email")) {
 							list.add(emailFactory.createAttributeFromCursor(cursor));
-						} else if (attributeType.equalsIgnoreCase("device")) {
-							list.add(deviceFactory.createAttributeFromCursor(cursor));
-						} else {
+						} else if(attributeType.equalsIgnoreCase("device")) {
+							
+						}else {
 							list.add(genericFactory.createAttributeFromCursor(cursor));
 						}
 					} catch (InvalidAttributeValueException e) {

@@ -24,6 +24,11 @@ public class DeviceAttribute extends AbstractAttribute<String>{
 	}
 
 	@Override
+	public void delete() {
+		throw new UnsupportedOperationException("Devic token cannot be deleted");
+	}
+	
+	@Override
 	protected boolean validateAttribute(String value) {
 		return true;
 	}

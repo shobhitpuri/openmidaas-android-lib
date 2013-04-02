@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
 import org.openmidaas.library.authentication.core.AccessTokenStrategy;
@@ -38,6 +39,8 @@ public class AuthenticationManager  {
 	private AccessTokenStrategy mAccessTokenStrategy;
 	
 	private CountDownLatch MUTEX;
+	
+	private final String TAG = "AuthenticationManager";
 	
 	private AuthenticationManager() {
 		mAccessToken = null;
@@ -63,6 +66,7 @@ public class AuthenticationManager  {
 	public synchronized AccessToken getAccessToken() {
 		MUTEX = new CountDownLatch(1);
 		if(mAccessToken == null){
+			MIDaaS.logDebug(TAG, "getting a new access token");
 			mAccessTokenStrategy.getAccessToken(new AccessTokenCallback() {
 				@Override
 				public void onSuccess(AccessToken accessToken) {
@@ -88,6 +92,7 @@ public class AuthenticationManager  {
 			}
 			return mAccessToken;	
 		} else {
+			MIDaaS.logDebug(TAG, "access token OK, returning...");
 			return mAccessToken;
 		}
 	}
