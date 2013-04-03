@@ -1,0 +1,9 @@
+{
+	"http": {
+		"statusCode": "200 OK",
+		"body":"blob",
+		"headers":[ {
+			"content-type": "application/json"
+		}]
+	}
+}
