@@ -16,21 +16,13 @@
 
 package org.openmidaas.library.authentication;
 
-import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
 import org.openmidaas.library.authentication.core.AccessTokenStrategy;
-import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-import org.openmidaas.library.persistence.core.DeviceTokenCallback;
+
 
 public class AuthenticationManager  {
 	

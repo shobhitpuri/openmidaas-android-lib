@@ -13,10 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.persistence.core;
+package org.openmidaas.library.model;
 
-import org.openmidaas.library.model.DeviceAttribute;
+import org.openmidaas.library.model.core.AbstractAttribute;
 
-public abstract class DeviceTokenCallback extends AbstractAttributeDataCallback<DeviceAttribute>{
+public class SubjectToken extends AbstractAttribute<String>{
+	
+	protected SubjectToken(){
+		mName = "device";
+	}
+
+	@Override
+	public void delete() {
+		throw new UnsupportedOperationException("Devic token cannot be deleted");
+	}
+	
+	@Override
+	protected boolean validateAttribute(String value) {
+		return true;
+	}
 
 }

@@ -15,36 +15,26 @@
  ******************************************************************************/
 package org.openmidaas.library;
 
-import java.util.List;
-
 import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
+import org.openmidaas.library.authentication.AVSDeviceRegistration;
 import org.openmidaas.library.authentication.AuthenticationManager;
+import org.openmidaas.library.authentication.DeviceRegistrar;
 import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.WorkQueueManager;
-import org.openmidaas.library.common.WorkQueueManager.Worker;
 import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
-import org.openmidaas.library.model.DeviceAttribute;
-import org.openmidaas.library.model.core.DeviceRegistration;
 import org.openmidaas.library.model.core.InitializationCallback;
-import org.openmidaas.library.model.core.MIDaaSError;
-import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-import org.openmidaas.library.persistence.core.DeviceTokenCallback;
-
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
  * Class that controls device registration
  */
 public final class MIDaaS{
-	
+	private static String TAG = "MIDaaS";
 	private static int currentLoggingLevel = 6;
 	public static final int LOG_LEVEL_VERBOSE = 2;
 	public static final int LOG_LEVEL_DEBUG = 3;
@@ -94,43 +84,21 @@ public final class MIDaaS{
 	public static void initialize(Context context, final InitializationCallback initCallback) {
 		mContext = context.getApplicationContext();
 		/* *** initialization routines *** */
-		// we will target our sandbox url.
+		// we will target our sandbox URL.
+		logDebug(TAG, "Initializing library");
 		ConnectionManager.setNetworkFactory(new AndroidNetworkFactory(Constants.AVP_SB_BASE_URL));
-		// we will use a sqlite database to persist attributes. 
+		// we will use a SQLITE database to persist attributes. 
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
-		// we will use our access token strategy that depends on level 0 devic authentication
+		// we will use our access token strategy that depends on level 0 device authentication
 		AuthenticationManager.getInstance().setAccessTokenStrategy(new AVSAccessTokenStrategy(new Level0DeviceAuthentication()));
-		AttributePersistenceCoordinator.getDeviceAttribute(new DeviceTokenCallback() {
-
+		logDebug(TAG, "Checking to see if device is registered.");
+		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
 			@Override
-			public void onSuccess(List<DeviceAttribute> list) {
-				// if list is empty, it means that the device isn't registered. 
-				if (list.isEmpty()) {
-					initCallback.onRegistering();
-					WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
-
-						@Override
-						public void execute() {
-							DeviceRegistration registration = new DeviceRegistration(new Level0DeviceAuthentication());
-							registration.registerDevice(initCallback);
-						}
-					
-					});
-				} else if(list.size() > 1) {
-					// if we have more than one device attribute, we have an error. 
-					initCallback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));
-				} else {
-					initCallback.onSuccess();
-				}
-				
+			public void execute() {
+				DeviceRegistrar.setDeviceRegistrationDelegate(new AVSDeviceRegistration(new Level0DeviceAuthentication()));
+				DeviceRegistrar.registerDevice(initCallback);
 			}
-
-			@Override
-			public void onError(MIDaaSException exception) {
-				initCallback.onError(exception);
-			}
-			
-		});	
+		});
 	}
 	
 	

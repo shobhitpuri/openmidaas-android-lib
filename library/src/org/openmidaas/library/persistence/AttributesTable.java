@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.persistence.core;
+package org.openmidaas.library.persistence;
 
-
-import org.openmidaas.library.model.core.AbstractAttribute;
+import android.provider.BaseColumns;
 
 /**
- * This interface 
  * 
+ * This abstract class specifies the table and 
+ * column names of the attributes table. 
  *
  */
-public interface AttributePersistenceDelegate extends PersistenceDelegate<AbstractAttribute<?>>{
-	
-	public void getEmails(EmailDataCallback callback);
-	
-	public void getGenerics(String attributeName, GenericDataCallback callback);
-
-	public void getSubjectToken(SubjectTokenCallback callback);
-	
-	public void getAllAttributes(AttributeDataCallback callback);
-	
+public abstract class AttributesTable implements BaseColumns {
+	public static final String TABLE_NAME 			= "attributes";
+	public static final String COLUMN_NAME_NAME		= "name";
+	public static final String COLUMN_NAME_VALUE 	= "value";
+	public static final String COLUMN_NAME_TOKEN	= "token";
+	public static final String COLUMN_NAME_PENDING	= "pending";
 }

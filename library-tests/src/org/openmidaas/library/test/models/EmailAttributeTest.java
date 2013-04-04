@@ -27,6 +27,7 @@ import org.junit.rules.ExpectedException;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
 import org.openmidaas.library.authentication.AuthenticationManager;
+import org.openmidaas.library.authentication.AVSDeviceRegistration;
 import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.AttributeFactory;
@@ -34,7 +35,6 @@ import org.openmidaas.library.model.EmailAttribute;
 import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
-import org.openmidaas.library.model.core.DeviceRegistration;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
@@ -145,7 +145,7 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 		@MediumTest
 		public void testEmailVerification() throws Exception {
 			final CountDownLatch mLatch = new CountDownLatch(1);
-			DeviceRegistration deviceRegistration = new DeviceRegistration(new Level0DeviceAuthentication());
+			AVSDeviceRegistration deviceRegistration = new AVSDeviceRegistration(new Level0DeviceAuthentication());
 			deviceRegistration.registerDevice(new InitializationCallback() {
 
 				@Override

@@ -15,7 +15,9 @@
  ******************************************************************************/
 package org.openmidaas.library.persistence.core;
 
-import org.openmidaas.library.model.core.PersistenceCallback;
+import java.util.List;
+
+import org.openmidaas.library.model.core.MIDaaSException;
 
 /**
  * Interface that persists data of type T and
@@ -30,12 +32,13 @@ public interface PersistenceDelegate<T> {
 	 * @param data - the data to save
 	 * @param callback - the persistence callback
 	 */
-	public void save(T data, PersistenceCallback callback);
+	public boolean save(T data) throws MIDaaSException;
 	
 	/**
 	 * This method deletes the data of type T.
 	 * @param data - the data to delete
 	 * @param callback - the persistence callback
 	 */
-	public void delete(T data, PersistenceCallback callback);
+	public boolean delete(T data) throws MIDaaSException;
+
 }

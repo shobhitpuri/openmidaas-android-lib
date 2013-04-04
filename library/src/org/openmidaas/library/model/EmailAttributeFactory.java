@@ -17,14 +17,15 @@ package org.openmidaas.library.model;
 
 
 import org.openmidaas.library.model.core.AbstractAttributeFactory;
-import org.openmidaas.library.persistence.AttributeEntry;
+import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.persistence.AttributesTable;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 
 import android.database.Cursor;
 
 /**
- * Email attribute factory implementation that creates new attributes. 
+ * Email attribute factory implementation that creates new email attributes. 
  */
 public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute> {
 
@@ -33,18 +34,18 @@ public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttr
 	@Override
 	public EmailAttribute createAttributeFromCursor(Cursor cursor) throws InvalidAttributeValueException {
 		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification());
-		emailAttribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributeEntry._ID))));
-		emailAttribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_TOKEN)));
-		emailAttribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
-		emailAttribute.setPendingData(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_PENDING)));
+		emailAttribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributesTable._ID))));
+		emailAttribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_TOKEN)));
+		emailAttribute.setValue(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_VALUE)));
+		emailAttribute.setPendingData(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_PENDING)));
 		return emailAttribute;
 	}
 	
 	@Override
-	public EmailAttribute createAttributeWithValue(String email) throws InvalidAttributeValueException {
+	public EmailAttribute createAttributeWithValue(String email) throws InvalidAttributeValueException, MIDaaSException {
 		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification());
 		emailAttribute.setValue(email);
-		AttributePersistenceCoordinator.saveAttribute(emailAttribute, null);
+		AttributePersistenceCoordinator.saveAttribute(emailAttribute);
 		return emailAttribute;
 	}
 }

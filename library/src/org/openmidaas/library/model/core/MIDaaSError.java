@@ -20,7 +20,8 @@ public enum MIDaaSError {
 	SERVER_ERROR(101, "Error with the attribute server. "),
 	DEVICE_REGISTRATION_ERROR(102, "There as an error with device registration."),
 	ATTRIBUTE_ALREADY_EXISTS(200, "The current attribute already exists. "),
-	DATABASE_ERROR(201, "There was an error with the database");
+	DATABASE_ERROR(201, "There was an error with the database"),
+	ATTRIBUTE_RETRIEVAL_MISMATCH(202, "The attribute being retrieved is not what is was originally requested");
 	
 	private final int mErrorCode;
 	

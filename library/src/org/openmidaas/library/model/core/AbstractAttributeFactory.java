@@ -30,7 +30,7 @@ public interface AbstractAttributeFactory<T extends AbstractAttribute<?>> {
 	 * @return - the attribute of type T
 	 * @throws InvalidAttributeValueException
 	 */
-	public T createAttributeWithValue(String value) throws InvalidAttributeValueException;
+	public T createAttributeWithValue(String value) throws InvalidAttributeValueException, MIDaaSException;
 	
 	/**
 	 * Creates an attribute of type T with the specified cursor. 

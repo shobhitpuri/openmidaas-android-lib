@@ -166,22 +166,8 @@ public abstract class AbstractAttribute<T> {
 		throw new UnsupportedOperationException("Cannot complete verification");
 	}
 	
-	public void delete() {
-		AttributePersistenceCoordinator.removeAttribute(this, new PersistenceCallback() {
-
-			@Override
-			public void onSuccess() {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onError(MIDaaSException exception) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		});
+	public void delete() throws MIDaaSException {
+		AttributePersistenceCoordinator.removeAttribute(this);
 	}
 	
 	/**

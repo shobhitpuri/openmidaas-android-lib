@@ -53,22 +53,23 @@ public class AttributeDBHelper extends SQLiteOpenHelper{
 	 * 		name 	- 	attribute name 	(TEXT)
 	 * 		value 	- 	attribute value (TEXT)
 	 * 		token	-	signed token	(TEXT)
+	 * 		pending -	pending data	(TEXT)
 	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		MIDaaS.logDebug(TAG, "Creating database and tables");
-		db.execSQL("CREATE TABLE " + AttributeEntry.TABLE_NAME + " (" + 
-				AttributeEntry._ID 					+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
-				AttributeEntry.COLUMN_NAME_NAME 	+ " TEXT NOT NULL, " +
-				AttributeEntry.COLUMN_NAME_VALUE 	+ " TEXT UNIQUE, " +
-				AttributeEntry.COLUMN_NAME_TOKEN 	+ " TEXT, " + 
-				AttributeEntry.COLUMN_NAME_PENDING 	+ " TEXT);");
+		db.execSQL("CREATE TABLE " + AttributesTable.TABLE_NAME + " (" + 
+				AttributesTable._ID 					+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
+				AttributesTable.COLUMN_NAME_NAME 	+ " TEXT NOT NULL, " +
+				AttributesTable.COLUMN_NAME_VALUE 	+ " TEXT UNIQUE, " +
+				AttributesTable.COLUMN_NAME_TOKEN 	+ " TEXT, " + 
+				AttributesTable.COLUMN_NAME_PENDING 	+ " TEXT);");
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		MIDaaS.logDebug(TAG, "Upgrading database version from: " + oldVersion + " to " + newVersion);
-		db.execSQL("DROP TABLE IF EXISTS " + AttributeEntry.TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + AttributesTable.TABLE_NAME);
 	    onCreate(db);
 	}
 }

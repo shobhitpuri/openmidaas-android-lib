@@ -17,16 +17,12 @@ package org.openmidaas.library.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 
@@ -60,19 +56,17 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 			public void onSuccess(String response) {
 				attribute.setSignedToken(response);
 				attribute.setPendingData(null);
-				AttributePersistenceCoordinator.saveAttribute(attribute, new PersistenceCallback() {
-
-					@Override
-					public void onSuccess() {
+				
+				try {
+					if(AttributePersistenceCoordinator.saveAttribute(attribute)) {
 						completeVerificationCallback.onSuccess();
-					}
-
-					@Override
-					public void onError(MIDaaSException exception) {
-						completeVerificationCallback.onError(exception);
+					} else {
+						completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
 					}
 					
-				});
+				} catch (MIDaaSException e) {
+					completeVerificationCallback.onError(e);
+				}
 			}
 			
 			@Override

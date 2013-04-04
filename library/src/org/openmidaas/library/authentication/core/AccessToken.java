@@ -17,7 +17,7 @@ package org.openmidaas.library.authentication.core;
 
 import java.util.Date;
 
-import org.openmidaas.library.model.DeviceAttribute;
+import org.openmidaas.library.model.SubjectToken;
 import org.openmidaas.library.model.core.MIDaaSException;
 
 /**
@@ -56,7 +56,7 @@ public class AccessToken {
 		return false;
 	}
 	
-	public static AccessToken createAccessTokenFromDeviceAttribute(DeviceAttribute deviceAttribute, String deviceAuthenticationToken) {
+	public static AccessToken createAccessTokenFromDeviceAttribute(SubjectToken deviceAttribute, String deviceAuthenticationToken) {
 		return (new AccessToken(deviceAttribute.getSignedToken()+":"+deviceAuthenticationToken, new Date(Long.MAX_VALUE)));
 	}
 	

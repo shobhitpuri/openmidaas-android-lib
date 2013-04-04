@@ -16,14 +16,12 @@
 package org.openmidaas.library.model;
 
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.model.core.PersistenceCallback;
+
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -34,7 +32,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  */
 public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate<EmailAttribute>{
 
-	
 	/**
 	 * The method calls the server with the provided attribute 
 	 * value (email address) and returns the result via a callback to 
@@ -51,18 +48,15 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 					if((!(response.isEmpty())) ) {
 						attribute.setPendingData(response);
 						// it is important that we guarantee that the data is persisted before we return. 
-						AttributePersistenceCoordinator.saveAttribute(attribute, new PersistenceCallback() {
-							@Override
-							public void onSuccess() {
+						try {
+							if(AttributePersistenceCoordinator.saveAttribute(attribute)) {
 								initVerificationCallback.onSuccess();
+							} else {
+								initVerificationCallback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
 							}
-	
-							@Override
-							public void onError(
-									MIDaaSException exception) {
-								initVerificationCallback.onError(exception);
-							}
-						});
+						} catch (MIDaaSException e) {
+							initVerificationCallback.onError(e);
+						}
 						
 					} else {
 						initVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));

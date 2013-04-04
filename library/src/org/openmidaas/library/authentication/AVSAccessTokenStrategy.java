@@ -18,16 +18,17 @@ package org.openmidaas.library.authentication;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.authentication.core.AccessTokenStrategy;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
-import org.openmidaas.library.model.DeviceAttribute;
+import org.openmidaas.library.model.SubjectToken;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-import org.openmidaas.library.persistence.core.DeviceTokenCallback;
+import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 
 /**
  * 
@@ -36,6 +37,8 @@ import org.openmidaas.library.persistence.core.DeviceTokenCallback;
  *
  */
 public class AVSAccessTokenStrategy implements AccessTokenStrategy, DeviceAuthenticationCallback {
+	
+	private final String TAG = "AVSAccessTokenStrategy";
 
 	private DeviceAuthenticationStrategy mDeviceAuthStrategy;
 	
@@ -51,6 +54,7 @@ public class AVSAccessTokenStrategy implements AccessTokenStrategy, DeviceAuthen
 	
 	@Override
 	public void getAccessToken(AccessTokenCallback callback) {
+		MIDaaS.logDebug(TAG, "authenticationg device with: "  +mDeviceAuthStrategy.getClass().getName());
 		mAccessTokenCallback = callback;
 		// first authenticate the device.
 		mDeviceAuthStrategy.performDeviceAuthentication(this);
@@ -58,17 +62,21 @@ public class AVSAccessTokenStrategy implements AccessTokenStrategy, DeviceAuthen
 
 	@Override
 	public void onSuccess(final String deviceToken) {   
-		AttributePersistenceCoordinator.getDeviceAttribute(new DeviceTokenCallback() {
-
+		AttributePersistenceCoordinator.getSubjectToken(new SubjectTokenCallback() {
+			
 			@Override
-			public void onSuccess(List<DeviceAttribute> list) {
+			public void onSuccess(List<SubjectToken> list) {
+				MIDaaS.logDebug(TAG, "device authentication successful...");
 				// we now have the device token. With that, we will create an access token. 
 				// the access token is a combination of the device auth token and subject token. 
 				if(list.isEmpty()) {
+					MIDaaS.logError(TAG, "no subject token");
 					mAccessTokenCallback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));
 				} else if(list.size() > 1) {
+					MIDaaS.logError(TAG, "multiple subject tokens..error");
 					mAccessTokenCallback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));
 				} else {
+					MIDaaS.logDebug(TAG, "returning new access token");
 					// we should have only one entry in our list. 
 					// create and return the access token.
 					// XXX:Future: send the device token and subject token to the server and get the access token. 

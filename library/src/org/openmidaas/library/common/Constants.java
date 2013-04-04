@@ -24,4 +24,7 @@ public final class Constants {
 	public static final String COMPLETE_AUTH_URL = "/1/completeAttributeVerification";
 	public static final String REGISTRATION_URL = "/1/device/register";
 	public enum ATTRIBUTE_STATE { VERIFIED, PENDING_VERIFICATION, NOT_VERIFIABLE, NOT_VERIFIED, ERROR_IN_SAVE, UNKNOWN };
+	public static final class RESERVED_WORDS{
+		public static final String SUBJECT_TOKEN = "subject_token";
+	}
 }

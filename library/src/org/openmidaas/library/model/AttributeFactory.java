@@ -30,8 +30,8 @@ public class AttributeFactory {
 		return new GenericAttributeFactory();
 	}
 	
-	public static DeviceAttributeFactory getDeviceAttributeFactory() {
-		return new DeviceAttributeFactory();
+	public static SubjectTokenFactory getDeviceAttributeFactory() {
+		return new SubjectTokenFactory();
 	}
 	
 }

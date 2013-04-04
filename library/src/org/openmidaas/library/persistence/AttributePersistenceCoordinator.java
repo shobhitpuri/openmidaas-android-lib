@@ -15,22 +15,24 @@
  ******************************************************************************/
 package org.openmidaas.library.persistence;
 
-
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.WorkQueueManager;
 import org.openmidaas.library.model.core.AbstractAttribute;
-import org.openmidaas.library.model.core.PersistenceCallback;
+import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.core.AttributeDataCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
-import org.openmidaas.library.persistence.core.DeviceTokenCallback;
 import org.openmidaas.library.persistence.core.EmailDataCallback;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
+import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 
 /**
  * 
- * Wrapper around the persistence delegate. 
+ * Wrapper around a specific attribute persistence delegate. 
  *
  */
 public class AttributePersistenceCoordinator {
+	
+	private static String TAG = "AttributePersistenceCoordinator";
 	
 	private static AttributePersistenceDelegate mDelegate = null;
 	
@@ -40,15 +42,23 @@ public class AttributePersistenceCoordinator {
 		}
 	}
 	
-	public static void removeAttribute(AbstractAttribute<?> attribute, PersistenceCallback callback) {
-		mDelegate.delete(attribute, callback);
+	public static boolean removeAttribute(AbstractAttribute<?> attribute) throws MIDaaSException {
+		MIDaaS.logDebug(TAG, "deleteing attribute: " + attribute.getName());
+		return (mDelegate.delete(attribute));
 	}
 	
-	public static void saveAttribute(AbstractAttribute<?> attribute, PersistenceCallback callback) {
-		mDelegate.save(attribute, callback);
+	public static boolean saveAttribute(AbstractAttribute<?> attribute) throws MIDaaSException {
+		MIDaaS.logDebug(TAG, "saving attribute: " + attribute.getName());
+		return (mDelegate.save(attribute));
+	}
+	
+	public static void getSubjectToken(final SubjectTokenCallback callback) {
+		MIDaaS.logDebug(TAG, "fetching subject token");
+		mDelegate.getSubjectToken(callback);
 	}
 	
 	public static void getEmails(final EmailDataCallback callback) {
+		MIDaaS.logDebug(TAG, "fetching emails");
 		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
 			
 			@Override
@@ -58,15 +68,20 @@ public class AttributePersistenceCoordinator {
 		});
 	}
 	
-	public static void getGenericAttributes(String attributeName, GenericDataCallback callback) {
-		mDelegate.getGenerics(attributeName, callback);
+	public static void getGenericAttributes(final String attributeName, final GenericDataCallback callback) {
+		MIDaaS.logDebug(TAG, "fetching generic attributes");
+		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
+			
+			@Override
+			public void execute() {
+				mDelegate.getGenerics(attributeName, callback);
+			}
+		});
 	}
 	
-	public static void getDeviceAttribute(DeviceTokenCallback callback){
-		mDelegate.getDeviceToken(callback);
-	}
 	
 	public static void getAllAttributes(final AttributeDataCallback callback) {
+		MIDaaS.logDebug(TAG, "fetching all attributes");
 		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
 			@Override
 			public void execute() {

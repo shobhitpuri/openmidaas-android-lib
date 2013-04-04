@@ -16,7 +16,8 @@
 package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttributeFactory;
-import org.openmidaas.library.persistence.AttributeEntry;
+import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.persistence.AttributesTable;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import android.database.Cursor;
 
@@ -38,27 +39,28 @@ public class GenericAttributeFactory implements AbstractAttributeFactory<Generic
 	
 	@Override
 	public GenericAttribute createAttributeFromCursor(Cursor cursor) throws InvalidAttributeValueException {
-		GenericAttribute attribute = new GenericAttribute(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_NAME)));
-		attribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributeEntry._ID))));
-		attribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_TOKEN)));
-		attribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
+		GenericAttribute attribute = new GenericAttribute(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)));
+		attribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributesTable._ID))));
+		attribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_TOKEN)));
+		attribute.setValue(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_VALUE)));
 		return attribute;
 	}
 	
 	/**
+	 * @throws MIDaaSException 
 	 * @deprecated Use the method createAttribute(String name, String value) to create a GenericAttribute instead. Otherwise, call
 	 * "setAttributeName(String name)" before calling createAttribute(String value).
 	 */
 	@Override
 	@Deprecated
-	public GenericAttribute createAttributeWithValue(String value) throws InvalidAttributeValueException, IllegalArgumentException {
+	public GenericAttribute createAttributeWithValue(String value) throws InvalidAttributeValueException, IllegalArgumentException, MIDaaSException {
 		if(mAttributeName == null || mAttributeName.isEmpty()) {
 			throw new IllegalArgumentException("Attribute value cannot be set when attribute name is null. Try calling \"setAttributeName()\" first");
 		}
 		GenericAttribute attribute = new GenericAttribute(mAttributeName);
 		attribute.setValue(value);
 		// saves to the DB in the background.
-		AttributePersistenceCoordinator.saveAttribute(attribute, null);
+		AttributePersistenceCoordinator.saveAttribute(attribute);
 		return (attribute);
 	}
 	
@@ -69,15 +71,16 @@ public class GenericAttributeFactory implements AbstractAttributeFactory<Generic
 	 * @return
 	 * @throws InvalidAttributeValueException
 	 * @throws IllegalArgumentException
+	 * @throws MIDaaSException 
 	 */
-	public GenericAttribute createAttribute(String name, String value) throws InvalidAttributeValueException, IllegalArgumentException {
+	public GenericAttribute createAttribute(String name, String value) throws InvalidAttributeValueException, IllegalArgumentException, MIDaaSException {
 		if (name == null || name.isEmpty()) {
 			throw new IllegalArgumentException("Attribute value cannot be set when attribute name is null. Try calling \"setAttributeName()\" first");
 		}
 		GenericAttribute attribute = new GenericAttribute(name);
 		attribute.setValue(value);
 		// saves to the DB in the background.
-		AttributePersistenceCoordinator.saveAttribute(attribute, null);
+		AttributePersistenceCoordinator.saveAttribute(attribute);
 		return attribute;
 	}
 }

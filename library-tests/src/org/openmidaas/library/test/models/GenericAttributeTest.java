@@ -51,6 +51,10 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 			Assert.assertEquals(null, genericAttribute.getPendingData());
 			} catch (InvalidAttributeValueException e) {
 				Assert.fail();
+			} catch (IllegalArgumentException e) {
+				Assert.fail();
+			} catch (MIDaaSException e) {
+				Assert.fail();
 			}
 	}
 	
@@ -64,6 +68,10 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 				Assert.fail();
 			} catch (UnsupportedOperationException ex) {
 				
+			} catch (IllegalArgumentException e) {
+				Assert.fail();
+			} catch (MIDaaSException e) {
+				Assert.fail();
 			}
 	}
 	
@@ -77,6 +85,8 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
 			e.printStackTrace();
+		} catch (MIDaaSException e) {
+			Assert.fail();
 		}
 	}
 	
@@ -90,6 +100,8 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
 			e.printStackTrace();
+		} catch (MIDaaSException e) {
+			Assert.fail();
 		}
 	}
 	
@@ -99,6 +111,10 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 		GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
 		Assert.assertEquals(genericAttribute.getName(), attributeName);
 		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.fail();
+		} catch (MIDaaSException e) {
 			Assert.fail();
 		}
 		
@@ -113,6 +129,8 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 			
 		} catch(InvalidAttributeValueException e) {
 			
+		} catch (MIDaaSException e) {
+			Assert.fail();
 		}
 	}
 	
@@ -125,6 +143,10 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 		} catch (UnsupportedOperationException e) {
 			
 		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.fail();
+		} catch (MIDaaSException e) {
 			Assert.fail();
 		}
 	}
@@ -151,6 +173,10 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 			
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.fail();
+		} catch (MIDaaSException e) {
+			Assert.fail();
 		}
 	}
 	
@@ -176,6 +202,10 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 			Assert.fail("Expected UnsupportedOperationException");
 		} catch(UnsupportedOperationException e) {
 		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.fail();
+		} catch (MIDaaSException e) {
 			Assert.fail();
 		}
 	}

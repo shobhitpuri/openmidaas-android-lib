@@ -16,28 +16,28 @@
 package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttributeFactory;
-import org.openmidaas.library.persistence.AttributeEntry;
+import org.openmidaas.library.persistence.AttributesTable;
 
 
 import android.database.Cursor;
 
-public class DeviceAttributeFactory implements AbstractAttributeFactory<DeviceAttribute>{
+public class SubjectTokenFactory implements AbstractAttributeFactory<SubjectToken>{
 
-	protected DeviceAttributeFactory(){}
+	protected SubjectTokenFactory(){}
 	
 	@Override
-	public DeviceAttribute createAttributeWithValue(String value) throws InvalidAttributeValueException {
-		DeviceAttribute token = new DeviceAttribute();
+	public SubjectToken createAttributeWithValue(String value) throws InvalidAttributeValueException {
+		SubjectToken token = new SubjectToken();
 		token.setValue(value);
 		return token;
 	}
 	
 	@Override
-	public DeviceAttribute createAttributeFromCursor(Cursor cursor) throws InvalidAttributeValueException {
-		DeviceAttribute attribute = new DeviceAttribute();
-		attribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributeEntry._ID))));
-		attribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_TOKEN)));
-		attribute.setValue(cursor.getString(cursor.getColumnIndex(AttributeEntry.COLUMN_NAME_VALUE)));
+	public SubjectToken createAttributeFromCursor(Cursor cursor) throws InvalidAttributeValueException {
+		SubjectToken attribute = new SubjectToken();
+		attribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributesTable._ID))));
+		attribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_TOKEN)));
+		attribute.setValue(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_VALUE)));
 		return attribute;
 	}
 }

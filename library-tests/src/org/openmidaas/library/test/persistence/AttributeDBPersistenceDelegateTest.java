@@ -62,42 +62,34 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 		GenericAttribute a1 = factory.createAttribute(TEST_NAME, "a1");
 		a1.setSignedToken(SIGNED_TOKEN);
 		mNotification = false;
-		AttributePersistenceCoordinator.saveAttribute(a1, new PersistenceCallback() {
-
-			@Override
-			public void onSuccess() {
+		if(AttributePersistenceCoordinator.saveAttribute(a1)) {
 				// get all attributes of type test - there will be only 1 under the current test condition
-				AttributePersistenceCoordinator.getGenericAttributes("test", new GenericDataCallback() {
+			AttributePersistenceCoordinator.getGenericAttributes("test", new GenericDataCallback() {
 
-					@Override
-					public void onSuccess(List<GenericAttribute> list) {
-						for(GenericAttribute a: list) {
-							if(a.getSignedToken().equalsIgnoreCase(SIGNED_TOKEN)) {
-								mNotification = true;
-								mLatch.countDown();
-							} else {
-								mNotification = false;
-								mLatch.countDown();
-							}
+				@Override
+				public void onSuccess(List<GenericAttribute> list) {
+					for(GenericAttribute a: list) {
+						if(a.getSignedToken().equalsIgnoreCase(SIGNED_TOKEN)) {
+							mNotification = true;
+							mLatch.countDown();
+						} else {
+							mNotification = false;
+							mLatch.countDown();
 						}
 					}
+				}
 
-					@Override
-					public void onError(MIDaaSException exception) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
-			}
-
-			@Override
-			public void onError(MIDaaSException exception) {
-				mNotification = false;
-			}
-			
-		});
-		mLatch.await();
-		Assert.assertTrue(mNotification);
+				@Override
+				public void onError(MIDaaSException exception) {
+					Assert.fail();
+				}
+			});
+			mLatch.await();
+			Assert.assertTrue(mNotification);
+		} else {
+			Assert.fail();
+		}
+		
 	}
 	
 	@SmallTest
@@ -106,22 +98,10 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 		GenericAttribute a1 = factory.createAttribute(TEST_NAME, "a1");
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		mNotification = false;
-		AttributePersistenceCoordinator.removeAttribute(a1, new PersistenceCallback() {
-
-			@Override
-			public void onSuccess() {
-				mNotification = true;
-				mLatch.countDown();
-			}
-
-			@Override
-			public void onError(MIDaaSException exception) {
-				mNotification = false;
-				mLatch.countDown();
-			}
-		});
-		mLatch.await();
-		Assert.assertTrue(mNotification);
+		if(AttributePersistenceCoordinator.removeAttribute(a1)) {
+		} else {
+			Assert.fail();
+		}
 	}
 	
 	@SmallTest

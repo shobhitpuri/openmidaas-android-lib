@@ -19,7 +19,7 @@ import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.model.AttributeFactory;
-import org.openmidaas.library.model.DeviceAttribute;
+import org.openmidaas.library.model.SubjectToken;
 
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -29,7 +29,7 @@ public class AccessTokenTest extends InstrumentationTestCase{
 	private final String DEVICE_ATTRIBUTE_VALUE = "DEVICE_ATTRIBUTE_VALUE";
 	private final String DEVICE_AUTH_TOKEN = "DEVICE_AUTH_TOKEN";
 	private AccessToken token;
-	private DeviceAttribute deviceAttribute;
+	private SubjectToken deviceAttribute;
 	private String expectedToken = DEVICE_ATTRIBUTE_VALUE+":"+DEVICE_AUTH_TOKEN;
 	protected void setUp() throws Exception {
 		MIDaaS.setContext( getInstrumentation().getContext());
