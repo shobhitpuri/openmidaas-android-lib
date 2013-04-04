@@ -9,7 +9,7 @@
 *.class
 
 library-tests/*.log
-library-tests/*.xml
+library-tests/lint.xml
 # generated files
 library/bin/
 library/gen/
