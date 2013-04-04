@@ -99,7 +99,7 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 			public void onSuccess(String response) {
 				try {
 					MIDaaS.logDebug(TAG, "device successfully registered. persisting registration.");
-					deviceToken = AttributeFactory.getDeviceAttributeFactory().createAttributeWithValue(Constants.RESERVED_WORDS.SUBJECT_TOKEN);
+					deviceToken = AttributeFactory.getSubjectTokenFactory().createAttributeWithValue(Constants.RESERVED_WORDS.SUBJECT_TOKEN);
 					deviceToken.setSignedToken(response);
 					AttributePersistenceCoordinator.saveAttribute(deviceToken);
 					mInitCallback.onSuccess();

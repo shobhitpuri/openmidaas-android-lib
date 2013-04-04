@@ -16,6 +16,8 @@
 package org.openmidaas.library.persistence;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.openmidaas.library.MIDaaS;
@@ -208,7 +210,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 	@Override
 	public void getSubjectToken(final SubjectTokenCallback callback) {
 		List<SubjectToken> list = new ArrayList<SubjectToken>();
-		SubjectTokenFactory factory = AttributeFactory.getDeviceAttributeFactory();
+		SubjectTokenFactory factory = AttributeFactory.getSubjectTokenFactory();
 		Cursor cursor = fetchByAttributeName("device");
 		if(cursor.getCount()>0) {
 			cursor.moveToFirst();
@@ -257,9 +259,25 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 					}
 					cursor.moveToNext();
 				}
-				cursor.close();
-				dbHelper.close();
-				callback.onSuccess(list);
+			List<AbstractAttribute<?>> pending = new ArrayList<AbstractAttribute<?>>();
+			List<AbstractAttribute<?>> verified = new ArrayList<AbstractAttribute<?>>();
+			List<AbstractAttribute<?>> other = new ArrayList<AbstractAttribute<?>>();
+			for(AbstractAttribute<?> attribute:list) {
+				if(attribute.getState().equals(ATTRIBUTE_STATE.PENDING_VERIFICATION)) {
+					pending.add(attribute);
+				} else if(attribute.getState().equals(ATTRIBUTE_STATE.VERIFIED)) {
+					verified.add(attribute);
+				} else {
+					other.add(attribute);
+				}
+			}
+			list.clear();
+			list.addAll(pending);
+			list.addAll(verified);
+			list.addAll(other);
+			cursor.close();
+			dbHelper.close();
+			callback.onSuccess(list);
 			} else {
 				cursor.close();
 				dbHelper.close();

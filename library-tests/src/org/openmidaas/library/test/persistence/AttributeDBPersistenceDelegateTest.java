@@ -25,8 +25,10 @@ import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.model.core.PersistenceCallback;
+import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
+import org.openmidaas.library.test.models.MockPersistence;
 
 import android.content.Context;
 import android.test.InstrumentationTestCase;
@@ -52,6 +54,7 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
 		MIDaaS.setContext(mContext);
+		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
 	}
 	
 	
@@ -94,7 +97,7 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	
 	@SmallTest
 	public void testDelete() throws Exception {
-		mContext.deleteDatabase("attributes.db");
+		//mContext.deleteDatabase("attributes.db");
 		GenericAttribute a1 = factory.createAttribute(TEST_NAME, "a1");
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		mNotification = false;

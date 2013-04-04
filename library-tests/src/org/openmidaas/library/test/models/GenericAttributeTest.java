@@ -39,8 +39,8 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
 		MIDaaS.setContext(mContext);
-		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
-		getInstrumentation().getContext().deleteDatabase("attributes.db");
+		AttributePersistenceCoordinator.setPersistenceDelegate(new MockPersistence());
+		//getInstrumentation().getContext().deleteDatabase("attributes.db");
 		
 	}
 	

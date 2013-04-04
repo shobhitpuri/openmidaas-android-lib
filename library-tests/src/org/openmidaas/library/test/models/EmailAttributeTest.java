@@ -61,18 +61,15 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 		private MockTransportFactory mockFactory;
 		
 		protected void setUp() throws Exception {
-			if(!isInit) {
-				mContext = getInstrumentation().getContext();
-				MIDaaS.setContext(mContext);
-				mContext.deleteDatabase("attributes.db");
-				AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
-				AuthenticationManager.getInstance().setAccessTokenStrategy(new AVSAccessTokenStrategy(new Level0DeviceAuthentication()));
-				emailAttribute =  AttributeFactory.getEmailAttributeFactory().createAttributeWithValue("rob@gmail.com");
-				
-				mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
-				ConnectionManager.setNetworkFactory(mockFactory);
-				isInit = true;
-			}
+			mContext = getInstrumentation().getContext();
+			MIDaaS.setContext(mContext);
+			// set the persistence delegate to a simple list. database doesn't seem to work after deletion. 
+			AttributePersistenceCoordinator.setPersistenceDelegate(new MockPersistence());
+			AuthenticationManager.getInstance().setAccessTokenStrategy(new MockAccessTokenStrategy());
+			emailAttribute =  AttributeFactory.getEmailAttributeFactory().createAttributeWithValue("rob@gmail.com");
+			mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
+			ConnectionManager.setNetworkFactory(mockFactory);
+			isInit = true;
 		}
 		
 		@SmallTest
@@ -144,41 +141,18 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 		
 		@MediumTest
 		public void testEmailVerification() throws Exception {
-			final CountDownLatch mLatch = new CountDownLatch(1);
-			AVSDeviceRegistration deviceRegistration = new AVSDeviceRegistration(new Level0DeviceAuthentication());
-			deviceRegistration.registerDevice(new InitializationCallback() {
-
-				@Override
-				public void onSuccess() {
-					notificationSuccess = true;
-					mLatch.countDown();
-				}
-
-				@Override
-				public void onError(MIDaaSException exception) {
-					notificationSuccess = false;
-					mLatch.countDown();
-				}
-
-				@Override
-				public void onRegistering() {
-					
-				}	
-			});
-			mLatch.await();
-			if(notificationSuccess) {
-				initializeEmailVerificationSuccess();
-				completeEmailVerificationSuccess();
-			}
-			else {
-				Assert.fail();
-			}
+			mContext = getInstrumentation().getContext();
 			
+			//emailAttribute = AttributeFactory.getEmailAttributeFactory().createAttributeWithValue("rob@gmail.com");
+			final CountDownLatch mLatch = new CountDownLatch(1);
+			
+			initializeEmailVerificationSuccess();
+			completeEmailVerificationSuccess();	
 		}
 		
 		private void initializeEmailVerificationSuccess() throws Exception {
 			final CountDownLatch mLatch = new CountDownLatch(1);
-			
+			mockFactory.setFilename("init_email_ver_success.json");
 			//emailAttribute = AttributeFactory.createEmailAttributeFactory().createAttribute("rob@gmail.com");
 			emailAttribute.startVerification(new InitializeVerificationCallback() {
 

@@ -37,9 +37,7 @@ public class AttributePersistenceCoordinator {
 	private static AttributePersistenceDelegate mDelegate = null;
 	
 	public static void setPersistenceDelegate(AttributePersistenceDelegate delegate) {
-		if(mDelegate == null) {
-			mDelegate = delegate;
-		}
+		mDelegate = delegate;
 	}
 	
 	public static boolean removeAttribute(AbstractAttribute<?> attribute) throws MIDaaSException {
