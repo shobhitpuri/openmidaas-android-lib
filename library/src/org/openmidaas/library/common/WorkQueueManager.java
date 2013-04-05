@@ -86,12 +86,13 @@ public class WorkQueueManager {
 				}
 				MIDaaS.logDebug(TAG, "doing work...");
 				worker.execute();
-				MIDaaS.logDebug(TAG, "done work...");
+				
 			} catch(InterruptedException intException) {
 				break;
 			} catch(Exception e) {
 				MIDaaS.logError(TAG, e.getMessage());
 			}
+			MIDaaS.logDebug(TAG, "done work...");
 		}
 	}
 	

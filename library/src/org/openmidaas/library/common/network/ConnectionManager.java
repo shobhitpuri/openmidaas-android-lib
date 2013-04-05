@@ -20,6 +20,8 @@ package org.openmidaas.library.common.network;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONObject;
+import org.openmidaas.library.MIDaaS;
+
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 /**
@@ -29,6 +31,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  * 
  */
 public class ConnectionManager {
+	
+	private static String TAG = "ConnectionManager";
 	
 	private static INetworkFactory mNetworkFactory;
 	
@@ -51,10 +55,12 @@ public class ConnectionManager {
 	 * @param responseHandler
 	 */
 	public static void postRequest(boolean withSSL, String url, HashMap<String, String> headers, JSONObject data, AsyncHttpResponseHandler responseHandler) {
+		MIDaaS.logDebug(TAG, "making POST request to: " + url);
 		mNetworkTransport.doPostRequest(withSSL, url, headers, data, responseHandler);
 	}
 	
 	public static void getRequest(boolean withSSL, String url, Map<String, String> requestParams, AsyncHttpResponseHandler responseHandler) {
+		MIDaaS.logDebug(TAG, "making GET request to: " + url);
 		mNetworkTransport.doGetRequest(withSSL, url, requestParams, responseHandler);
 	}
 }

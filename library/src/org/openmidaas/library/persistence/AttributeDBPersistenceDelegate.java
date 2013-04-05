@@ -259,6 +259,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 					}
 					cursor.moveToNext();
 				}
+			
 			List<AbstractAttribute<?>> pending = new ArrayList<AbstractAttribute<?>>();
 			List<AbstractAttribute<?>> verified = new ArrayList<AbstractAttribute<?>>();
 			List<AbstractAttribute<?>> other = new ArrayList<AbstractAttribute<?>>();

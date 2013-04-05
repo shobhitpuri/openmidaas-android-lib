@@ -16,6 +16,7 @@
 package org.openmidaas.library.model;
 
 import org.json.JSONException;
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
@@ -32,6 +33,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  */
 public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate<EmailAttribute>{
 
+	private final String TAG = "InitializeEmailVerification";
+	
 	/**
 	 * The method calls the server with the provided attribute 
 	 * value (email address) and returns the result via a callback to 
@@ -50,6 +53,7 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 						// it is important that we guarantee that the data is persisted before we return. 
 						try {
 							if(AttributePersistenceCoordinator.saveAttribute(attribute)) {
+								MIDaaS.logDebug(TAG, "done init email verification.");
 								initVerificationCallback.onSuccess();
 							} else {
 								initVerificationCallback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
