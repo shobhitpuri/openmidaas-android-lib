@@ -16,6 +16,7 @@
 package org.openmidaas.library.persistence;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -260,22 +261,16 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 					cursor.moveToNext();
 				}
 			
-			List<AbstractAttribute<?>> pending = new ArrayList<AbstractAttribute<?>>();
-			List<AbstractAttribute<?>> verified = new ArrayList<AbstractAttribute<?>>();
-			List<AbstractAttribute<?>> other = new ArrayList<AbstractAttribute<?>>();
-			for(AbstractAttribute<?> attribute:list) {
-				if(attribute.getState().equals(ATTRIBUTE_STATE.PENDING_VERIFICATION)) {
-					pending.add(attribute);
-				} else if(attribute.getState().equals(ATTRIBUTE_STATE.VERIFIED)) {
-					verified.add(attribute);
-				} else {
-					other.add(attribute);
+			final List<ATTRIBUTE_STATE> definedOrder = Arrays.asList(ATTRIBUTE_STATE.PENDING_VERIFICATION, ATTRIBUTE_STATE.VERIFIED, ATTRIBUTE_STATE.NOT_VERIFIABLE);	
+			Collections.sort(list, new Comparator<AbstractAttribute<?>>() {
+
+				@Override
+				public int compare(AbstractAttribute<?> arg0,
+						AbstractAttribute<?> arg1) {
+					return (definedOrder.indexOf(arg0.getState())-definedOrder.indexOf(arg1.getState()));
 				}
-			}
-			list.clear();
-			list.addAll(pending);
-			list.addAll(verified);
-			list.addAll(other);
+									
+			});
 			cursor.close();
 			dbHelper.close();
 			callback.onSuccess(list);
