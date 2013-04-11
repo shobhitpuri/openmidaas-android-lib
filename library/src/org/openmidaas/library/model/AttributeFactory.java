@@ -34,4 +34,11 @@ public class AttributeFactory {
 		return new SubjectTokenFactory();
 	}
 	
+	public static CreditCardAttributeFactory getCreditCardAttributeFactory() {
+		return new CreditCardAttributeFactory();
+	}
+	
+	public static ShippingAddressAttributeFactory getShippingAddressAttributeFactory() {
+		return new ShippingAddressAttributeFactory();
+	}
 }

@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
-import org.openmidaas.library.common.network.INetworkTransport;
+import org.openmidaas.library.common.network.NetworkTransport;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.test.Utils;
@@ -28,7 +28,7 @@ import android.content.Context;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-public class MockTransport implements INetworkTransport{
+public class MockTransport implements NetworkTransport{
 
 	private Context mContext;
 	

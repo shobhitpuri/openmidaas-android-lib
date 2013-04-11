@@ -13,8 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.model.core;
+package org.openmidaas.library.common.network;
 
-public abstract class PersistenceCallback extends AbstractCallback {
-
+/**
+ * Factory interface to create a transport
+ */
+public interface NetworkFactory {
+	/**
+	 * Creates a new network transport and returns it. 
+	 * @return returns the network transport
+	 */
+	 NetworkTransport createTransport();
 }

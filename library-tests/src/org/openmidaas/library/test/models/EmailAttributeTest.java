@@ -140,11 +140,10 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			}
 		}
 		
+		
 		@MediumTest
 		public void testEmailVerification() throws Exception {
 			mContext = getInstrumentation().getContext();
-			
-			//emailAttribute = AttributeFactory.getEmailAttributeFactory().createAttributeWithValue("rob@gmail.com");
 			final CountDownLatch mLatch = new CountDownLatch(1);
 			
 			initializeEmailVerificationSuccess();
@@ -154,7 +153,6 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 		private void initializeEmailVerificationSuccess() throws Exception {
 			final CountDownLatch mLatch = new CountDownLatch(1);
 			mockFactory.setFilename("init_email_ver_success.json");
-			//emailAttribute = AttributeFactory.createEmailAttributeFactory().createAttribute("rob@gmail.com");
 			emailAttribute.startVerification(new InitializeVerificationCallback() {
 
 				@Override

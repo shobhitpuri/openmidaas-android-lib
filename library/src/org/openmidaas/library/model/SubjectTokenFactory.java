@@ -21,7 +21,7 @@ import org.openmidaas.library.persistence.AttributesTable;
 
 import android.database.Cursor;
 
-public class SubjectTokenFactory implements AbstractAttributeFactory<SubjectToken>{
+public class SubjectTokenFactory implements AbstractAttributeFactory<SubjectToken, String>{
 
 	protected SubjectTokenFactory(){}
 	

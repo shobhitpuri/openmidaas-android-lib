@@ -22,7 +22,7 @@ import android.database.Cursor;
  * Implement this interface to create your custom attributes.
  * @param <T> - the type of attribute. 
  */
-public interface AbstractAttributeFactory<T extends AbstractAttribute<?>> {
+public interface AbstractAttributeFactory<T extends AbstractAttribute<?>, K> {
 	
 	/**
 	 * Creates an attribute of type T with the specified value.
@@ -30,7 +30,7 @@ public interface AbstractAttributeFactory<T extends AbstractAttribute<?>> {
 	 * @return - the attribute of type T
 	 * @throws InvalidAttributeValueException
 	 */
-	public T createAttributeWithValue(String value) throws InvalidAttributeValueException, MIDaaSException;
+	public T createAttributeWithValue(K value) throws InvalidAttributeValueException, MIDaaSException;
 	
 	/**
 	 * Creates an attribute of type T with the specified cursor. 

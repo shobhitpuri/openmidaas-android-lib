@@ -25,7 +25,7 @@ import org.openmidaas.library.MIDaaS;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-public final class AndroidNetworkTransport implements INetworkTransport {
+public final class AndroidNetworkTransport implements NetworkTransport {
 
 	private final String TAG = "AndroidNetworkTransport";
 	

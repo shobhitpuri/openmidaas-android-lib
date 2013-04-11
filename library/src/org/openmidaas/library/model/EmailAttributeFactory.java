@@ -27,7 +27,7 @@ import android.database.Cursor;
 /**
  * Email attribute factory implementation that creates new email attributes. 
  */
-public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute> {
+public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute, String> {
 
 	protected EmailAttributeFactory(){}
 	

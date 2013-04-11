@@ -15,12 +15,12 @@
  ******************************************************************************/
 package org.openmidaas.library.test.network;
 
-import org.openmidaas.library.common.network.INetworkFactory;
-import org.openmidaas.library.common.network.INetworkTransport;
+import org.openmidaas.library.common.network.NetworkFactory;
+import org.openmidaas.library.common.network.NetworkTransport;
 
 import android.content.Context;
 
-public class MockTransportFactory implements INetworkFactory{
+public class MockTransportFactory implements NetworkFactory{
 	
 	private String mFileName;
 
@@ -34,7 +34,7 @@ public class MockTransportFactory implements INetworkFactory{
 	}
 	
 	@Override
-	public INetworkTransport createTransport() {
+	public NetworkTransport createTransport() {
 		transport = new MockTransport(mContext);
 		transport.setMockDataFile(mFileName);
 		return (transport);

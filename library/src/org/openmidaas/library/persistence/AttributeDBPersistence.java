@@ -145,7 +145,6 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 
 	@Override
 	public void getEmails(final EmailDataCallback callback) {
-		//XXX: in the future, it would seem prudent to create a work queue. 
 		List<EmailAttribute> list = new ArrayList<EmailAttribute>();
 		Cursor cursor = fetchByAttributeName("email");
 		boolean isDataAvailable = cursor.moveToFirst();

@@ -24,7 +24,7 @@ import android.database.Cursor;
 /**
  * Creates a new generic attribute factory
  */
-public class GenericAttributeFactory implements AbstractAttributeFactory<GenericAttribute>{
+public class GenericAttributeFactory implements AbstractAttributeFactory<GenericAttribute, String>{
 
 	private String mAttributeName;
 	

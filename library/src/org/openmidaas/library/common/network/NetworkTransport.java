@@ -27,7 +27,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  * transport. 
  * Implement this interface to create your own transport. 
  */
-public interface INetworkTransport {
+public interface NetworkTransport {
 	
 	/**
 	 * Performs a POST request to the URL path specified. 
