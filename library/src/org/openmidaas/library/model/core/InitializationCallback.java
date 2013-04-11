@@ -15,8 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
-public abstract class InitializationCallback extends AbstractCallback {
+public interface InitializationCallback extends AbstractCallback {
 	
-	public abstract void onRegistering();
+	public void onRegistering();
 	
 }
