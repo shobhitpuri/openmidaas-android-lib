@@ -28,7 +28,7 @@ import org.openmidaas.library.model.core.MIDaaSException;
 
 
 public class AuthenticationManager  {
-	
+	a
 	private AccessToken mAccessToken;
 	
 	private AccessTokenStrategy mAccessTokenStrategy;
