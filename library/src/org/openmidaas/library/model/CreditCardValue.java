@@ -27,6 +27,8 @@ public class CreditCardValue {
 	public static final String CARD_EXPIRY_YEAR = "expiryYear";
 	
 	public static final String CARD_HOLDER_NAME = "cardHolderName";
+
+	public static final String CARD_CVV = "cardCvv";
 	
 	private String mCardNumber;
 	
@@ -38,11 +40,16 @@ public class CreditCardValue {
 	
 	private short mCVV;
 	
+	public static enum CARD_TYPE { VISA, MASTER_CARD, AMEX, DISCOVER, DINERS_CLUB, JCB }
+	
+	private CARD_TYPE mCardType;
+	
 	public CreditCardValue(String creditCardNumber, short expiryMonth, short expiryYear, String holderName) {
 		this.mCardNumber = creditCardNumber;
 		this.mExpiryMonth = expiryMonth;
 		this.mExpiryYear = expiryYear;
 		this.mHolderName = holderName;
+		this.mCVV = 0;
 	}
 
 	public String getCreditCardNumber() {
@@ -85,6 +92,14 @@ public class CreditCardValue {
 		this.mCVV = cvv;
 	}
 	
+	protected void setCardType(CARD_TYPE type) {
+		this.mCardType = type;
+	}
+	
+	public CARD_TYPE getCardType() {
+		return mCardType;
+	}
+	
 	@Override
 	protected void finalize() throws Throwable {
 		this.mCardNumber = null;
@@ -92,6 +107,7 @@ public class CreditCardValue {
 		this.mExpiryMonth = 0;
 		this.mExpiryYear = 0;
 		this.mHolderName = null;
+		this.mCardType = null;
 		super.finalize();
 	}
 	
@@ -103,6 +119,9 @@ public class CreditCardValue {
 			object.put(CARD_EXPIRY_MONTH, this.mExpiryMonth);
 			object.put(CARD_EXPIRY_YEAR, this.mExpiryYear);
 			object.put(CARD_HOLDER_NAME, this.mHolderName);
+			if(this.mCVV != 0) {
+				object.put(CARD_CVV, this.mCVV);
+			}
 		} catch (JSONException e) {
 			object = null;
 		}

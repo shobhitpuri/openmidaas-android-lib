@@ -177,22 +177,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 		callback.onSuccess(list);
 	}
 
-	private void populateListFromCusor(List<AbstractAttribute<?>> list, AbstractAttributeFactory<?,?> factory, String attributeName) throws InvalidAttributeValueException {
-		Cursor cursor = fetchByAttributeName(attributeName);
-		if(cursor != null) {
-			if(cursor.getCount()>0) {
-				cursor.moveToFirst();
-				while(!(cursor.isAfterLast())) {
-					list.add(factory.createAttributeFromCursor(cursor));
-					cursor.moveToNext();
-				}
-			}
-			cursor.close();
-			dbHelper.close();
-		} else {
-			
-		}
-	}
+	
 	
 	@Override
 	public void getGenerics(final String attributeName, final GenericDataCallback callback) {
@@ -316,7 +301,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	@Override
 	public void getShippingAddresses(final ShippingAddressDataCallback callback) {
 		List<ShippingAddressAttribute> list = new ArrayList<ShippingAddressAttribute>();
-		Cursor cursor = fetchByAttributeName("email");
+		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.SHIPPING_ADDRESS);
 		boolean isDataAvailable = cursor.moveToFirst();
 		if(isDataAvailable) {
 			ShippingAddressAttributeFactory factory = AttributeFactory.getShippingAddressAttributeFactory();
@@ -342,7 +327,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	@Override
 	public void getCreditCards(final CreditCardDataCallback callback) {
 		List<CreditCardAttribute> list = new ArrayList<CreditCardAttribute>();
-		Cursor cursor = fetchByAttributeName("email");
+		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.CREDIT_CARD);
 		boolean isDataAvailable = cursor.moveToFirst();
 		if(isDataAvailable) {
 			CreditCardAttributeFactory factory = AttributeFactory.getCreditCardAttributeFactory();
@@ -363,7 +348,5 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 		cursor.close();
 		dbHelper.close();
 		callback.onSuccess(list);
-		
 	}
-	
 }

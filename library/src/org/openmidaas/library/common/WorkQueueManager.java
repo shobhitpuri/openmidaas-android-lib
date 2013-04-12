@@ -75,13 +75,17 @@ public class WorkQueueManager {
 	}
 	
 	private void startProcessingQueue() {
-		for(;;) {
+		while(!isStopRequested) {
 			try {
 				Worker worker = null;
 				synchronized(workQueue) {
 					while(workQueue.isEmpty()) {
 						MIDaaS.logDebug(TAG, "waiting for work...");
 						workQueue.wait();
+					}
+					if(isStopRequested) {
+						MIDaaS.logDebug(TAG, "stopping work queue...");
+						break;
 					}
 					worker = (Worker)workQueue.elementAt(0);
 					workQueue.removeElementAt(0);
@@ -99,6 +103,7 @@ public class WorkQueueManager {
 	}
 	
 	public synchronized void terminateWorkQueue() {
+		MIDaaS.logDebug(TAG, "stopping work queue...");
 		isStopRequested = true;
 		workQueue.notify();
 	}

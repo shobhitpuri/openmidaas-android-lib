@@ -50,15 +50,15 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	private boolean mNotification = false;
 	private Context mContext;
 	// create a generic attribute of type "test"
-	
+
 	private GenericAttributeFactory factory = AttributeFactory.getGenericAttributeFactory();
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
 		MIDaaS.setContext(mContext);
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistence());
 	}
-	
-	
+
+
 	@SmallTest
 	public void testUpdate() throws Exception {
 		mContext.deleteDatabase("attributes.db");
@@ -93,9 +93,9 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 		} else {
 			Assert.fail();
 		}
-		
+
 	}
-	
+
 	@SmallTest
 	public void testDelete() throws Exception {
 		//mContext.deleteDatabase("attributes.db");
@@ -107,7 +107,7 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 			Assert.fail();
 		}
 	}
-	
+
 	@SmallTest
 	public void testSaveAndRetrieval() throws Exception {
 		// store the following values that are of type "test"
@@ -133,12 +133,12 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 
 			@Override
 			public void onError(MIDaaSException exception) {
-				
+
 			}
 		});
 		mLatch.await();
 	}
-	
+
 	@SmallTest
 	public void testComplexValueSaveAndRetrieval() {
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistence());
