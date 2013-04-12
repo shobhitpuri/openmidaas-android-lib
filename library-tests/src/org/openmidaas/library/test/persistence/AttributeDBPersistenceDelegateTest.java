@@ -21,8 +21,10 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.AttributeFactory;
+import org.openmidaas.library.model.CreditCardValue;
 import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
+import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
@@ -135,5 +137,18 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 			}
 		});
 		mLatch.await();
+	}
+	
+	@SmallTest
+	public void testComplexValueSaveAndRetrieval() {
+		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistence());
+		try {
+			CreditCardValue mValue = new CreditCardValue("4485227712981401", (short)01, (short)15, "Rob Smith");
+			AttributePersistenceCoordinator.saveAttribute(AttributeFactory.getCreditCardAttributeFactory().createAttributeWithValue(mValue));
+		} catch (MIDaaSException e) {
+			Assert.fail();
+		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
+		}	
 	}
 }

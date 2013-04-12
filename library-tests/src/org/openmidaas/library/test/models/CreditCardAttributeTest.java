@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library.test.models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.AttributeFactory;
@@ -22,6 +24,7 @@ import org.openmidaas.library.model.CreditCardAttribute;
 import org.openmidaas.library.model.CreditCardValue;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 import android.test.InstrumentationTestCase;
@@ -50,7 +53,6 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 			Assert.assertEquals(VALID_CARD_NUMBER, creditCardAttribute.getValue().getCreditCardNumber());
 			Assert.assertEquals(VALID_EXPIRY_MONTH, creditCardAttribute.getValue().getExpiryMonth());
 			Assert.assertEquals(VALID_EXPIRY_YEAR, creditCardAttribute.getValue().getExpiryYear());
-			Assert.assertEquals(VALID_EXPIRY_MONTH, creditCardAttribute.getValue().getExpiryMonth());
 			Assert.assertEquals(CARD_HOLDER_NAME, creditCardAttribute.getValue().getHolderName());
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
@@ -101,6 +103,20 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 		} catch (MIDaaSException e) {
 			Assert.fail();
 		}
+	}
+	
+	@SmallTest
+	public void testToStringMethodOfCreditCardValue() {
+		try {
+			JSONObject object = new JSONObject(mValue.toString());
+			Assert.assertEquals(VALID_CARD_NUMBER, object.getString(CreditCardValue.CARD_NUMBER));
+			Assert.assertEquals(VALID_EXPIRY_MONTH, object.getInt(CreditCardValue.CARD_EXPIRY_MONTH));
+			Assert.assertEquals(VALID_EXPIRY_YEAR, object.getInt(CreditCardValue.CARD_EXPIRY_YEAR));
+			Assert.assertEquals(CARD_HOLDER_NAME, object.getString(CreditCardValue.CARD_HOLDER_NAME));
+		} catch (JSONException e) {
+			Assert.fail();
+		}
+		
 	}
 	
 	private void createAttribute() throws InvalidAttributeValueException, MIDaaSException {

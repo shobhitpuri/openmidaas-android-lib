@@ -15,10 +15,13 @@
  ******************************************************************************/
 package org.openmidaas.library.test.models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.AddressValue;
 import org.openmidaas.library.model.AttributeFactory;
+import org.openmidaas.library.model.CreditCardValue;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.ShippingAddressAttribute;
 import org.openmidaas.library.model.core.MIDaaSException;
@@ -80,6 +83,21 @@ public class ShippingAddressAttributeTest extends InstrumentationTestCase {
 		} catch (MIDaaSException e) {
 			Assert.fail();
 		}
+	}
+	
+	@SmallTest
+	public void testToStringMethodOfAddressValue() {
+		try {
+			JSONObject object = new JSONObject(mValue.toString());
+			Assert.assertEquals(VALID_STREET_ADDRESS, object.getString(AddressValue.STREET_ADDRESS));
+			Assert.assertEquals(VALID_LOCALITY, object.getString(AddressValue.LOCALITY));
+			Assert.assertEquals(VALID_REGION, object.getString(AddressValue.REGION));
+			Assert.assertEquals(VALID_POSTAL_CODE, object.getString(AddressValue.POSTAL_CODE));
+			Assert.assertEquals(VALID_COUNTRY, object.getString(AddressValue.COUNTRY));
+		} catch (JSONException e) {
+			Assert.fail();
+		}
+		
 	}
 	
 	private void createAttribute() throws InvalidAttributeValueException, MIDaaSException {

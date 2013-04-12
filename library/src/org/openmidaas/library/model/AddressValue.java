@@ -15,7 +15,20 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class AddressValue {
+	
+	public static final String STREET_ADDRESS = "streetAddress";
+	
+	public static final String LOCALITY = "locality";
+	
+	public static final String REGION = "region";
+	
+	public static final String POSTAL_CODE = "postalCode";
+	
+	public static final String COUNTRY = "country";
 	
 	private String streetAddress;
 	
@@ -35,7 +48,6 @@ public class AddressValue {
 		this.region = region;
 		this.postalCode = postalCode;
 		this.country = country;
-		setFormattedAddress();
 	}
 
 	public String getAddressLine() {
@@ -83,6 +95,22 @@ public class AddressValue {
 	}
 	
 	public String getFormattedAddress() {
+		setFormattedAddress();
 		return formattedAddress;
+	}
+	
+	@Override
+	public String toString() {
+		JSONObject object = new JSONObject();
+		try {
+			object.put(STREET_ADDRESS, this.streetAddress);
+			object.put(LOCALITY, this.locality);
+			object.put(REGION, this.region);
+			object.put(POSTAL_CODE, this.postalCode);
+			object.put(COUNTRY, this.country);
+		} catch (JSONException e) {
+			object = null;
+		}
+		return object.toString();	
 	}
 }

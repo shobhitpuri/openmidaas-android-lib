@@ -15,7 +15,18 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class CreditCardValue {
+	
+	public static final String CARD_NUMBER = "creditCard";
+	
+	public static final String CARD_EXPIRY_MONTH = "expiryMonth";
+	
+	public static final String CARD_EXPIRY_YEAR = "expiryYear";
+	
+	public static final String CARD_HOLDER_NAME = "cardHolderName";
 	
 	private String mCardNumber;
 	
@@ -82,5 +93,19 @@ public class CreditCardValue {
 		this.mExpiryYear = 0;
 		this.mHolderName = null;
 		super.finalize();
+	}
+	
+	@Override
+	public String toString() {
+		JSONObject object = new JSONObject();
+		try {
+			object.put(CARD_NUMBER, this.mCardNumber);
+			object.put(CARD_EXPIRY_MONTH, this.mExpiryMonth);
+			object.put(CARD_EXPIRY_YEAR, this.mExpiryYear);
+			object.put(CARD_HOLDER_NAME, this.mHolderName);
+		} catch (JSONException e) {
+			object = null;
+		}
+		return object.toString();	
 	}
 }

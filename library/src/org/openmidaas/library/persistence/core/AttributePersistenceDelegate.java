@@ -51,4 +51,8 @@ public interface AttributePersistenceDelegate extends PersistenceDelegate<Abstra
 	 */
 	public void getAllAttributes(AttributeDataCallback callback);
 	
+	public void getShippingAddresses(ShippingAddressDataCallback callback);
+	
+	public void getCreditCards(CreditCardDataCallback callback);
+	
 }

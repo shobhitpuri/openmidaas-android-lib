@@ -37,6 +37,8 @@ public class WorkQueueManager {
 	private Thread queueThread = null;
 	
 	private static WorkQueueManager mInstance = null;
+	
+	private boolean isStopRequested = false;
 
 	private WorkQueueManager() {
 		MIDaaS.logDebug(TAG, "creating new instance of work queue manager");
@@ -96,4 +98,8 @@ public class WorkQueueManager {
 		}
 	}
 	
+	public synchronized void terminateWorkQueue() {
+		isStopRequested = true;
+		workQueue.notify();
+	}
 }
