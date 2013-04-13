@@ -17,6 +17,11 @@ package org.openmidaas.library.persistence.core;
 
 import org.openmidaas.library.model.SubjectToken;
 
+/**
+ * 
+ * Returns the subject token via a callback
+ *
+ */
 public abstract class SubjectTokenCallback extends AbstractAttributeDataCallback<SubjectToken>{
 
 }

@@ -16,8 +16,8 @@
 package org.openmidaas.library.model;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.openmidaas.library.common.network.AVSServer;
+import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
@@ -32,7 +32,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  * collected via a GUI to the server for verification. 
  * The result is returned via a callback.
  */
-public class CompleteEmailVerification implements CompleteAttributeVerificationDelegate<EmailAttribute>{
+public class CompleteEmailVerification implements CompleteAttributeVerificationDelegate{
 
 	/**
 	 * This methods is an implementation of the interface that 
@@ -41,38 +41,34 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 	 * is send back to the caller via a callback.
 	 */
 	@Override
-	public void completeVerification(final EmailAttribute attribute, final String code, final CompleteVerificationCallback completeVerificationCallback) {
-		JSONObject postData = new JSONObject();
+	public void completeVerification(final AbstractAttribute<?> attribute, final String code, final CompleteVerificationCallback completeVerificationCallback) {
 		try {
-			postData = attribute.getAttributeAsJSONObject();
-			postData.put("code", code);
-			postData.put("verificationToken", attribute.getPendingData());
+			AVSServer.completeAttributeVerification(attribute, code, new AsyncHttpResponseHandler() {
+				
+				@Override
+				public void onSuccess(String response) {
+					attribute.setSignedToken(response);
+					attribute.setPendingData(null);
+					
+					try {
+						if(AttributePersistenceCoordinator.saveAttribute(attribute)) {
+							completeVerificationCallback.onSuccess();
+						} else {
+							completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+						}
+						
+					} catch (MIDaaSException e) {
+						completeVerificationCallback.onError(e);
+					}
+				}
+				
+				@Override
+				public void onFailure(Throwable e, String response){
+					completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+				}
+			});
 		} catch (JSONException e1) {
 			completeVerificationCallback.onError(null);
 		}
-		AVSServer.completeAttributeVerification(postData, new AsyncHttpResponseHandler() {
-			
-			@Override
-			public void onSuccess(String response) {
-				attribute.setSignedToken(response);
-				attribute.setPendingData(null);
-				
-				try {
-					if(AttributePersistenceCoordinator.saveAttribute(attribute)) {
-						completeVerificationCallback.onSuccess();
-					} else {
-						completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
-					}
-					
-				} catch (MIDaaSException e) {
-					completeVerificationCallback.onError(e);
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable e, String response){
-				completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
-			}
-		});
 	}
 }

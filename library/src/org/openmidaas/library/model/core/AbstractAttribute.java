@@ -74,27 +74,52 @@ public abstract class AbstractAttribute<T> {
 		this.mLabel = label;
 	}
 
+	/**
+	 * Returns the signed token for the attribute
+	 * @return signed token
+	 */
 	public String getSignedToken() {
 		return mSignedToken;
 	}
 	
+	/**
+	 * Sets the signed token for a specific attribute
+	 * @param token
+	 */
 	public void setSignedToken(String token) {
 		mSignedToken = token;
-		//save();
 	}
 	
+	/**
+	 * Returns the stored ID for the token
+	 * @return - the stored ID for the token
+	 */
 	public long getId() {
 		return mId;
 	}
 	
+	/**
+	 * Sets the stored ID for the token. 
+	 * The stored ID is mainly used for persistence.
+	 * @param id - id for persistence. 
+	 */
 	public void setId(long id) {
 		this.mId = id;
 	}
 	
+	/**
+	 * Sets the pending data for the attribute
+	 * @param data - the pending data
+	 * @throws UnsupportedOperationException
+	 */
 	public void setPendingData(String data) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("Cannot set pending data for a unverifiable attribute.");
 	}
 	
+	/**
+	 * Returns the pending data for the attribute
+	 * @return - pending data or null if no pending data is available. 
+	 */
 	public String getPendingData() {
 		return mPendingData;
 	}

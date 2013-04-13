@@ -35,7 +35,6 @@ import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.core.AttributeDataCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 import org.openmidaas.library.persistence.core.SubjectTokenCallback;
@@ -52,7 +51,7 @@ import android.database.sqlite.SQLiteDatabase;
  * Delegate that persists attribute data to a SQLite database. 
  *
  */
-public class AttributeDBPersistenceDelegate implements AttributePersistenceDelegate{
+public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	
 	private final String TAG = "AttributeDBPersistenceDelegate";
 
@@ -60,9 +59,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 	
 	private AttributeDBHelper dbHelper;
 	
-	private final int MAX_RETRIES = 3;
-	
-	public AttributeDBPersistenceDelegate(){
+	public AttributeDBPersistence(){
 		dbHelper = AttributeDBHelper.getInstance();
 	}
 	
@@ -202,6 +199,11 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 		callback.onSuccess(list);
 	}
 	
+	/**
+	 * Helper method to search for an attribute by name. 
+	 * @param name the name of the attribute
+	 * @return a cursor pointing to the record list. 
+	 */
 	private Cursor fetchByAttributeName(String name) {
 		database = dbHelper.getWritableDatabase();
 		Cursor cursor = database.query(AttributesTable.TABLE_NAME, null, "name=?", new String[] { name }, null, null, null);
@@ -212,7 +214,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 	public void getSubjectToken(final SubjectTokenCallback callback) {
 		List<SubjectToken> list = new ArrayList<SubjectToken>();
 		SubjectTokenFactory factory = AttributeFactory.getSubjectTokenFactory();
-		Cursor cursor = fetchByAttributeName("device");
+		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.SUBJECT_TOKEN);
 		if(cursor.getCount()>0) {
 			cursor.moveToFirst();
 			// this loop should run only once. 
@@ -260,7 +262,7 @@ public class AttributeDBPersistenceDelegate implements AttributePersistenceDeleg
 					}
 					cursor.moveToNext();
 				}
-			
+			// we want to return a list in this order. 
 			final List<ATTRIBUTE_STATE> definedOrder = Arrays.asList(ATTRIBUTE_STATE.PENDING_VERIFICATION, ATTRIBUTE_STATE.VERIFIED, ATTRIBUTE_STATE.NOT_VERIFIABLE);	
 			Collections.sort(list, new Comparator<AbstractAttribute<?>>() {
 

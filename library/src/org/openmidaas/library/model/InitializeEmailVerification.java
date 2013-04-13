@@ -18,6 +18,7 @@ package org.openmidaas.library.model;
 import org.json.JSONException;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.network.AVSServer;
+import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.InitializeAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
@@ -31,7 +32,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  * Class that implements the delegate that initializes
  * attribute verification. 
  */
-public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate<EmailAttribute>{
+public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate{
 
 	private final String TAG = "InitializeEmailVerification";
 	
@@ -41,10 +42,10 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 	 * the caller. 
 	 */
 	@Override
-	public void startVerification(final EmailAttribute attribute,
+	public void startVerification(final AbstractAttribute<?> attribute,
 			final InitializeVerificationCallback initVerificationCallback) {
 		try {
-			AVSServer.startAttributeVerification(attribute.getAttributeAsJSONObject(), new AsyncHttpResponseHandler() {
+			AVSServer.startAttributeVerification(attribute, new AsyncHttpResponseHandler() {
 				
 				@Override
 				public void onSuccess(String response) { 

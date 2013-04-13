@@ -22,13 +22,13 @@ package org.openmidaas.library.model.core;
  * For now it is assumed that the verification process uses a 
  * one-time code. 
  */
-public interface CompleteAttributeVerificationDelegate<T extends AbstractAttribute<?>> {
+public interface CompleteAttributeVerificationDelegate {
 	
 	/**
 	 * This method completes the verification 
 	 * @param pin
 	 * @param callback
 	 */
-	public void completeVerification(T attribute, String pin, CompleteVerificationCallback callback);
+	public void completeVerification(AbstractAttribute<?> attribute, String pin, CompleteVerificationCallback callback);
 
 }

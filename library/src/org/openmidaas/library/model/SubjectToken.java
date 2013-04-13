@@ -15,12 +15,13 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.model.core.AbstractAttribute;
 
 public class SubjectToken extends AbstractAttribute<String>{
 	
 	protected SubjectToken(){
-		mName = "device";
+		mName = Constants.RESERVED_WORDS.SUBJECT_TOKEN;
 	}
 
 	@Override

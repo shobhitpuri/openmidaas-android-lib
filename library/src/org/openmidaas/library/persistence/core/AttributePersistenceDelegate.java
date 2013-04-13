@@ -19,18 +19,36 @@ package org.openmidaas.library.persistence.core;
 import org.openmidaas.library.model.core.AbstractAttribute;
 
 /**
- * This interface 
- * 
- *
+ * Interface to persist attributes. 
+ * Implement this interface to persist attribute using your own 
+ * storage engine.
  */
 public interface AttributePersistenceDelegate extends PersistenceDelegate<AbstractAttribute<?>>{
 	
+	/**
+	 * Returns all email attributes in a list via the callback
+	 * @param callback - callback to get a list of emails
+	 */
 	public void getEmails(EmailDataCallback callback);
-	
+
+	/**
+	 * Returns generic attribute with the specified name in a list via the callback
+	 * @param attributeName - the attribute name to get
+	 * @param callback - callback to get list of generic attributes with the specified name
+	 */
 	public void getGenerics(String attributeName, GenericDataCallback callback);
 
+	/**
+	 * Returns the subject token via a callback
+	 * @param callback - the subject token callback
+	 */
 	public void getSubjectToken(SubjectTokenCallback callback);
 	
+	/**
+	 * Returns all attributes in a list via the callback. 
+	 * The attributes are sorted by state: pending, verified, generic/others. 
+	 * @param callback - callback for a list of all attributes. 
+	 */
 	public void getAllAttributes(AttributeDataCallback callback);
 	
 }

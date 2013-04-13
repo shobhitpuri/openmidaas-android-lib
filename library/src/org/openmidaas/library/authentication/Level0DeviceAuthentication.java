@@ -25,7 +25,8 @@ import android.provider.Settings.Secure;
 
 /**
  * 
- * Just a basic device-auth routine. 
+ * Level 0 device authentication that gets the device ID built in 
+ * the device
  *
  */
 public class Level0DeviceAuthentication implements DeviceAuthenticationStrategy{

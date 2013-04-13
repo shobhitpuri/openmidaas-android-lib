@@ -25,7 +25,7 @@ import org.openmidaas.library.common.WorkQueueManager;
 import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.core.InitializationCallback;
-import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
+import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import android.content.Context;
 import android.util.Log;
@@ -67,8 +67,10 @@ public final class MIDaaS{
 		}
 	}
 	
-	
-	
+	/**
+	 * Returns the set context. 
+	 * @return -  the set context
+	 */
 	public static Context getContext() {
 		return mContext;
 	}
@@ -88,14 +90,16 @@ public final class MIDaaS{
 		logDebug(TAG, "Initializing library");
 		ConnectionManager.setNetworkFactory(new AndroidNetworkFactory(Constants.AVP_SB_BASE_URL));
 		// we will use a SQLITE database to persist attributes. 
-		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
+		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistence());
+		// set the authentication strategy to level0 device authentication 
+		AuthenticationManager.getInstance().setDeviceAuthenticationStrategy(new Level0DeviceAuthentication());
 		// we will use our access token strategy that depends on level 0 device authentication
-		AuthenticationManager.getInstance().setAccessTokenStrategy(new AVSAccessTokenStrategy(new Level0DeviceAuthentication()));
+		AuthenticationManager.getInstance().setAccessTokenStrategy(new AVSAccessTokenStrategy());
 		logDebug(TAG, "Checking to see if device is registered.");
 		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
 			@Override
 			public void execute() {
-				DeviceRegistrar.setDeviceRegistrationDelegate(new AVSDeviceRegistration(new Level0DeviceAuthentication()));
+				DeviceRegistrar.setDeviceRegistrationDelegate(new AVSDeviceRegistration());
 				DeviceRegistrar.registerDevice(initCallback);
 			}
 		});

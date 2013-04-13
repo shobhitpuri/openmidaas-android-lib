@@ -38,8 +38,9 @@ import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
+import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+import org.openmidaas.library.test.authentication.MockAccessTokenSuccessStrategy;
 import org.openmidaas.library.test.network.MockTransportFactory;
 
 import com.google.mockwebserver.MockResponse;
@@ -65,7 +66,7 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			MIDaaS.setContext(mContext);
 			// set the persistence delegate to a simple list. database doesn't seem to work after deletion. 
 			AttributePersistenceCoordinator.setPersistenceDelegate(new MockPersistence());
-			AuthenticationManager.getInstance().setAccessTokenStrategy(new MockAccessTokenStrategy());
+			AuthenticationManager.getInstance().setAccessTokenStrategy(new MockAccessTokenSuccessStrategy());
 			emailAttribute =  AttributeFactory.getEmailAttributeFactory().createAttributeWithValue("rob@gmail.com");
 			mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
 			ConnectionManager.setNetworkFactory(mockFactory);

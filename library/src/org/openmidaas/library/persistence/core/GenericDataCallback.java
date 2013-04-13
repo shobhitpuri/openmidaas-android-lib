@@ -17,6 +17,11 @@ package org.openmidaas.library.persistence.core;
 
 import org.openmidaas.library.model.GenericAttribute;
 
+/**
+ * 
+ * Returns a list of generic attributes via a callback
+ *
+ */
 public abstract class GenericDataCallback extends AbstractAttributeDataCallback<GenericAttribute>{
 
 }

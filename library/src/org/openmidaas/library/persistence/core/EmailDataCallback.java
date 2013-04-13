@@ -17,6 +17,11 @@ package org.openmidaas.library.persistence.core;
 
 import org.openmidaas.library.model.EmailAttribute;
 
+/**
+ * 
+ * Returns a list of email attribute via a callback
+ *
+ */
 public abstract class EmailDataCallback extends AbstractAttributeDataCallback<EmailAttribute>{
 
 }

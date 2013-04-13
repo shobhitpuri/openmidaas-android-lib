@@ -16,26 +16,23 @@
 package org.openmidaas.library.authentication;
 
 import java.util.List;
-
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.authentication.core.DeviceRegistrationDelegate;
 import org.openmidaas.library.common.Constants;
-import org.openmidaas.library.common.WorkQueueManager;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.SubjectToken;
-import org.openmidaas.library.model.SubjectTokenFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.model.core.PersistenceCallback;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.persistence.core.SubjectTokenCallback;
+
+import android.os.Build;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -49,8 +46,8 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 	
 	private SubjectToken deviceToken;
 	
-	public AVSDeviceRegistration(DeviceAuthenticationStrategy strategy) {
-		mAuthenticationStrategy = strategy;
+	public AVSDeviceRegistration() {
+		mAuthenticationStrategy = AuthenticationManager.getInstance().getDeviceAuthenticationStrategy();
 	}
 	
 	public void registerDevice(final InitializationCallback initCallback) {
@@ -87,36 +84,34 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 	}
 	
 	
-	private void performRegistration(String deviceId) {
-		JSONObject registrationData = new JSONObject();
+	private void performRegistration(String deviceId) {     
 		try {
-			registrationData.put("deviceToken", deviceId);
+			AVSServer.registerDevice(deviceId, new AsyncHttpResponseHandler() {
+				@Override
+				public void onSuccess(String response) {
+					try {
+						MIDaaS.logDebug(TAG, "device successfully registered. persisting registration.");
+						deviceToken = AttributeFactory.getSubjectTokenFactory().createAttributeWithValue(Build.MODEL);
+						deviceToken.setSignedToken(response);
+						AttributePersistenceCoordinator.saveAttribute(deviceToken);
+						mInitCallback.onSuccess();
+					} catch (InvalidAttributeValueException e) {
+						// should never get here b/c we're returning true. 
+						MIDaaS.logError(TAG, "logic error. should never have thrown exception");
+					} catch (MIDaaSException e) {
+						mInitCallback.onError(e);
+						MIDaaS.logError(TAG, e.getError().getErrorMessage());
+					}
+				}
+				
+				@Override
+				public void onFailure(Throwable e, String response){
+					mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+				}
+			});
 		} catch (JSONException e) {
 			mInitCallback.onError(null);
 		}
-		AVSServer.registerDevice(registrationData, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(String response) {
-				try {
-					MIDaaS.logDebug(TAG, "device successfully registered. persisting registration.");
-					deviceToken = AttributeFactory.getSubjectTokenFactory().createAttributeWithValue(Constants.RESERVED_WORDS.SUBJECT_TOKEN);
-					deviceToken.setSignedToken(response);
-					AttributePersistenceCoordinator.saveAttribute(deviceToken);
-					mInitCallback.onSuccess();
-				} catch (InvalidAttributeValueException e) {
-					// should never get here b/c we're returning true. 
-					MIDaaS.logError(TAG, "logic error. should never have thrown exception");
-				} catch (MIDaaSException e) {
-					mInitCallback.onError(e);
-					MIDaaS.logError(TAG, e.getError().getErrorMessage());
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable e, String response){
-				mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
-			}
-		});
 	}
 	
 	private void authenticateDevice() {
@@ -136,6 +131,4 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 			
 		});
 	}
-	
-
 }

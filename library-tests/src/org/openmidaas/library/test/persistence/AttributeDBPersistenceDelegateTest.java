@@ -25,7 +25,7 @@ import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.model.core.PersistenceCallback;
-import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
+import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
 import org.openmidaas.library.test.models.MockPersistence;
@@ -54,7 +54,7 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
 		MIDaaS.setContext(mContext);
-		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistenceDelegate());
+		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistence());
 	}
 	
 	

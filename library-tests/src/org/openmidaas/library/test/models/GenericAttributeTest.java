@@ -25,7 +25,7 @@ import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
+import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 import android.content.Context;

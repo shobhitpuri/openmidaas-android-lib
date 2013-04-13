@@ -17,6 +17,11 @@ package org.openmidaas.library.persistence.core;
 
 import org.openmidaas.library.model.core.AbstractAttribute;
 
+/**
+ * 
+ * Returns all attributes via a callback
+ *
+ */
 public abstract class AttributeDataCallback extends AbstractAttributeDataCallback<AbstractAttribute<?>>{
 
 }

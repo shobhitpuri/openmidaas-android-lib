@@ -21,11 +21,12 @@ import junit.framework.Assert;
 
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.AVSDeviceRegistration;
+import org.openmidaas.library.authentication.AuthenticationManager;
 import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.persistence.AttributeDBPersistenceDelegate;
+import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.test.network.MockTransportFactory;
 
@@ -59,7 +60,8 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 		mContext.deleteDatabase(mContext.getDatabasePath("attributes.db").toString());
 		// first register the device. 
 		notificationSuccess = false;
-		AVSDeviceRegistration deviceRegistration = new AVSDeviceRegistration(new Level0DeviceAuthentication());
+		AuthenticationManager.getInstance().setDeviceAuthenticationStrategy(new Level0DeviceAuthentication());
+		AVSDeviceRegistration deviceRegistration = new AVSDeviceRegistration();
 		deviceRegistration.registerDevice(new InitializationCallback() {
 
 			@Override
@@ -88,7 +90,8 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		mockFactory.setFilename("device_reg_fail.json");
 		mContext.deleteDatabase(mContext.getDatabasePath("attributes.db").toString());
-		AVSDeviceRegistration deviceRegistration = new AVSDeviceRegistration(new Level0DeviceAuthentication());
+		AuthenticationManager.getInstance().setDeviceAuthenticationStrategy(new Level0DeviceAuthentication());
+		AVSDeviceRegistration deviceRegistration = new AVSDeviceRegistration();
 		deviceRegistration.registerDevice(new InitializationCallback() {
 
 			
@@ -120,7 +123,8 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 	public void testRegistrationFailureWithErrorInAuthenticationStrategy()  throws Exception {
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		mockFactory.setFilename("device_reg_success.json");
-		AVSDeviceRegistration deviceRegistration = new AVSDeviceRegistration(new MockAuthenticationStrategy());
+		AuthenticationManager.getInstance().setDeviceAuthenticationStrategy(new MockErrorDeviceAuthenticationStrategy());
+		AVSDeviceRegistration deviceRegistration = new AVSDeviceRegistration();
 		deviceRegistration.registerDevice(new InitializationCallback() {
 
 			

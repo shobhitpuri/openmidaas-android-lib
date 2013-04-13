@@ -17,10 +17,13 @@
 package org.openmidaas.library.authentication;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
+
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
 import org.openmidaas.library.authentication.core.AccessTokenStrategy;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.model.core.MIDaaSException;
 
 
@@ -29,6 +32,8 @@ public class AuthenticationManager  {
 	private AccessToken mAccessToken;
 	
 	private AccessTokenStrategy mAccessTokenStrategy;
+	
+	private DeviceAuthenticationStrategy mDeviceAuthStrategy;
 	
 	private CountDownLatch MUTEX;
 	
@@ -40,6 +45,10 @@ public class AuthenticationManager  {
 	
 	private static AuthenticationManager mInstance = null;
 	
+	/**
+	 * Returns a single instance of the AuthenticationManager object
+	 * @return -  AuthenticationManager object 
+	 */
 	public static synchronized AuthenticationManager getInstance() {
 		if(mInstance == null) {
 			mInstance = new AuthenticationManager();
@@ -47,13 +56,35 @@ public class AuthenticationManager  {
 		return mInstance;
 	}
 	
-	public void setAccessTokenStrategy(AccessTokenStrategy strategy) {
-		mAccessTokenStrategy = strategy;
+	/**
+	 * Sets the access token strategy
+	 * @param accessTokenstrategy the access token strategy
+	 */
+	public void setAccessTokenStrategy(AccessTokenStrategy accessTokenstrategy) {
+		mAccessTokenStrategy = accessTokenstrategy;
+	}
+	
+	/**
+	 * Sets the device authentication strategy
+	 * @param deviceStrategy  the device authentication strategy
+	 */
+	public void setDeviceAuthenticationStrategy(DeviceAuthenticationStrategy deviceStrategy) {
+		mDeviceAuthStrategy = deviceStrategy;
+	}
+	
+	/**
+	 * Returns the set device authentication strategy
+	 * @return
+	 */
+	public DeviceAuthenticationStrategy getDeviceAuthenticationStrategy() {
+		return mDeviceAuthStrategy;
 	}
 	
 	/**
 	 * Blocking operation. Waits till the access token 
 	 * is obtained. 
+	 * @return the access token object or null if unable to get 
+	 * the access token
 	 */
 	public synchronized AccessToken getAccessToken() {
 		MUTEX = new CountDownLatch(1);
@@ -93,6 +124,6 @@ public class AuthenticationManager  {
 	 * Request for an access token in the background.
 	 */
 	public void getAccessTokenInBackground() {
-		
+		//TODO: Future work
 	}
 }

@@ -17,11 +17,16 @@ package org.openmidaas.library.common.network;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.AuthenticationManager;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.common.Constants;
+import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.model.core.MIDaaSError;
+import org.openmidaas.library.model.core.MIDaaSException;
 
 import android.util.Base64;
 
@@ -39,23 +44,56 @@ public class AVSServer {
 		SERVER_WITH_SSL = val;
 	}
 	
-	public static void registerDevice(JSONObject registrationData,
-			AsyncHttpResponseHandler responseHandler) {
-		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.REGISTRATION_URL, null, registrationData, responseHandler);
+	/**
+	 * Registers a device with the AVS server 
+	 * @param deviceAuthToken the device authentication token
+	 * @param responseHandler the callback once registration is complete
+	 * @throws JSONException
+	 */
+	public static void registerDevice(String deviceAuthToken,
+			AsyncHttpResponseHandler responseHandler) throws JSONException {
+		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.REGISTRATION_URL, null, new JSONObject().put("deviceToken", deviceAuthToken), responseHandler);
 	}
 
-	public static void startAttributeVerification(JSONObject attributeData,
-			AsyncHttpResponseHandler responseHandler) {
+	/**
+	 * Starts verification for the specified attribute
+	 * @param attribute the attribute for which verification needs to be started
+	 * @param responseHandler the callback once verification has been started 
+	 * @throws JSONException
+	 */
+	public static void startAttributeVerification(AbstractAttribute<?> attribute,
+			AsyncHttpResponseHandler responseHandler) throws JSONException {
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
-		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.INIT_AUTH_URL, getBasicAuthHeader(token), attributeData, responseHandler);
+		if(token == null) {
+			responseHandler.onFailure(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE), "");
+		}
+		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.INIT_AUTH_URL, getBasicAuthHeader(token), attribute.getAttributeAsJSONObject(), responseHandler);
 	}
 
-	public static void completeAttributeVerification(JSONObject attributeData,
-			AsyncHttpResponseHandler responseHandler) {
+	/**
+	 * Completes verification for the specified attribute
+	 * @param attribute the attribute for which verification needs to be completed
+	 * @param verificationCode the verification code
+	 * @param responseHandler the callback once verification is completed
+	 * @throws JSONException
+	 */
+	public static void completeAttributeVerification(AbstractAttribute<?> attribute, String verificationCode,
+			AsyncHttpResponseHandler responseHandler) throws JSONException {
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
-		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getBasicAuthHeader(token), attributeData, responseHandler);	
+		if(token == null) {
+			responseHandler.onFailure(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE), "");
+		}
+		JSONObject object = attribute.getAttributeAsJSONObject();
+		object.put("code", verificationCode);
+		object.put("verificationToken", attribute.getPendingData());
+		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getBasicAuthHeader(token), object, responseHandler);	
 	}
 	
+	/**
+	 * Helper method to get the basic auth header
+	 * @param token - the access token
+	 * @return - the HTTP basic auth header
+	 */
 	private static HashMap<String, String> getBasicAuthHeader(AccessToken token) {
 		try {
 			headers.clear();

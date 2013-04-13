@@ -36,25 +36,49 @@ public class AttributePersistenceCoordinator {
 	
 	private static AttributePersistenceDelegate mDelegate = null;
 	
+	/**
+	 * Sets the persistence delegate
+	 * @param delegate persistence delegate
+	 */
 	public static void setPersistenceDelegate(AttributePersistenceDelegate delegate) {
 		mDelegate = delegate;
 	}
 	
+	/**
+	 * Removes the specified attribute from persistence storage
+	 * @param attribute the attribute to remove
+	 * @return true/false if the operation succeeded/failed
+	 * @throws MIDaaSException
+	 */
 	public static boolean removeAttribute(AbstractAttribute<?> attribute) throws MIDaaSException {
 		MIDaaS.logDebug(TAG, "deleteing attribute: " + attribute.getName());
 		return (mDelegate.delete(attribute));
 	}
 	
+	/**
+	 * Saves the specified attribute to persistence storage
+	 * @param attribute the attribute to store
+	 * @return true/false if the operation succeeded/failed
+	 * @throws MIDaaSException
+	 */
 	public static boolean saveAttribute(AbstractAttribute<?> attribute) throws MIDaaSException {
 		MIDaaS.logDebug(TAG, "saving attribute: " + attribute.getName());
 		return (mDelegate.save(attribute));
 	}
 	
+	/**
+	 * Returns the subject token from persistence storage
+	 * @param callback
+	 */
 	public static void getSubjectToken(final SubjectTokenCallback callback) {
 		MIDaaS.logDebug(TAG, "fetching subject token");
 		mDelegate.getSubjectToken(callback);
 	}
 	
+	/**
+	 * Returns a list of email from persistence storage
+	 * @param callback
+	 */
 	public static void getEmails(final EmailDataCallback callback) {
 		MIDaaS.logDebug(TAG, "fetching emails");
 		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
@@ -66,6 +90,12 @@ public class AttributePersistenceCoordinator {
 		});
 	}
 	
+	/**
+	 * Returns a list of generic attribute with the specified name from 
+	 * persistence storage
+	 * @param attributeName the attribute name 
+	 * @param callback
+	 */
 	public static void getGenericAttributes(final String attributeName, final GenericDataCallback callback) {
 		MIDaaS.logDebug(TAG, "fetching generic attributes");
 		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
@@ -77,7 +107,10 @@ public class AttributePersistenceCoordinator {
 		});
 	}
 	
-	
+	/**
+	 * Returns all attributes stored in persistence storage
+	 * @param callback
+	 */
 	public static void getAllAttributes(final AttributeDataCallback callback) {
 		MIDaaS.logDebug(TAG, "fetching all attributes");
 		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {

@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *   
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,23 +15,16 @@
  ******************************************************************************/
 package org.openmidaas.library.test.models;
 
-import org.openmidaas.library.authentication.core.AccessToken;
-import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
-import org.openmidaas.library.authentication.core.AccessTokenStrategy;
-import org.openmidaas.library.model.AttributeFactory;
-import org.openmidaas.library.model.InvalidAttributeValueException;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
+import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 
-public class MockAccessTokenStrategy implements AccessTokenStrategy {
+public class MockErrorDeviceAuthenticationStrategy implements DeviceAuthenticationStrategy {
 
 	@Override
-	public void getAccessToken(AccessTokenCallback callback) {
-		try {
-			callback.onSuccess(AccessToken.createAccessTokenFromDeviceAttribute(AttributeFactory.getSubjectTokenFactory().createAttributeWithValue("1234"), "5678"));
-		} catch (InvalidAttributeValueException e) {
-			callback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
-		}
+	public void performDeviceAuthentication(DeviceAuthenticationCallback callback) {
+		callback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
+		
 	}
-
 }

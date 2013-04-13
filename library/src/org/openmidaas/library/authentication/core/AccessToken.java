@@ -39,6 +39,11 @@ public class AccessToken {
 	
 	private Date mExpiry;
 	
+	/**
+	 * Creates a new access token object. 
+	 * @param token
+	 * @param expiry
+	 */
 	private AccessToken(String token, Date expiry){
 		this.mToken = token;
 		this.mExpiry = expiry;
@@ -56,8 +61,14 @@ public class AccessToken {
 		return false;
 	}
 	
-	public static AccessToken createAccessTokenFromDeviceAttribute(SubjectToken deviceAttribute, String deviceAuthenticationToken) {
-		return (new AccessToken(deviceAttribute.getSignedToken()+":"+deviceAuthenticationToken, new Date(Long.MAX_VALUE)));
+	/**
+	 * Creates an access token form a subject token and device authentication token 
+	 * @param subjectToken the subject token assigned to the device
+	 * @param deviceAuthenticationToken the device authentication token 
+	 * @return an AccessToken object. 
+	 */
+	public static AccessToken createAccessTokenFromDeviceAttribute(SubjectToken subjectToken, String deviceAuthenticationToken) {
+		return (new AccessToken(subjectToken.getSignedToken()+":"+deviceAuthenticationToken, new Date(Long.MAX_VALUE)));
 	}
 	
 	@Override

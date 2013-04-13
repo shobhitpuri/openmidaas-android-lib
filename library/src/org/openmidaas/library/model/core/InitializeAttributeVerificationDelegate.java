@@ -20,7 +20,7 @@ package org.openmidaas.library.model.core;
  *
  */
 
-public interface InitializeAttributeVerificationDelegate<T extends AbstractAttribute<?>> {
+public interface InitializeAttributeVerificationDelegate {
 	
 	/**
 	 * This method starts the attribute verification process and the result
@@ -28,6 +28,6 @@ public interface InitializeAttributeVerificationDelegate<T extends AbstractAttri
 	 * @param callback - callback that returns the result of the start
 	 * 					 verification process.
 	 */
-	public void startVerification(T attribute, InitializeVerificationCallback callback);
+	public void startVerification(AbstractAttribute<?> attribute, InitializeVerificationCallback callback);
 
 }

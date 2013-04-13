@@ -19,10 +19,25 @@ import java.util.List;
 
 import org.openmidaas.library.model.core.MIDaaSException;
 
+/**
+ * 
+ * Abstract callback that returns the attribute data from
+ * persistence storage. 
+ *
+ * @param <T>
+ */
 public abstract class AbstractAttributeDataCallback<T>  {
 	
+	/**
+	 * Returns a list of attributes of type T.
+	 * @param list attribute list of type T
+	 */
 	public abstract void onSuccess(List<T> list);
 	
+	/**
+	 * Returns an exception 
+	 * @param exception
+	 */
 	public abstract void onError(MIDaaSException exception);
 
 }

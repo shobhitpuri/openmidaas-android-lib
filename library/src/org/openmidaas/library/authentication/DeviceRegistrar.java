@@ -18,16 +18,29 @@ package org.openmidaas.library.authentication;
 import org.openmidaas.library.authentication.core.DeviceRegistrationDelegate;
 import org.openmidaas.library.model.core.InitializationCallback;
 
+/**
+ * 
+ * Wrapper to set the device registration delegate and 
+ * perform device registration
+ *
+ */
 public class DeviceRegistrar {
 	private static DeviceRegistrationDelegate mDelegate = null;
 	
-	
+	/**
+	 * Sets the device registration delegate. 
+	 * @param delegate device registration delegate
+	 */
 	public static void setDeviceRegistrationDelegate(DeviceRegistrationDelegate delegate) {
 		if(mDelegate == null) {
 			mDelegate = delegate;
 		}
 	}
 	
+	/**
+	 * Registers the device using the specified delegate
+	 * @param callback the initialization callback 
+	 */
 	public static void registerDevice(InitializationCallback callback) {
 		mDelegate.registerDevice(callback);
 	}

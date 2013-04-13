@@ -18,12 +18,16 @@ package org.openmidaas.library.authentication.core;
 import org.openmidaas.library.model.core.InitializationCallback;
 
 /**
- * 
- * 
+ * Interface to perform device registration with the server. 
  *
  */
 public interface DeviceRegistrationDelegate {
 	
+	/**
+	 * This method registers a device to the server when the library 
+	 * is initialized 
+	 * @param callback - the initialization callback passed in from the app. 
+	 */
 	public void registerDevice(InitializationCallback callback);
 
 }

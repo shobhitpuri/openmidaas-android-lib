@@ -15,8 +15,6 @@
  ******************************************************************************/
 package org.openmidaas.library.persistence.core;
 
-import java.util.List;
-
 import org.openmidaas.library.model.core.MIDaaSException;
 
 /**

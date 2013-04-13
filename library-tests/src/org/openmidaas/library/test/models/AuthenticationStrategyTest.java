@@ -64,7 +64,7 @@ public class AuthenticationStrategyTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testErrorInAuthenticationCallback() throws Exception {
 		final CountDownLatch mLatch = new CountDownLatch(1);
-		MockAuthenticationStrategy deviceAuth = new MockAuthenticationStrategy();
+		MockErrorDeviceAuthenticationStrategy deviceAuth = new MockErrorDeviceAuthenticationStrategy();
 		deviceAuth.performDeviceAuthentication(new DeviceAuthenticationCallback() {
 
 			@Override

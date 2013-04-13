@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.openmidaas.library.authentication.core;
 
-import java.util.concurrent.Callable;
 
 
 /**
@@ -27,9 +26,9 @@ import java.util.concurrent.Callable;
 public interface AccessTokenStrategy{
 	
 	/**
-	 * Method to obtain the access token in a background thread.
-	 * If this method involves a call to the 
-	 * @param callback
+	 * Method to obtain the access token.
+	 * 
+	 * @param callback - the access token callback
 	 */
 	public void getAccessToken(AccessToken.AccessTokenCallback callback);
 

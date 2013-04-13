@@ -16,8 +16,6 @@
 package org.openmidaas.library.authentication;
 
 import java.util.List;
-import java.util.concurrent.Callable;
-
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.authentication.core.AccessTokenStrategy;
@@ -44,13 +42,11 @@ public class AVSAccessTokenStrategy implements AccessTokenStrategy, DeviceAuthen
 	
 	private AccessToken.AccessTokenCallback mAccessTokenCallback;
 	
-	public AVSAccessTokenStrategy(DeviceAuthenticationStrategy strategy) {
-		mDeviceAuthStrategy = strategy;
+	public AVSAccessTokenStrategy() {
+		mDeviceAuthStrategy = AuthenticationManager.getInstance().getDeviceAuthenticationStrategy();
 	}
 
-	protected AVSAccessTokenStrategy() {
-		
-	}
+	
 	
 	@Override
 	public void getAccessToken(AccessTokenCallback callback) {

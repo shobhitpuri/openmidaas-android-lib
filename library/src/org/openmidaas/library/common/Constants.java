@@ -15,6 +15,11 @@
  ******************************************************************************/
 package org.openmidaas.library.common;
 
+/**
+ * 
+ * Public constants used by the library. 
+ *
+ */
 public final class Constants {
 	private Constants(){}
 	public static final String AVP_SB_BASE_URL = "http://avpsandbox-securekey.dotcloud.com";
