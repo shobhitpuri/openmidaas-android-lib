@@ -21,9 +21,15 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import org.openmidaas.library.common.Constants;
+import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.CreditCardValue.CARD_TYPE;
 import org.openmidaas.library.model.core.AbstractAttribute;
 
+/**
+ * 
+ * ADT for a verifiable credit card attribute
+ *
+ */
 public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 	// source: http://www.regular-expressions.info/creditcard.html
 	private final String VISA_PATTERN = "^4[0-9]{12}(?:[0-9]{3})?$";
@@ -35,6 +41,7 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 	
 	protected CreditCardAttribute() {
 		mName = Constants.RESERVED_WORDS.CREDIT_CARD;
+		mState = ATTRIBUTE_STATE.NOT_VERIFIED;
 	}
 
 	@Override
@@ -44,6 +51,11 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 		} else {
 			return (validateCard(value));
 		}
+	}
+	
+	@Override
+	public void setPendingData(String data) {
+		mPendingData = data;
 	}
 	/**
 	 * Checks to see if properties of the credit card object are valid. 
@@ -63,11 +75,9 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 			return false;
 		}
 		
-		if(value.getCVV() != 0) {
+		if(value.getCVV() < 100) {
 			// 3 or more digits in the CVV
-			if(value.getCVV() < 100) {
-				return false;
-			}
+			return false;
 		}
 		
 		// get the format as MM/yy

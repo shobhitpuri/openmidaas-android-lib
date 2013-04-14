@@ -44,7 +44,7 @@ public class CreditCardAttributeFactory implements AbstractAttributeFactory<Cred
 		attribute.setPendingData(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_PENDING)));
 		try {
 			JSONObject object = new JSONObject(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_VALUE)));
-			CreditCardValue value = new CreditCardValue(object.getString(CreditCardValue.CARD_NUMBER),
+			CreditCardValue value = new CreditCardValue(object.getString(CreditCardValue.CARD_NUMBER), (short)object.getInt(CreditCardValue.CARD_CVV),
 					(short)object.getInt(CreditCardValue.CARD_EXPIRY_MONTH),
 					(short)object.getInt(CreditCardValue.CARD_EXPIRY_YEAR), object.getString(CreditCardValue.CARD_HOLDER_NAME));
 			attribute.setValue(value);

@@ -18,6 +18,11 @@ package org.openmidaas.library.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * 
+ * ADT that defines the value of a credit card attribute. 
+ *
+ */
 public class CreditCardValue {
 	
 	public static final String CARD_NUMBER = "creditCard";
@@ -38,60 +43,40 @@ public class CreditCardValue {
 	
 	private String mHolderName;
 	
-	private short mCVV;
+	private short mCVV = 0;
 	
 	public static enum CARD_TYPE { VISA, MASTER_CARD, AMEX, DISCOVER, DINERS_CLUB, JCB }
 	
 	private CARD_TYPE mCardType;
 	
-	public CreditCardValue(String creditCardNumber, short expiryMonth, short expiryYear, String holderName) {
+	public CreditCardValue(String creditCardNumber, short cvv, short expiryMonth, short expiryYear, String holderName) {
 		this.mCardNumber = creditCardNumber;
 		this.mExpiryMonth = expiryMonth;
 		this.mExpiryYear = expiryYear;
 		this.mHolderName = holderName;
-		this.mCVV = 0;
+		this.mCVV = cvv;
 	}
 
 	public String getCreditCardNumber() {
 		return mCardNumber;
 	}
 
-	public void setCreditCardNumber(String cardNumber) {
-		this.mCardNumber = cardNumber;
-	}
-
 	public short getExpiryMonth() {
 		return mExpiryMonth;
-	}
-
-	public void setExpiryMonth(short expiryMonth) {
-		this.mExpiryMonth = expiryMonth;
 	}
 
 	public short getExpiryYear() {
 		return mExpiryYear;
 	}
 
-	public void setExpiryYear(short expiryYear) {
-		this.mExpiryYear = expiryYear;
-	}
-
 	public String getHolderName() {
 		return mHolderName;
-	}
-
-	public void setHolderName(String holderName) {
-		this.mHolderName = holderName;
 	}
 
 	public short getCVV() {
 		return mCVV;
 	}
 
-	public void setCVV(short cvv) {
-		this.mCVV = cvv;
-	}
-	
 	protected void setCardType(CARD_TYPE type) {
 		this.mCardType = type;
 	}
@@ -116,12 +101,10 @@ public class CreditCardValue {
 		JSONObject object = new JSONObject();
 		try {
 			object.put(CARD_NUMBER, this.mCardNumber);
+			object.put(CARD_CVV, this.mCVV);
 			object.put(CARD_EXPIRY_MONTH, this.mExpiryMonth);
 			object.put(CARD_EXPIRY_YEAR, this.mExpiryYear);
 			object.put(CARD_HOLDER_NAME, this.mHolderName);
-			if(this.mCVV != 0) {
-				object.put(CARD_CVV, this.mCVV);
-			}
 		} catch (JSONException e) {
 			object = null;
 		}
