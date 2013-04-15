@@ -21,6 +21,7 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.AttributeFactory;
+import org.openmidaas.library.model.CreditCardAttribute;
 import org.openmidaas.library.model.CreditCardValue;
 import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
@@ -28,6 +29,7 @@ import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+import org.openmidaas.library.persistence.core.CreditCardDataCallback;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
 import org.openmidaas.library.test.models.MockPersistence;
 
@@ -141,14 +143,56 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 
 	@SmallTest
 	public void testComplexValueSaveAndRetrieval() {
+		mContext.deleteDatabase("attributes.db");
+		final CountDownLatch mLatch = new CountDownLatch(1);
+		final String cardNumber = "4485227712981401";
+		final short cvv = 123;
+		final short expiryMonth = 01;
+		final short expiryYear = 15;
+		final String name = "Rob Smith";
+		mNotification = false;
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistence());
 		try {
-			CreditCardValue mValue = new CreditCardValue("4485227712981401", (short)01, (short)15, "Rob Smith");
+			CreditCardValue mValue = new CreditCardValue(cardNumber, cvv, expiryMonth, expiryYear, name);
 			AttributePersistenceCoordinator.saveAttribute(AttributeFactory.getCreditCardAttributeFactory().createAttributeWithValue(mValue));
+			AttributePersistenceCoordinator.getCreditCardAttributes(new CreditCardDataCallback() {
+
+				@Override
+				public void onSuccess(List<CreditCardAttribute> list) {
+					for(CreditCardAttribute cc: list) {
+						if(cc.getValue().getCreditCardNumber().equalsIgnoreCase(cardNumber) && cc.getValue().getCVV() == cvv
+								&& cc.getValue().getExpiryMonth() == expiryMonth && cc.getValue().getExpiryYear() == expiryYear
+								&& cc.getValue().getHolderName().equalsIgnoreCase(name)) {
+							mNotification = true;
+						}
+					}
+					mLatch.countDown();				
+				}
+
+				@Override
+				public void onError(MIDaaSException exception) {
+					mNotification = false;
+					mLatch.countDown();
+				}
+				
+			});
+			try {
+				mLatch.await();
+				if(!mNotification) {
+					Assert.fail();
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (MIDaaSException e) {
 			Assert.fail();
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
 		}	
+	}
+	
+	protected void tearDown() throws Exception {
+		mContext.deleteDatabase("attributes.db");
 	}
 }

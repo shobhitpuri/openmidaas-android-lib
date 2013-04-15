@@ -24,6 +24,11 @@ import org.openmidaas.library.persistence.AttributesTable;
 
 import android.database.Cursor;
 
+/**
+ * 
+ * Shipping address attribute factory
+ *
+ */
 public class ShippingAddressAttributeFactory implements AbstractAttributeFactory<ShippingAddressAttribute, AddressValue>{
 
 	@Override

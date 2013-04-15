@@ -36,19 +36,17 @@ public class ShippingAddressAttributeTest extends InstrumentationTestCase {
 	private final String VALID_REGION = "Ontario";
 	private final String VALID_POSTAL_CODE = "M2P 2C5";
 	private final String VALID_COUNTRY = "Canada";
-	private AddressValue mValue;
 	private ShippingAddressAttribute mShippingAddressAttribute;
 	protected void setUp() throws Exception {
 		MIDaaS.setContext(getInstrumentation().getContext());
 		AttributePersistenceCoordinator.setPersistenceDelegate(new MockPersistence());
-		mValue = new AddressValue(VALID_STREET_ADDRESS, VALID_LOCALITY, VALID_REGION, VALID_POSTAL_CODE, VALID_COUNTRY);
 	}
 	
 	@SmallTest
 	public void testValidAddress() {
 		
 		try {
-			createAttribute();
+			createAttribute(new AddressValue(VALID_STREET_ADDRESS, VALID_LOCALITY, VALID_REGION, VALID_POSTAL_CODE, VALID_COUNTRY));
 			Assert.assertEquals(VALID_STREET_ADDRESS, mShippingAddressAttribute.getValue().getAddressLine());
 			Assert.assertEquals(VALID_LOCALITY, mShippingAddressAttribute.getValue().getLocality());
 			Assert.assertEquals(VALID_REGION, mShippingAddressAttribute.getValue().getRegion());
@@ -63,9 +61,10 @@ public class ShippingAddressAttributeTest extends InstrumentationTestCase {
 	
 	@SmallTest
 	public void testEmptyStringInAddress() {
-		mValue.setAddressLine("");
+		
 		try {
-			createAttribute();
+			createAttribute(new AddressValue("", VALID_LOCALITY, VALID_REGION, VALID_POSTAL_CODE, VALID_COUNTRY));
+			Assert.fail();
 		} catch (InvalidAttributeValueException e) {
 			
 		} catch (MIDaaSException e) {
@@ -74,20 +73,71 @@ public class ShippingAddressAttributeTest extends InstrumentationTestCase {
 	}
 	
 	@SmallTest
-	public void testNullInAddress() {
-		mValue.setAddressLine(null);
+	public void testNullAddress() {
 		try {
-			createAttribute();
+			createAttribute(new AddressValue(null, VALID_LOCALITY, VALID_REGION, VALID_POSTAL_CODE, VALID_COUNTRY));
+			Assert.fail();
 		} catch (InvalidAttributeValueException e) {
 			
 		} catch (MIDaaSException e) {
 			Assert.fail();
 		}
 	}
+	
+	@SmallTest
+	public void testNullLocality() {
+		try {
+			createAttribute(new AddressValue(VALID_STREET_ADDRESS, null, VALID_REGION, VALID_POSTAL_CODE, VALID_COUNTRY));
+			Assert.fail();
+		} catch (InvalidAttributeValueException e) {
+			
+		} catch (MIDaaSException e) {
+			Assert.fail();
+		}
+	}
+	
+	@SmallTest
+	public void testNullRegion() {
+		try {
+			createAttribute(new AddressValue(VALID_STREET_ADDRESS, VALID_LOCALITY, null, VALID_POSTAL_CODE, VALID_COUNTRY));
+			Assert.fail();
+		} catch (InvalidAttributeValueException e) {
+			
+		} catch (MIDaaSException e) {
+			Assert.fail();
+		}
+	}
+
+	@SmallTest
+	public void testNullPostalCode() {
+		try {
+			createAttribute(new AddressValue(VALID_STREET_ADDRESS, VALID_LOCALITY, VALID_REGION, null, VALID_COUNTRY));
+			Assert.fail();
+		} catch (InvalidAttributeValueException e) {
+			
+		} catch (MIDaaSException e) {
+			Assert.fail();
+		}
+	}
+
+	@SmallTest
+	public void testNullCountry() {
+		try {
+			createAttribute(new AddressValue(VALID_STREET_ADDRESS, VALID_LOCALITY, VALID_REGION, VALID_POSTAL_CODE, null));
+			Assert.fail();
+		} catch (InvalidAttributeValueException e) {
+			
+		} catch (MIDaaSException e) {
+			Assert.fail();
+		}
+	}
+
+	
 	
 	@SmallTest
 	public void testToStringMethodOfAddressValue() {
 		try {
+			AddressValue mValue = new AddressValue(VALID_STREET_ADDRESS, VALID_LOCALITY, VALID_REGION, VALID_POSTAL_CODE, VALID_COUNTRY);
 			JSONObject object = new JSONObject(mValue.toString());
 			Assert.assertEquals(VALID_STREET_ADDRESS, object.getString(AddressValue.STREET_ADDRESS));
 			Assert.assertEquals(VALID_LOCALITY, object.getString(AddressValue.LOCALITY));
@@ -100,8 +150,8 @@ public class ShippingAddressAttributeTest extends InstrumentationTestCase {
 		
 	}
 	
-	private void createAttribute() throws InvalidAttributeValueException, MIDaaSException {
-		mShippingAddressAttribute = AttributeFactory.getShippingAddressAttributeFactory().createAttributeWithValue(mValue);
+	private void createAttribute(AddressValue value) throws InvalidAttributeValueException, MIDaaSException {
+		mShippingAddressAttribute = AttributeFactory.getShippingAddressAttributeFactory().createAttributeWithValue(value);
 	}
 	
 

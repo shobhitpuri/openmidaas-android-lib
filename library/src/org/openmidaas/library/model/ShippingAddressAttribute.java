@@ -16,14 +16,26 @@
 package org.openmidaas.library.model;
 
 import org.openmidaas.library.common.Constants;
+import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.core.AbstractAttribute;
 
+/**
+ * 
+ * ADT for a verifiable shipping address attribute
+ *
+ */
 public class ShippingAddressAttribute extends AbstractAttribute<AddressValue> {
 	
 	protected ShippingAddressAttribute() {
 		mName = Constants.RESERVED_WORDS.SHIPPING_ADDRESS;
+		mState = ATTRIBUTE_STATE.NOT_VERIFIED;
 	}
 
+	@Override
+	public void setPendingData(String data) {
+		mPendingData = data;
+	}
+	
 	@Override
 	protected boolean validateAttribute(AddressValue value) {
 		if(value == null) {

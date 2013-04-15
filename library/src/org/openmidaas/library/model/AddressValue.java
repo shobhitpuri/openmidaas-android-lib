@@ -18,6 +18,11 @@ package org.openmidaas.library.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * 
+ * ADT that describes an address value
+ *
+ */
 public class AddressValue {
 	
 	public static final String STREET_ADDRESS = "streetAddress";
@@ -54,42 +59,22 @@ public class AddressValue {
 		return streetAddress;
 	}
 
-	public void setAddressLine(String streetAddress) {
-		this.streetAddress = streetAddress;
-	}
-
 	public String getLocality() {
 		return locality;
-	}
-
-	public void setLocality(String locality) {
-		this.locality = locality;
 	}
 
 	public String getRegion() {
 		return region;
 	}
 
-	public void setRegion(String region) {
-		this.region = region;
-	}
-
 	public String getPostalCode() {
 		return postalCode;
-	}
-
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
 	}
 
 	public String getCountry() {
 		return country;
 	}
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
-	
 	private void setFormattedAddress() {
 		this.formattedAddress = this.streetAddress+"\n"+this.locality+" " + this.region + " " + this.postalCode + "\n" + this.country;
 	}
