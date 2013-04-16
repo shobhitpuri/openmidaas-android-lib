@@ -151,7 +151,8 @@ public class ShippingAddressAttributeTest extends InstrumentationTestCase {
 	}
 	
 	private void createAttribute(AddressValue value) throws InvalidAttributeValueException, MIDaaSException {
-		mShippingAddressAttribute = AttributeFactory.getShippingAddressAttributeFactory().createAttributeWithValue(value);
+		mShippingAddressAttribute = AttributeFactory.getShippingAddressAttributeFactory().createAttribute();
+		mShippingAddressAttribute.setValue(value);
 	}
 	
 

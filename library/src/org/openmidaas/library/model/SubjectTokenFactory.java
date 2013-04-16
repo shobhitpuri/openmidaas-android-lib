@@ -21,14 +21,13 @@ import org.openmidaas.library.persistence.AttributesTable;
 
 import android.database.Cursor;
 
-public class SubjectTokenFactory implements AbstractAttributeFactory<SubjectToken, String>{
+public class SubjectTokenFactory implements AbstractAttributeFactory<SubjectToken>{
 
 	protected SubjectTokenFactory(){}
 	
 	@Override
-	public SubjectToken createAttributeWithValue(String value) throws InvalidAttributeValueException {
+	public SubjectToken createAttribute() {
 		SubjectToken token = new SubjectToken();
-		token.setValue(value);
 		return token;
 	}
 	

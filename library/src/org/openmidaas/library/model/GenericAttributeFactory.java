@@ -24,7 +24,7 @@ import android.database.Cursor;
 /**
  * Creates a new generic attribute factory
  */
-public class GenericAttributeFactory implements AbstractAttributeFactory<GenericAttribute, String>{
+public class GenericAttributeFactory implements AbstractAttributeFactory<GenericAttribute>{
 
 	private String mAttributeName;
 	
@@ -48,19 +48,14 @@ public class GenericAttributeFactory implements AbstractAttributeFactory<Generic
 	
 	/**
 	 * @throws MIDaaSException 
-	 * @deprecated Use the method createAttribute(String name, String value) to create a GenericAttribute instead. Otherwise, call
-	 * "setAttributeName(String name)" before calling createAttribute(String value).
+	 * s
 	 */
 	@Override
-	@Deprecated
-	public GenericAttribute createAttributeWithValue(String value) throws InvalidAttributeValueException, IllegalArgumentException, MIDaaSException {
+	public GenericAttribute createAttribute() {
 		if(mAttributeName == null || mAttributeName.isEmpty()) {
 			throw new IllegalArgumentException("Attribute value cannot be set when attribute name is null. Try calling \"setAttributeName()\" first");
 		}
 		GenericAttribute attribute = new GenericAttribute(mAttributeName);
-		attribute.setValue(value);
-		// saves to the DB in the background.
-		AttributePersistenceCoordinator.saveAttribute(attribute);
 		return (attribute);
 	}
 	
@@ -79,8 +74,6 @@ public class GenericAttributeFactory implements AbstractAttributeFactory<Generic
 		}
 		GenericAttribute attribute = new GenericAttribute(name);
 		attribute.setValue(value);
-		// saves to the DB in the background.
-		AttributePersistenceCoordinator.saveAttribute(attribute);
 		return attribute;
 	}
 }

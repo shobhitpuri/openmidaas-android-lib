@@ -24,14 +24,11 @@ import org.openmidaas.library.persistence.AttributesTable;
 
 import android.database.Cursor;
 
-public class CreditCardAttributeFactory implements AbstractAttributeFactory<CreditCardAttribute, CreditCardValue>{
+public class CreditCardAttributeFactory implements AbstractAttributeFactory<CreditCardAttribute>{
 
 	@Override
-	public CreditCardAttribute createAttributeWithValue(CreditCardValue value)
-			throws InvalidAttributeValueException, MIDaaSException {
+	public CreditCardAttribute createAttribute() {
 		CreditCardAttribute attribute = new CreditCardAttribute();
-		attribute.setValue(value);
-		AttributePersistenceCoordinator.saveAttribute(attribute);
 		return attribute;
 	}
 

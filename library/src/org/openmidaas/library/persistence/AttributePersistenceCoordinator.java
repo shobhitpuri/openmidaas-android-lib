@@ -46,6 +46,7 @@ public class AttributePersistenceCoordinator {
 		mDelegate = delegate;
 	}
 	
+	
 	/**
 	 * Removes the specified attribute from persistence storage
 	 * @param attribute the attribute to remove
@@ -134,7 +135,7 @@ public class AttributePersistenceCoordinator {
 	}
 	
 	public static void getShippingAddressAttributes(final ShippingAddressDataCallback callback) {
-		MIDaaS.logDebug(TAG, "fetching credit card attributes");
+		MIDaaS.logDebug(TAG, "fetching shipping address attributes");
 		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
 			@Override
 			public void execute() {

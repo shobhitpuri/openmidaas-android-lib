@@ -35,8 +35,6 @@ public abstract class AbstractAttribute<T> {
 	
 	protected CompleteAttributeVerificationDelegate mCompleteVerificationDelegate = null;
 	
-	protected AttributePersistenceDelegate mPersistenceDelegate = null;
-	
 	protected String mName;
 	
 	protected T mValue;
@@ -124,6 +122,10 @@ public abstract class AbstractAttribute<T> {
 		return mPendingData;
 	}
 	
+	public void save() throws MIDaaSException {
+		AttributePersistenceCoordinator.saveAttribute(this);
+	}
+	
 	/**
 	 * Returns the state of the attribute. 
 	 * @return
@@ -158,7 +160,6 @@ public abstract class AbstractAttribute<T> {
 	public final  void setValue(T value) throws InvalidAttributeValueException {
 		if(validateAttribute(value)) {
 			this.mValue = value;
-			//save();
 		} else {
 			throw new InvalidAttributeValueException();
 		}

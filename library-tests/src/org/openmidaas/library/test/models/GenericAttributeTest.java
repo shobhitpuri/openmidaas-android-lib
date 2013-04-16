@@ -75,35 +75,9 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 			}
 	}
 	
-	@SmallTest
-	public void testDeprecatedMethodCallWithNameNotSet() {
-		try {
-			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttributeWithValue(attributeValue);
-			Assert.fail("Expected IllegalArgumentException");
-		} catch(IllegalArgumentException e) {
-			
-		} catch (InvalidAttributeValueException e) {
-			Assert.fail();
-			e.printStackTrace();
-		} catch (MIDaaSException e) {
-			Assert.fail();
-		}
-	}
 	
-	@SmallTest
-	public void testDeperecatedMethodCallWithNameSet() {
-		try {
-			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().setAttributeName(attributeName).createAttributeWithValue(attributeValue);
-			
-		} catch(IllegalArgumentException e) {
-			Assert.fail();
-		} catch (InvalidAttributeValueException e) {
-			Assert.fail();
-			e.printStackTrace();
-		} catch (MIDaaSException e) {
-			Assert.fail();
-		}
-	}
+	
+	
 	
 	@SmallTest
 	public void testAttributeName() {

@@ -29,14 +29,12 @@ import android.database.Cursor;
  * Shipping address attribute factory
  *
  */
-public class ShippingAddressAttributeFactory implements AbstractAttributeFactory<ShippingAddressAttribute, AddressValue>{
+public class ShippingAddressAttributeFactory implements AbstractAttributeFactory<ShippingAddressAttribute>{
 
 	@Override
-	public ShippingAddressAttribute createAttributeWithValue(AddressValue value)
-			throws InvalidAttributeValueException, MIDaaSException {
+	public ShippingAddressAttribute createAttribute()
+			 {
 		ShippingAddressAttribute attribute = new ShippingAddressAttribute();
-		attribute.setValue(value);
-		AttributePersistenceCoordinator.saveAttribute(attribute);
 		return attribute;
 	}
 

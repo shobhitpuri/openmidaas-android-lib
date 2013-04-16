@@ -264,7 +264,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 					try {
 						if(attributeType.equalsIgnoreCase("email")) {
 							list.add(emailFactory.createAttributeFromCursor(cursor));
-						} else if(attributeType.equalsIgnoreCase("device")) {
+						} else if(attributeType.equalsIgnoreCase(Constants.RESERVED_WORDS.SUBJECT_TOKEN)) {
 							
 						}else {
 							list.add(genericFactory.createAttributeFromCursor(cursor));

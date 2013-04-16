@@ -27,7 +27,7 @@ import android.database.Cursor;
 /**
  * Email attribute factory implementation that creates new email attributes. 
  */
-public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute, String> {
+public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttribute> {
 
 	protected EmailAttributeFactory(){}
 	
@@ -42,10 +42,8 @@ public class EmailAttributeFactory implements AbstractAttributeFactory<EmailAttr
 	}
 	
 	@Override
-	public EmailAttribute createAttributeWithValue(String email) throws InvalidAttributeValueException, MIDaaSException {
+	public EmailAttribute createAttribute() {
 		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification());
-		emailAttribute.setValue(email);
-		AttributePersistenceCoordinator.saveAttribute(emailAttribute);
 		return emailAttribute;
 	}
 }

@@ -114,9 +114,12 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	public void testSaveAndRetrieval() throws Exception {
 		// store the following values that are of type "test"
 		factory.setAttributeName(TEST_NAME);
-		GenericAttribute a1 = factory.createAttributeWithValue("TEST_VALUE_1");
-		GenericAttribute a2 = factory.createAttributeWithValue("TEST_VALUE_2");
-		GenericAttribute a3 = factory.createAttributeWithValue("TEST_VALUE_3");
+		GenericAttribute a1 = factory.createAttribute();
+		a1.setValue(("TEST_VALUE_1"));
+		GenericAttribute a2 = factory.createAttribute();
+		a2.setValue(TEST_VALUE_2);
+		GenericAttribute a3 = factory.createAttribute();
+		a3.setValue(TEST_VALUE_3);
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		// Retrieve all the "test" attributes
 		AttributePersistenceCoordinator.getGenericAttributes("test", new GenericDataCallback() {
@@ -154,7 +157,10 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistence());
 		try {
 			CreditCardValue mValue = new CreditCardValue(cardNumber, cvv, expiryMonth, expiryYear, name);
-			AttributePersistenceCoordinator.saveAttribute(AttributeFactory.getCreditCardAttributeFactory().createAttributeWithValue(mValue));
+			CreditCardAttribute cc = AttributeFactory.getCreditCardAttributeFactory().createAttribute();
+			cc.setValue(mValue);
+			AttributePersistenceCoordinator.saveAttribute(cc);
+			
 			AttributePersistenceCoordinator.getCreditCardAttributes(new CreditCardDataCallback() {
 
 				@Override

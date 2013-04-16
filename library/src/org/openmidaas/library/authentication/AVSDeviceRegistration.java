@@ -91,7 +91,8 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 				public void onSuccess(String response) {
 					try {
 						MIDaaS.logDebug(TAG, "device successfully registered. persisting registration.");
-						deviceToken = AttributeFactory.getSubjectTokenFactory().createAttributeWithValue(Build.MODEL);
+						deviceToken = AttributeFactory.getSubjectTokenFactory().createAttribute();
+						deviceToken.setValue(Build.MODEL);
 						deviceToken.setSignedToken(response);
 						AttributePersistenceCoordinator.saveAttribute(deviceToken);
 						mInitCallback.onSuccess();
