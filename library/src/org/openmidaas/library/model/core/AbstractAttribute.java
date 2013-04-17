@@ -39,7 +39,7 @@ public abstract class AbstractAttribute<T> {
 	
 	protected T mValue;
 	
-	private String mLabel;
+	private String mLabel = null;
 	
 	protected String mSignedToken = null;
 	

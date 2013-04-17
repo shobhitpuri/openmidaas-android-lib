@@ -59,7 +59,7 @@ public class MockPersistence implements AttributePersistenceDelegate{
 	public void getSubjectToken(SubjectTokenCallback callback) {
 		List<SubjectToken> mList = new ArrayList<SubjectToken>();
 		for(AbstractAttribute<?> attribute: mDataList) {
-			if(attribute.getName().equalsIgnoreCase(Constants.RESERVED_WORDS.SUBJECT_TOKEN)) {
+			if(attribute.getName().equalsIgnoreCase(Constants.RESERVED_WORDS.subject_token.toString())) {
 				mList.add((SubjectToken) attribute);
 			}
 		}

@@ -40,7 +40,7 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 	private final String JCB_PATTERN = "^(?:2131|1800|35\\d{3})\\d{11}$";
 	
 	protected CreditCardAttribute() {
-		mName = Constants.RESERVED_WORDS.CREDIT_CARD;
+		mName = Constants.RESERVED_WORDS.credit_card.toString();
 		mState = ATTRIBUTE_STATE.NOT_VERIFIED;
 	}
 
@@ -65,7 +65,7 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 		
 	 */
 	private boolean validateCard(CreditCardValue value) {
-		// The SimpleDateFormat below sets invalid month formats to 1 (Jan)
+		// The SimpleDateFormat below sets invalid month formats to 1 (Jan) (e.g. 14)
 		// we need to ensure it doesn't get passed to the function. 
 		if(value.getExpiryMonth() < 1 || value.getExpiryMonth() >12) {
 			return false;

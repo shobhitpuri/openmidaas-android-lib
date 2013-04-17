@@ -27,6 +27,7 @@ import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.CreditCardAttribute;
 import org.openmidaas.library.model.CreditCardAttributeFactory;
+import org.openmidaas.library.model.InvalidAttributeNameException;
 import org.openmidaas.library.model.ShippingAddressAttribute;
 import org.openmidaas.library.model.ShippingAddressAttributeFactory;
 import org.openmidaas.library.model.SubjectToken;
@@ -66,8 +67,23 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	
 	private AttributeDBHelper dbHelper;
 	
+	private SubjectTokenDBBuilder mSubjectTokenBuilder;
+	
+	private EmailDBBuilder mEmailBuilder;
+	
+	private GenericDBBuilder mGenericBuilder;
+	
+	private ShippingAddressDBBuilder mShippingAddressBuilder;
+	
+	private CreditCardDBBuilder mCreditCardDBBuilder;
+	
 	public AttributeDBPersistence(){
 		dbHelper = AttributeDBHelper.getInstance();
+		mSubjectTokenBuilder = new SubjectTokenDBBuilder();
+		mEmailBuilder = new EmailDBBuilder();
+		mGenericBuilder = new GenericDBBuilder();
+		mShippingAddressBuilder = new ShippingAddressDBBuilder();
+		mCreditCardDBBuilder = new CreditCardDBBuilder();
 	}
 	
 	@Override
@@ -150,20 +166,22 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 		}
 		return contentValues;
 	}
+	
 
 	@Override
 	public void getEmails(final EmailDataCallback callback) {
 		List<EmailAttribute> list = new ArrayList<EmailAttribute>();
-		Cursor cursor = fetchByAttributeName("email");
+		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.email.toString());
 		boolean isDataAvailable = cursor.moveToFirst();
 		if(isDataAvailable) {
-			EmailAttributeFactory emailFactory = AttributeFactory.getEmailAttributeFactory();
 			while(!(cursor.isAfterLast())) {
 				try {
-					list.add(emailFactory.createAttributeFromCursor(cursor));
+					list.add(this.mEmailBuilder.buildFromCursor(cursor));
 				} catch (InvalidAttributeValueException e) {
 					// we should never get to this point otherwise we have a bug storing the data.
 					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+				} catch (InvalidAttributeNameException e) {
+					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_TYPE_MISMATCH));
 				}
 				cursor.moveToNext();
 			}
@@ -181,21 +199,21 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	
 	@Override
 	public void getGenerics(final String attributeName, final GenericDataCallback callback) {
-		if(attributeName.equalsIgnoreCase(Constants.RESERVED_WORDS.SUBJECT_TOKEN)) {
-			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_RETRIEVAL_MISMATCH));
-		}
+		
 		
 		List<GenericAttribute> list = new ArrayList<GenericAttribute>();
 		Cursor cursor = fetchByAttributeName(attributeName);
 		boolean isDataAvailable = cursor.moveToFirst();
 		if(isDataAvailable) {
-			GenericAttributeFactory af = AttributeFactory.getGenericAttributeFactory();
 			while(!(cursor.isAfterLast())) {
 				try {
-					list.add(af.createAttributeFromCursor(cursor));
+					this.mGenericBuilder.setName(attributeName);
+					list.add(this.mGenericBuilder.buildFromCursor(cursor));
 				} catch (InvalidAttributeValueException e) {
 					// we should never get to this point otherwise we have a bug storing the data.
 					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+				} catch (InvalidAttributeNameException e) {
+					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_TYPE_MISMATCH));
 				}
 				 cursor.moveToNext();
 			}
@@ -219,23 +237,23 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 		Cursor cursor = database.query(AttributesTable.TABLE_NAME, null, "name=?", new String[] { name }, null, null, null);
 		return cursor;
 	}
-	
-	
 
 	@Override
 	public void getSubjectToken(final SubjectTokenCallback callback) {
 		List<SubjectToken> list = new ArrayList<SubjectToken>();
 		SubjectTokenFactory factory = AttributeFactory.getSubjectTokenFactory();
-		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.SUBJECT_TOKEN);
+		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.subject_token.toString());
 		if(cursor.getCount()>0) {
 			cursor.moveToFirst();
 			// this loop should run only once. 
 			while(!(cursor.isAfterLast())) {
 				try {
-					list.add(factory.createAttributeFromCursor(cursor));
+					list.add(this.mSubjectTokenBuilder.buildFromCursor(cursor));
 				} catch (InvalidAttributeValueException e) {
 					// we should never get to this point otherwise we have a bug storing the data.
 					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+				} catch (InvalidAttributeNameException e) {
+					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_TYPE_MISMATCH));
 				}
 				cursor.moveToNext();
 			}
@@ -250,8 +268,6 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	@Override
 	public void getAllAttributes(final AttributeDataCallback callback) {
 		List<AbstractAttribute<?>> list = new ArrayList<AbstractAttribute<?>>();
-		EmailAttributeFactory emailFactory = AttributeFactory.getEmailAttributeFactory();
-		GenericAttributeFactory genericFactory = AttributeFactory.getGenericAttributeFactory();
 		database = dbHelper.getWritableDatabase();
 		String attributeType = null;
 		Cursor cursor = database.query(AttributesTable.TABLE_NAME, null, null, null, null, null, null);
@@ -261,17 +277,17 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 				cursor.moveToFirst();
 				while(!(cursor.isAfterLast())) {
 					attributeType = cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME));
-					try {
-						if(attributeType.equalsIgnoreCase("email")) {
-							list.add(emailFactory.createAttributeFromCursor(cursor));
-						} else if(attributeType.equalsIgnoreCase(Constants.RESERVED_WORDS.SUBJECT_TOKEN)) {
-							
-						}else {
-							list.add(genericFactory.createAttributeFromCursor(cursor));
-						}
-					} catch (InvalidAttributeValueException e) {
-							MIDaaS.logError(TAG, e.getMessage());
-					}
+//					try {
+//						if(attributeType.equalsIgnoreCase("email")) {
+//							list.add(emailFactory.createAttributeFromCursor(cursor));
+//						} else if(attributeType.equalsIgnoreCase(Constants.RESERVED_WORDS.SUBJECT_TOKEN)) {
+//							
+//						}else {
+//							list.add(genericFactory.createAttributeFromCursor(cursor));
+//						}
+//					} catch (InvalidAttributeValueException e) {
+//							MIDaaS.logError(TAG, e.getMessage());
+//					}
 					cursor.moveToNext();
 				}
 			// we want to return a list in this order. 
@@ -301,16 +317,18 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	@Override
 	public void getShippingAddresses(final ShippingAddressDataCallback callback) {
 		List<ShippingAddressAttribute> list = new ArrayList<ShippingAddressAttribute>();
-		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.SHIPPING_ADDRESS);
+		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.shipping_address.toString());
 		boolean isDataAvailable = cursor.moveToFirst();
 		if(isDataAvailable) {
 			ShippingAddressAttributeFactory factory = AttributeFactory.getShippingAddressAttributeFactory();
 			while(!(cursor.isAfterLast())) {
 				try {
-					list.add(factory.createAttributeFromCursor(cursor));
+					list.add(this.mShippingAddressBuilder.buildFromCursor(cursor));
 				} catch (InvalidAttributeValueException e) {
 					// we should never get to this point otherwise we have a bug storing the data.
 					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+				} catch (InvalidAttributeNameException e) {
+					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_TYPE_MISMATCH));
 				}
 				cursor.moveToNext();
 			}
@@ -327,16 +345,17 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	@Override
 	public void getCreditCards(final CreditCardDataCallback callback) {
 		List<CreditCardAttribute> list = new ArrayList<CreditCardAttribute>();
-		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.CREDIT_CARD);
+		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.credit_card.toString());
 		boolean isDataAvailable = cursor.moveToFirst();
 		if(isDataAvailable) {
-			CreditCardAttributeFactory factory = AttributeFactory.getCreditCardAttributeFactory();
 			while(!(cursor.isAfterLast())) {
 				try {
-					list.add(factory.createAttributeFromCursor(cursor));
+					list.add(this.mCreditCardDBBuilder.buildFromCursor(cursor));
 				} catch (InvalidAttributeValueException e) {
 					// we should never get to this point otherwise we have a bug storing the data.
 					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+				} catch (InvalidAttributeNameException e) {
+					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_TYPE_MISMATCH));
 				}
 				cursor.moveToNext();
 			}

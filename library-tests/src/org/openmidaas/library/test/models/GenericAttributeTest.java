@@ -21,6 +21,8 @@ import junit.framework.TestCase;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.GenericAttribute;
+import org.openmidaas.library.model.GenericAttributeFactory;
+import org.openmidaas.library.model.InvalidAttributeNameException;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
@@ -40,28 +42,28 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 		mContext = getInstrumentation().getContext();
 		MIDaaS.setContext(mContext);
 		AttributePersistenceCoordinator.setPersistenceDelegate(new MockPersistence());
-		//getInstrumentation().getContext().deleteDatabase("attributes.db");
-		
 	}
 	
 	@SmallTest
 	public void testPendingDataIsNull() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			GenericAttribute genericAttribute = GenericAttributeFactory.createAttribute(attributeName);
+			genericAttribute.setValue(attributeValue);
 			Assert.assertEquals(null, genericAttribute.getPendingData());
 			} catch (InvalidAttributeValueException e) {
 				Assert.fail();
 			} catch (IllegalArgumentException e) {
 				Assert.fail();
-			} catch (MIDaaSException e) {
+			} catch (InvalidAttributeNameException e) {
 				Assert.fail();
-			}
+			} 
 	}
 	
 	@SmallTest
 	public void testSetPendingDataThrowsException() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			GenericAttribute genericAttribute = GenericAttributeFactory.createAttribute(attributeName);
+			genericAttribute.setValue(attributeValue);
 			genericAttribute.setPendingData("blob");
 			Assert.fail();
 			} catch (InvalidAttributeValueException e) {
@@ -70,9 +72,9 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 				
 			} catch (IllegalArgumentException e) {
 				Assert.fail();
-			} catch (MIDaaSException e) {
+			} catch (InvalidAttributeNameException e) {
 				Assert.fail();
-			}
+			} 
 	}
 	
 	
@@ -82,13 +84,14 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testAttributeName() {
 		try {
-		GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+		GenericAttribute genericAttribute = GenericAttributeFactory.createAttribute(attributeName);
+		genericAttribute.setValue(attributeValue);
 		Assert.assertEquals(genericAttribute.getName(), attributeName);
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
 		} catch (IllegalArgumentException e) {
 			Assert.fail();
-		} catch (MIDaaSException e) {
+		} catch (InvalidAttributeNameException e) {
 			Assert.fail();
 		}
 		
@@ -97,38 +100,52 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testCreateAttributeWithNullName() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(null, attributeValue);
-			Assert.fail("Expected IllegalArgumentException");
+			GenericAttribute genericAttribute = GenericAttributeFactory.createAttribute(null);
+			genericAttribute.setValue(attributeValue);
+			Assert.fail("Expected InvalidAttributeNameException");
 		} catch(IllegalArgumentException ex) {
-			
+			Assert.fail();
 		} catch(InvalidAttributeValueException e) {
+			Assert.fail();
+		} catch (InvalidAttributeNameException e) {
 			
-		} catch (MIDaaSException e) {
+		} 
+	}
+	
+	@SmallTest
+	public void testWithReservedNameSet() {
+		try {
+			GenericAttribute genericAttribute = GenericAttributeFactory.createAttribute("email");
+			genericAttribute.setValue(attributeValue);
+		} catch (InvalidAttributeNameException e) {
+			
+		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
 		}
+		
 	}
 	
 	@SmallTest
 	public void testStartVerificationWithoutCallback() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			GenericAttribute genericAttribute = GenericAttributeFactory.createAttribute(attributeName);
+			genericAttribute.setValue(attributeValue);
 			genericAttribute.startVerification(null);
 			Assert.fail("Expected UnsupportedOperationException");
 		} catch (UnsupportedOperationException e) {
 			
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
-		} catch (IllegalArgumentException e) {
+		} catch (InvalidAttributeNameException e) {
 			Assert.fail();
-		} catch (MIDaaSException e) {
-			Assert.fail();
-		}
+		} 
 	}
 	
 	@SmallTest
 	public void testStartVerificationWithCallback() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			GenericAttribute genericAttribute = GenericAttributeFactory.createAttribute(attributeName);
+			genericAttribute.setValue(attributeValue);
 			genericAttribute.startVerification(new InitializeVerificationCallback() {
 
 				@Override
@@ -149,15 +166,16 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 			Assert.fail();
 		} catch (IllegalArgumentException e) {
 			Assert.fail();
-		} catch (MIDaaSException e) {
+		} catch (InvalidAttributeNameException e) {
 			Assert.fail();
-		}
+		} 
 	}
 	
 	@SmallTest
 	public void testCompleteVerification() {
 		try {
-			GenericAttribute genericAttribute = AttributeFactory.getGenericAttributeFactory().createAttribute(attributeName, attributeValue);
+			GenericAttribute genericAttribute = GenericAttributeFactory.createAttribute(attributeName);
+			genericAttribute.setValue(attributeValue);
 			genericAttribute.completeVerification("1234", new CompleteVerificationCallback() {
 
 				@Override
@@ -179,8 +197,8 @@ public class GenericAttributeTest extends InstrumentationTestCase {
 			Assert.fail();
 		} catch (IllegalArgumentException e) {
 			Assert.fail();
-		} catch (MIDaaSException e) {
+		} catch (InvalidAttributeNameException e) {
 			Assert.fail();
-		}
+		} 
 	}
 }

@@ -15,23 +15,11 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-import org.openmidaas.library.common.Constants;
-import org.openmidaas.library.model.core.AbstractAttribute;
+public class InvalidAttributeNameException extends Exception {
 
-public class SubjectToken extends AbstractAttribute<String>{
-	
-	protected SubjectToken(){
-		mName = Constants.RESERVED_WORDS.subject_token.toString();
-	}
+	private static final long serialVersionUID = 1L;
 
-	@Override
-	public void delete() {
-		throw new UnsupportedOperationException("Devic token cannot be deleted");
+	public InvalidAttributeNameException(String message) { 
+		super(message);
 	}
-	
-	@Override
-	protected boolean validateAttribute(String value) {
-		return true;
-	}
-
 }

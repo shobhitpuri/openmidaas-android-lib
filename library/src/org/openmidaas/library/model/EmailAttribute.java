@@ -17,6 +17,8 @@ package org.openmidaas.library.model;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.common.WorkQueueManager;
 import org.openmidaas.library.common.WorkQueueManager.Worker;
@@ -35,8 +37,6 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	private final String EMAIL_REGEX_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"; 
 	
-	private final String ATTRIBUTE_NAME = "email";
-	
 	/**
 	 * Constructs a new email attribute. A new instance must be
 	 * created via the provided factory method. 
@@ -45,7 +45,7 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	 */
 	protected EmailAttribute(InitializeAttributeVerificationDelegate initEmailDelegate,
 			CompleteAttributeVerificationDelegate completeEmailDelegate) {
-		mName = ATTRIBUTE_NAME;
+		mName = Constants.RESERVED_WORDS.email.toString();
 		mInitVerificationDelegate = initEmailDelegate;
 		mCompleteVerificationDelegate = completeEmailDelegate;
 		mState = ATTRIBUTE_STATE.NOT_VERIFIED;

@@ -31,12 +31,4 @@ public interface AbstractAttributeFactory<T extends AbstractAttribute<?>> {
 	 * @throws InvalidAttributeValueException
 	 */
 	public T createAttribute();
-	
-	/**
-	 * Creates an attribute of type T with the specified cursor. 
-	 * @param cursor - the cursor containing the data. 
-	 * @return - the attribute of type T
-	 * @throws InvalidAttributeValueException
-	 */
-	public T createAttributeFromCursor(Cursor cursor) throws InvalidAttributeValueException;
 }

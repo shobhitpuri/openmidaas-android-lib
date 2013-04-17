@@ -27,7 +27,7 @@ import org.openmidaas.library.model.core.AbstractAttribute;
 public class ShippingAddressAttribute extends AbstractAttribute<AddressValue> {
 	
 	protected ShippingAddressAttribute() {
-		mName = Constants.RESERVED_WORDS.SHIPPING_ADDRESS;
+		mName = Constants.RESERVED_WORDS.shipping_address.toString();
 		mState = ATTRIBUTE_STATE.NOT_VERIFIED;
 	}
 
