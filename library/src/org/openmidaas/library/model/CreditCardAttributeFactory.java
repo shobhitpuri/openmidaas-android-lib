@@ -15,15 +15,6 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openmidaas.library.model.core.AbstractAttributeFactory;
-import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-import org.openmidaas.library.persistence.AttributesTable;
-
-import android.database.Cursor;
-
 public class CreditCardAttributeFactory {
 
 	

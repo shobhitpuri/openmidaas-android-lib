@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 
 /**
  * Abstract class that defines an attribute

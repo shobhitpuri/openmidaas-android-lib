@@ -21,11 +21,11 @@ import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.authentication.core.DeviceRegistrationDelegate;
-import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.SubjectToken;
 import org.openmidaas.library.model.InvalidAttributeValueException;
+import org.openmidaas.library.model.SubjectTokenFactory;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
@@ -91,10 +91,10 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 				public void onSuccess(String response) {
 					try {
 						MIDaaS.logDebug(TAG, "device successfully registered. persisting registration.");
-						deviceToken = AttributeFactory.getSubjectTokenFactory().createAttribute();
+						deviceToken =SubjectTokenFactory.createAttribute();
 						deviceToken.setValue(Build.MODEL);
 						deviceToken.setSignedToken(response);
-						AttributePersistenceCoordinator.saveAttribute(deviceToken);
+						deviceToken.save();
 						mInitCallback.onSuccess();
 					} catch (InvalidAttributeValueException e) {
 						// should never get here b/c we're returning true. 

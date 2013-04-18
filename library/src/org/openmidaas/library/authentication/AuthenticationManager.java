@@ -85,7 +85,8 @@ public class AuthenticationManager  {
 	 * Blocking operation. Waits till the access token 
 	 * is obtained. 
 	 * @return the access token object or null if unable to get 
-	 * the access token
+	 * the access token. The client should handle retries if required
+	 * when a null access token is returned.
 	 */
 	public synchronized AccessToken getAccessToken() {
 		final CountDownLatch MUTEX = new CountDownLatch(1);

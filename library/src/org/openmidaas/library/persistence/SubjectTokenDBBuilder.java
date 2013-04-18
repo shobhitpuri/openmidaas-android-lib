@@ -16,7 +16,6 @@
 package org.openmidaas.library.persistence;
 
 import org.openmidaas.library.common.Constants;
-import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeNameException;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.SubjectToken;
@@ -40,11 +39,6 @@ public class SubjectTokenDBBuilder extends AbstractAttributeDBBuilder<SubjectTok
 
 	@Override
 	protected void setValue() throws InvalidAttributeValueException {
-		// TODO Auto-generated method stub
-		
+		mAttribute.setValue(mCursor.getString(mCursor.getColumnIndex(AttributesTable.COLUMN_NAME_VALUE)));
 	}
-
-	
-	
-
 }

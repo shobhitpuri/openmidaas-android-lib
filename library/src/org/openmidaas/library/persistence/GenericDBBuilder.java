@@ -44,7 +44,6 @@ public class GenericDBBuilder extends AbstractAttributeDBBuilder<GenericAttribut
 	protected GenericAttribute buildFromCursor(Cursor cursor)
 			throws InvalidAttributeNameException,
 			InvalidAttributeValueException {
-		String x = cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME));
 		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(mName))) {
 			throw new InvalidAttributeNameException("Attribute name does not match that present in cursor");
 		}
