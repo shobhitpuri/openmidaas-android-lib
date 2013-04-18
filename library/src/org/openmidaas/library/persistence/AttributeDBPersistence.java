@@ -16,29 +16,17 @@
 package org.openmidaas.library.persistence;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
-import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
-import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.CreditCardAttribute;
-import org.openmidaas.library.model.CreditCardAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeNameException;
 import org.openmidaas.library.model.ShippingAddressAttribute;
-import org.openmidaas.library.model.ShippingAddressAttributeFactory;
 import org.openmidaas.library.model.SubjectToken;
-import org.openmidaas.library.model.SubjectTokenFactory;
 import org.openmidaas.library.model.EmailAttribute;
-import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.GenericAttribute;
-import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.AbstractAttribute;
-import org.openmidaas.library.model.core.AbstractAttributeFactory;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.core.AttributeDataCallback;
@@ -53,6 +41,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 
 /**
  * 
@@ -147,6 +136,116 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 		return val;
 	}
 	
+	@Override
+	public void getAllAttributes(final AttributeDataCallback callback) {
+		try {
+			List<AbstractAttribute<?>> mList = new ArrayList<AbstractAttribute<?>>();
+			List<EmailAttribute> emailList = 
+					this.<EmailAttribute>getAttributeFor(Constants.RESERVED_WORDS.email.toString(), this.mEmailBuilder);
+			List<ShippingAddressAttribute> shippingAddressList = 
+					this.<ShippingAddressAttribute>getAttributeFor(Constants.RESERVED_WORDS.shipping_address.toString(), this.mShippingAddressBuilder);
+			List<CreditCardAttribute> creditCardList = 
+					this.<CreditCardAttribute>getAttributeFor(Constants.RESERVED_WORDS.credit_card.toString(), this.mCreditCardDBBuilder);
+			List<GenericAttribute> genericList = new ArrayList<GenericAttribute>();
+			mList.addAll(emailList);
+			mList.addAll(shippingAddressList);
+			mList.addAll(creditCardList);
+			// get all generic attributes
+			List<String> genericAttributeNames = getAllGenericAttributeNames();
+			for(String name: genericAttributeNames) {
+				this.mGenericBuilder.setName(name);
+				genericList.addAll(this.getAttributeFor(name, this.mGenericBuilder));
+			}
+			mList.addAll(genericList);
+			callback.onSuccess(mList);
+		} catch (InvalidAttributeNameException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+		} catch (InvalidAttributeValueException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+		} catch (MIDaaSException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+		} 
+	}
+	
+	@Override
+	public void getEmails(final EmailDataCallback callback) {
+		try {
+			List<EmailAttribute> list = 
+					this.<EmailAttribute>getAttributeFor(Constants.RESERVED_WORDS.email.toString(), this.mEmailBuilder);
+			callback.onSuccess(list);
+		} catch (InvalidAttributeNameException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+		} catch (InvalidAttributeValueException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+		} catch (MIDaaSException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+		}
+	}
+	
+	@Override
+	public void getGenerics(final String attributeName, final GenericDataCallback callback) {
+		try {
+			this.mGenericBuilder.setName(attributeName);
+			List<GenericAttribute> list = 
+					this.<GenericAttribute>getAttributeFor(attributeName, this.mGenericBuilder);
+			callback.onSuccess(list);
+		} catch (InvalidAttributeNameException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+		} catch (InvalidAttributeValueException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+		} catch (MIDaaSException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+		}
+	}
+
+	@Override
+	public void getSubjectToken(final SubjectTokenCallback callback) {
+		try {
+			List<SubjectToken> list = 
+					this.<SubjectToken>getAttributeFor(Constants.RESERVED_WORDS.subject_token.toString(), this.mSubjectTokenBuilder);
+			callback.onSuccess(list);
+		} catch (InvalidAttributeNameException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+		} catch (InvalidAttributeValueException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+		} catch (MIDaaSException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+		}
+	}
+	
+	@Override
+	public void getShippingAddresses(final ShippingAddressDataCallback callback) {
+		try {
+			List<ShippingAddressAttribute> list = 
+					this.<ShippingAddressAttribute>getAttributeFor(Constants.RESERVED_WORDS.shipping_address.toString(), this.mShippingAddressBuilder);
+			callback.onSuccess(list);
+		} catch (InvalidAttributeNameException e1) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+		} catch (InvalidAttributeValueException e2) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+		} catch (MIDaaSException e3) {
+			callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+		} catch (SQLiteException e4) {
+			
+		}
+	}
+	
+	@Override
+	public void getCreditCards(final CreditCardDataCallback callback) {
+		try {
+			List<CreditCardAttribute> list = 
+					this.<CreditCardAttribute>getAttributeFor(Constants.RESERVED_WORDS.credit_card.toString(), this.mCreditCardDBBuilder);
+			callback.onSuccess(list);
+		} catch (InvalidAttributeNameException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+		} catch (InvalidAttributeValueException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+		} catch (MIDaaSException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+		}
+	}
+	
+	
 	/**
 	 * Helper function to get content values object from attribute data. 
 	 * @param attribute -  the attribute data to persist. 
@@ -167,205 +266,83 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 		return contentValues;
 	}
 	
-
-	@Override
-	public void getEmails(final EmailDataCallback callback) {
-		List<EmailAttribute> list = new ArrayList<EmailAttribute>();
-		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.email.toString());
-		boolean isDataAvailable = cursor.moveToFirst();
-		if(isDataAvailable) {
-			while(!(cursor.isAfterLast())) {
-				try {
-					list.add(this.mEmailBuilder.buildFromCursor(cursor));
-				} catch (InvalidAttributeValueException e) {
-					// we should never get to this point otherwise we have a bug storing the data.
-					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
-				} catch (InvalidAttributeNameException e) {
-					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_TYPE_MISMATCH));
-				}
-				cursor.moveToNext();
-			}
-			cursor.close();
-			dbHelper.close();
-		} else {
-			callback.onSuccess(list);
-		}
-		cursor.close();
-		dbHelper.close();
-		callback.onSuccess(list);
-	}
-
-	
-	
-	@Override
-	public void getGenerics(final String attributeName, final GenericDataCallback callback) {
-		
-		
-		List<GenericAttribute> list = new ArrayList<GenericAttribute>();
-		Cursor cursor = fetchByAttributeName(attributeName);
-		boolean isDataAvailable = cursor.moveToFirst();
-		if(isDataAvailable) {
-			while(!(cursor.isAfterLast())) {
-				try {
-					this.mGenericBuilder.setName(attributeName);
-					list.add(this.mGenericBuilder.buildFromCursor(cursor));
-				} catch (InvalidAttributeValueException e) {
-					// we should never get to this point otherwise we have a bug storing the data.
-					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
-				} catch (InvalidAttributeNameException e) {
-					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_TYPE_MISMATCH));
-				}
-				 cursor.moveToNext();
-			}
-			cursor.close();
-			dbHelper.close();
-		} else {
-			callback.onSuccess(list);
-		}
-		cursor.close();
-		dbHelper.close();
-		callback.onSuccess(list);
-	}
-	
 	/**
 	 * Helper method to search for an attribute by name. 
 	 * @param name the name of the attribute
 	 * @return a cursor pointing to the record list. 
 	 */
-	private Cursor fetchByAttributeName(String name) {
+	private Cursor fetchByAttributeName(String name) throws SQLiteException{
 		database = dbHelper.getWritableDatabase();
 		Cursor cursor = database.query(AttributesTable.TABLE_NAME, null, "name=?", new String[] { name }, null, null, null);
 		return cursor;
 	}
-
-	@Override
-	public void getSubjectToken(final SubjectTokenCallback callback) {
-		List<SubjectToken> list = new ArrayList<SubjectToken>();
-		SubjectTokenFactory factory = AttributeFactory.getSubjectTokenFactory();
-		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.subject_token.toString());
-		if(cursor.getCount()>0) {
-			cursor.moveToFirst();
-			// this loop should run only once. 
+	
+	/**
+	 * Helper method to build a attribute list from a cursor. 
+	 * @param attributeName - the attribute name to be retrieved
+	 * @param builder - the attribute builder
+	 * @return an attribute list of type T
+	 * @throws InvalidAttributeNameException
+	 * @throws InvalidAttributeValueException
+	 * @throws MIDaaSException
+	 */
+	private <T extends AbstractAttribute<?>> List<T> getAttributeFor(String attributeName, AbstractAttributeDBBuilder<T> builder) throws 
+	InvalidAttributeNameException, InvalidAttributeValueException, MIDaaSException, SQLiteException {
+		List<T> list = new ArrayList<T>();
+		Cursor cursor = fetchByAttributeName(attributeName);
+		if(cursor == null) {
+			throw new MIDaaSException(MIDaaSError.DATABASE_ERROR);
+		}
+		else if(cursor.moveToFirst()) {
 			while(!(cursor.isAfterLast())) {
-				try {
-					list.add(this.mSubjectTokenBuilder.buildFromCursor(cursor));
-				} catch (InvalidAttributeValueException e) {
-					// we should never get to this point otherwise we have a bug storing the data.
-					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
-				} catch (InvalidAttributeNameException e) {
-					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_TYPE_MISMATCH));
-				}
+				list.add(builder.buildFromCursor(cursor));
 				cursor.moveToNext();
 			}
 			cursor.close();
 			dbHelper.close();
-			callback.onSuccess(list);
+			return list;
 		} else {
-			callback.onSuccess(list);
+			cursor.close();
+			dbHelper.close();
+			return list;
 		}
 	}
 	
-	@Override
-	public void getAllAttributes(final AttributeDataCallback callback) {
-		List<AbstractAttribute<?>> list = new ArrayList<AbstractAttribute<?>>();
+	/**
+	 * Helper method to get all generic attribute names currently 
+	 * stored in the DB
+	 * @return a list of all generic attribute names
+	 */
+	private List<String> getAllGenericAttributeNames() {
+		Cursor cursor;
+		List<String> attributeNames = new ArrayList<String>();
 		database = dbHelper.getWritableDatabase();
-		String attributeType = null;
-		Cursor cursor = database.query(AttributesTable.TABLE_NAME, null, null, null, null, null, null);
-		if(cursor != null) {
+		// filter out by reserved words
+		StringBuilder builder = new StringBuilder();
+		builder.append('(');
+		for(String reservedName:Constants.getReservedWordsAsList()) {
+			if(builder.length() > 1)
+				builder.append(',');
+			builder.append('\'');
+			builder.append(reservedName);
+			builder.append('\'');
 			
-			if (cursor.getCount() > 0) {
-				cursor.moveToFirst();
-				while(!(cursor.isAfterLast())) {
-					attributeType = cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME));
-//					try {
-//						if(attributeType.equalsIgnoreCase("email")) {
-//							list.add(emailFactory.createAttributeFromCursor(cursor));
-//						} else if(attributeType.equalsIgnoreCase(Constants.RESERVED_WORDS.SUBJECT_TOKEN)) {
-//							
-//						}else {
-//							list.add(genericFactory.createAttributeFromCursor(cursor));
-//						}
-//					} catch (InvalidAttributeValueException e) {
-//							MIDaaS.logError(TAG, e.getMessage());
-//					}
-					cursor.moveToNext();
-				}
-			// we want to return a list in this order. 
-			final List<ATTRIBUTE_STATE> definedOrder = Arrays.asList(ATTRIBUTE_STATE.PENDING_VERIFICATION, ATTRIBUTE_STATE.VERIFIED, ATTRIBUTE_STATE.NOT_VERIFIABLE);	
-			Collections.sort(list, new Comparator<AbstractAttribute<?>>() {
-
-				@Override
-				public int compare(AbstractAttribute<?> arg0,
-						AbstractAttribute<?> arg1) {
-					return (definedOrder.indexOf(arg0.getState())-definedOrder.indexOf(arg1.getState()));
-				}
-									
-			});
-			cursor.close();
-			dbHelper.close();
-			callback.onSuccess(list);
-			} else {
-				cursor.close();
-				dbHelper.close();
-				callback.onSuccess(list);
-			}
-		} else {
-			callback.onSuccess(list);
 		}
-	}
-
-	@Override
-	public void getShippingAddresses(final ShippingAddressDataCallback callback) {
-		List<ShippingAddressAttribute> list = new ArrayList<ShippingAddressAttribute>();
-		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.shipping_address.toString());
-		boolean isDataAvailable = cursor.moveToFirst();
-		if(isDataAvailable) {
-			ShippingAddressAttributeFactory factory = AttributeFactory.getShippingAddressAttributeFactory();
+		builder.append(')');
+		// get all generic attribute names
+		cursor = database.query(AttributesTable.TABLE_NAME, new String[] { "name" }, "name NOT IN "+builder.toString(),null , null, null, null);
+		if(cursor != null && cursor.moveToFirst()) {
 			while(!(cursor.isAfterLast())) {
-				try {
-					list.add(this.mShippingAddressBuilder.buildFromCursor(cursor));
-				} catch (InvalidAttributeValueException e) {
-					// we should never get to this point otherwise we have a bug storing the data.
-					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
-				} catch (InvalidAttributeNameException e) {
-					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_TYPE_MISMATCH));
+				if(!(attributeNames.contains(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME))))) {
+					attributeNames.add(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)));
 				}
 				cursor.moveToNext();
 			}
+			return attributeNames;
+		} else {
 			cursor.close();
 			dbHelper.close();
-		} else {
-			callback.onSuccess(list);
+			return attributeNames;
 		}
-		cursor.close();
-		dbHelper.close();
-		callback.onSuccess(list);
-	}
-
-	@Override
-	public void getCreditCards(final CreditCardDataCallback callback) {
-		List<CreditCardAttribute> list = new ArrayList<CreditCardAttribute>();
-		Cursor cursor = fetchByAttributeName(Constants.RESERVED_WORDS.credit_card.toString());
-		boolean isDataAvailable = cursor.moveToFirst();
-		if(isDataAvailable) {
-			while(!(cursor.isAfterLast())) {
-				try {
-					list.add(this.mCreditCardDBBuilder.buildFromCursor(cursor));
-				} catch (InvalidAttributeValueException e) {
-					// we should never get to this point otherwise we have a bug storing the data.
-					callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
-				} catch (InvalidAttributeNameException e) {
-					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_TYPE_MISMATCH));
-				}
-				cursor.moveToNext();
-			}
-			cursor.close();
-			dbHelper.close();
-		} else {
-			callback.onSuccess(list);
-		}
-		cursor.close();
-		dbHelper.close();
-		callback.onSuccess(list);
 	}
 }

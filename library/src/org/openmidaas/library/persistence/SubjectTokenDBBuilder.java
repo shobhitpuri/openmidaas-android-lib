@@ -30,7 +30,7 @@ public class SubjectTokenDBBuilder extends AbstractAttributeDBBuilder<SubjectTok
 	protected SubjectToken buildFromCursor(Cursor cursor)
 			throws InvalidAttributeNameException,
 			InvalidAttributeValueException {
-		if ((cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)) != Constants.RESERVED_WORDS.subject_token.toString())) {
+		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(Constants.RESERVED_WORDS.subject_token.toString()))) {
 			throw new InvalidAttributeNameException("Attribute name does not match that present in cursor");
 		}
 		mCursor = cursor;

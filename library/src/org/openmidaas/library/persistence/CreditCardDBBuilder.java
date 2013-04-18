@@ -32,7 +32,7 @@ public class CreditCardDBBuilder extends AbstractAttributeDBBuilder<CreditCardAt
 	protected CreditCardAttribute buildFromCursor(Cursor cursor)
 			throws InvalidAttributeNameException,
 			InvalidAttributeValueException {
-		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(Constants.RESERVED_WORDS.email.toString()))) {
+		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(Constants.RESERVED_WORDS.credit_card.toString()))) {
 			throw new InvalidAttributeNameException("Attribute name does not match that present in cursor");
 		}
 		mCursor = cursor;
