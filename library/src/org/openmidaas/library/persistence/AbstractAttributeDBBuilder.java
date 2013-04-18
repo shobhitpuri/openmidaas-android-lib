@@ -46,12 +46,32 @@ public abstract class AbstractAttributeDBBuilder<T extends AbstractAttribute<?>>
 		if(signedToken != null) {
 			mAttribute.setSignedToken(signedToken);
 		}
+		String label = mCursor.getString(mCursor.getColumnIndex(AttributesTable.COLUMN_NAME_LABEL));
+		if(label != null) {
+			mAttribute.setLabel(label);
+		}
 	}
 	
+	/**
+	 * Builds the attribute from the cursor
+	 * @param cursor
+	 * @return the attribute
+	 * @throws InvalidAttributeNameException
+	 * @throws InvalidAttributeValueException
+	 */
 	protected abstract T buildFromCursor(Cursor cursor) throws InvalidAttributeNameException, InvalidAttributeValueException; 
 	
+	/**
+	 * Sets the value property of the attribute
+	 * @throws InvalidAttributeValueException
+	 */
 	protected abstract void setValue() throws InvalidAttributeValueException;
 	
+	/**
+	 * Builds and returns the attribute
+	 * @return the attribute
+	 * @throws InvalidAttributeValueException
+	 */
 	protected T getAttribute() throws InvalidAttributeValueException {
 		buildCommon();
 		setValue();

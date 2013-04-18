@@ -159,7 +159,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 			mList.addAll(genericList);
 			callback.onSuccess(mList);
 		} catch (InvalidAttributeNameException e) {
-			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_ERROR));
 		} catch (InvalidAttributeValueException e) {
 			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
 		} catch (MIDaaSException e) {
@@ -174,7 +174,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 					this.<EmailAttribute>getAttributeFor(Constants.RESERVED_WORDS.email.toString(), this.mEmailBuilder);
 			callback.onSuccess(list);
 		} catch (InvalidAttributeNameException e) {
-			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_ERROR));
 		} catch (InvalidAttributeValueException e) {
 			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
 		} catch (MIDaaSException e) {
@@ -190,7 +190,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 					this.<GenericAttribute>getAttributeFor(attributeName, this.mGenericBuilder);
 			callback.onSuccess(list);
 		} catch (InvalidAttributeNameException e) {
-			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_ERROR));
 		} catch (InvalidAttributeValueException e) {
 			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
 		} catch (MIDaaSException e) {
@@ -205,7 +205,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 					this.<SubjectToken>getAttributeFor(Constants.RESERVED_WORDS.subject_token.toString(), this.mSubjectTokenBuilder);
 			callback.onSuccess(list);
 		} catch (InvalidAttributeNameException e) {
-			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_ERROR));
 		} catch (InvalidAttributeValueException e) {
 			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
 		} catch (MIDaaSException e) {
@@ -220,7 +220,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 					this.<ShippingAddressAttribute>getAttributeFor(Constants.RESERVED_WORDS.shipping_address.toString(), this.mShippingAddressBuilder);
 			callback.onSuccess(list);
 		} catch (InvalidAttributeNameException e1) {
-			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_ERROR));
 		} catch (InvalidAttributeValueException e2) {
 			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
 		} catch (MIDaaSException e3) {
@@ -237,7 +237,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 					this.<CreditCardAttribute>getAttributeFor(Constants.RESERVED_WORDS.credit_card.toString(), this.mCreditCardDBBuilder);
 			callback.onSuccess(list);
 		} catch (InvalidAttributeNameException e) {
-			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_MISMATCH));
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_ERROR));
 		} catch (InvalidAttributeValueException e) {
 			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
 		} catch (MIDaaSException e) {
@@ -254,9 +254,13 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	private ContentValues getContentValuesForAttribute(AbstractAttribute<?> attribute) {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(AttributesTable.COLUMN_NAME_NAME, attribute.getName());
+		contentValues.put(AttributesTable.COLUMN_NAME_LABEL, attribute.getLabel());
 		contentValues.put(AttributesTable.COLUMN_NAME_VALUE, attribute.getValue().toString());
 		contentValues.put(AttributesTable.COLUMN_NAME_TOKEN, attribute.getSignedToken());
 		contentValues.put(AttributesTable.COLUMN_NAME_PENDING, attribute.getPendingData());
+		if(attribute.getLabel() == null) {
+			contentValues.putNull(AttributesTable.COLUMN_NAME_LABEL);
+		}
 		if(attribute.getSignedToken() == null) {
 			contentValues.putNull(AttributesTable.COLUMN_NAME_TOKEN);
 		} 
@@ -270,8 +274,9 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	 * Helper method to search for an attribute by name. 
 	 * @param name the name of the attribute
 	 * @return a cursor pointing to the record list. 
+	 * @throws MIDaaSException 
 	 */
-	private Cursor fetchByAttributeName(String name) throws SQLiteException{
+	private Cursor fetchByAttributeName(String name) throws SQLiteException {
 		database = dbHelper.getWritableDatabase();
 		Cursor cursor = database.query(AttributesTable.TABLE_NAME, null, "name=?", new String[] { name }, null, null, null);
 		return cursor;
@@ -287,24 +292,34 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	 * @throws MIDaaSException
 	 */
 	private <T extends AbstractAttribute<?>> List<T> getAttributeFor(String attributeName, AbstractAttributeDBBuilder<T> builder) throws 
-	InvalidAttributeNameException, InvalidAttributeValueException, MIDaaSException, SQLiteException {
+	InvalidAttributeNameException, InvalidAttributeValueException, MIDaaSException {
 		List<T> list = new ArrayList<T>();
-		Cursor cursor = fetchByAttributeName(attributeName);
-		if(cursor == null) {
-			throw new MIDaaSException(MIDaaSError.DATABASE_ERROR);
-		}
-		else if(cursor.moveToFirst()) {
-			while(!(cursor.isAfterLast())) {
-				list.add(builder.buildFromCursor(cursor));
-				cursor.moveToNext();
+		Cursor cursor = null;
+		try {
+			cursor = fetchByAttributeName(attributeName);
+			if(cursor == null) {
+				throw new MIDaaSException(MIDaaSError.DATABASE_ERROR);
 			}
-			cursor.close();
+			else if(cursor.moveToFirst()) {
+				while(!(cursor.isAfterLast())) {
+					list.add(builder.buildFromCursor(cursor));
+					cursor.moveToNext();
+				}
+				cursor.close();
+				dbHelper.close();
+				return list;
+			} else {
+				cursor.close();
+				dbHelper.close();
+				return list;
+			}
+		} catch(SQLiteException e) {
+			throw new MIDaaSException(MIDaaSError.DATABASE_ERROR);
+		} finally {
+			if(!cursor.isClosed()) {
+				cursor.close();
+			}
 			dbHelper.close();
-			return list;
-		} else {
-			cursor.close();
-			dbHelper.close();
-			return list;
 		}
 	}
 	
@@ -338,6 +353,8 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 				}
 				cursor.moveToNext();
 			}
+			cursor.close();
+			dbHelper.close();
 			return attributeNames;
 		} else {
 			cursor.close();
