@@ -163,8 +163,6 @@ public abstract class AbstractAttribute<T> {
 	public final  void setValue(T value) throws InvalidAttributeValueException {
 		if(validateAttribute(value)) {
 			this.mValue = value;
-			this.mPendingData = null;
-			this.mSignedToken = null;
 		} else {
 			throw new InvalidAttributeValueException();
 		}
