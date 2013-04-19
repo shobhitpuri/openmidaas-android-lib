@@ -29,7 +29,8 @@ public class MockAccessTokenSuccessStrategy implements AccessTokenStrategy {
 	@Override
 	public void getAccessToken(AccessTokenCallback callback) {
 		try {
-			SubjectToken deviceAttribute = AttributeFactory.getSubjectTokenFactory().createAttributeWithValue("1234");
+			SubjectToken deviceAttribute = AttributeFactory.getSubjectTokenFactory().createAttribute();
+			deviceAttribute.setValue("1234");
 			deviceAttribute.setSignedToken("1234");
 			callback.onSuccess(AccessToken.createAccessTokenFromDeviceAttribute(deviceAttribute, "5678"));
 		} catch (InvalidAttributeValueException e) {

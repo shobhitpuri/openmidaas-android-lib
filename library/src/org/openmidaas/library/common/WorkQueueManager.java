@@ -16,6 +16,9 @@
 package org.openmidaas.library.common;
 
 import java.util.Vector;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.openmidaas.library.MIDaaS;
 
@@ -29,10 +32,12 @@ public class WorkQueueManager {
 	public interface Worker {
 		public void execute();
 	}
+
+	private static final long POLL_TIMEOUT_MS = 150;
 	
 	private final String TAG = "WorkQueueManager";
 	
-	private Vector<Worker> workQueue;
+	private BlockingQueue<Worker> workQueue;
 	
 	private Thread queueThread = null;
 	
@@ -42,7 +47,7 @@ public class WorkQueueManager {
 
 	private WorkQueueManager() {
 		MIDaaS.logDebug(TAG, "creating new instance of work queue manager");
-		workQueue = new Vector<Worker>();
+		workQueue = new LinkedBlockingQueue<Worker>();
 		queueThread = new Thread(new Runnable() {
 
 			@Override
@@ -64,11 +69,8 @@ public class WorkQueueManager {
 	
 	public void addWorkerToQueue(Worker worker) {
 		try {
-			synchronized(workQueue) {
-				MIDaaS.logDebug(TAG, "adding new worker to queue");
-				workQueue.add(worker);
-				workQueue.notify();
-			}
+			MIDaaS.logDebug(TAG, "adding new worker to queue");
+			workQueue.add(worker);
 		} catch(Exception e) {
 			MIDaaS.logError(TAG, e.getMessage());
 		}
@@ -77,18 +79,16 @@ public class WorkQueueManager {
 	private void startProcessingQueue() {
 		while(!isStopRequested) {
 			try {
-				Worker worker = null;
-				synchronized(workQueue) {
-					while(workQueue.isEmpty()) {
-						MIDaaS.logDebug(TAG, "waiting for work...");
-						workQueue.wait();
-					}
-					if(isStopRequested) {
-						MIDaaS.logDebug(TAG, "stopping work queue...");
-						break;
-					}
-					worker = (Worker)workQueue.elementAt(0);
-					workQueue.removeElementAt(0);
+				// wait till the tiemout
+				Worker worker = workQueue.poll(POLL_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+				// first check if stop was requested
+				if(isStopRequested) {
+					MIDaaS.logDebug(TAG, "stopping work queue...");
+					break;
+				}
+				// if worker is null (nothing was added to the queue, continue)
+				if(worker == null) {
+					continue;
 				}
 				MIDaaS.logDebug(TAG, "doing work...");
 				worker.execute();
@@ -102,9 +102,19 @@ public class WorkQueueManager {
 		}
 	}
 	
+	/**
+	 * Terminates the current work queue
+	 */
 	public synchronized void terminateWorkQueue() {
 		MIDaaS.logDebug(TAG, "stopping work queue...");
 		isStopRequested = true;
-		workQueue.notify();
+		// add a dummy worker to notify the queue that something is added. 
+		addWorkerToQueue(new Worker() {
+
+			@Override
+			public void execute() {
+			}
+			
+		});
 	}
 }

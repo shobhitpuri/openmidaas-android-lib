@@ -30,7 +30,7 @@ import org.openmidaas.library.model.core.MIDaaSException;
 
 public class AuthenticationManager  {
 
-	private final int ACCESS_TOKEN_TIMEOUT = 1000;
+	private final int ACCESS_TOKEN_TIMEOUT_MS = 1000;
 	
 	private AccessToken mAccessToken;
 	
@@ -85,7 +85,8 @@ public class AuthenticationManager  {
 	 * Blocking operation. Waits till the access token 
 	 * is obtained. 
 	 * @return the access token object or null if unable to get 
-	 * the access token
+	 * the access token. The client should handle retries if required
+	 * when a null access token is returned.
 	 */
 	public synchronized AccessToken getAccessToken() {
 		final CountDownLatch MUTEX = new CountDownLatch(1);
@@ -104,7 +105,7 @@ public class AuthenticationManager  {
 				}
 			});
 			try {
-				MUTEX.await(ACCESS_TOKEN_TIMEOUT, TimeUnit.MILLISECONDS);
+				MUTEX.await(ACCESS_TOKEN_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
 				MIDaaS.logError(TAG, e.getMessage());
 			}

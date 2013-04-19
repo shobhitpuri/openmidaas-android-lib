@@ -155,6 +155,7 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 	}
 	
 	private void createAttribute(CreditCardValue value) throws InvalidAttributeValueException, MIDaaSException {
-		creditCardAttribute = AttributeFactory.getCreditCardAttributeFactory().createAttributeWithValue(value);
+		creditCardAttribute = AttributeFactory.getCreditCardAttributeFactory().createAttribute();
+		creditCardAttribute.setValue(value);
 	}
 }

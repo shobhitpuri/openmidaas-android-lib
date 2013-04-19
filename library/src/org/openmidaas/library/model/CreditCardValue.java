@@ -45,9 +45,9 @@ public class CreditCardValue {
 	
 	private short mCVV = 0;
 	
-	public static enum CARD_TYPE { VISA, MASTER_CARD, AMEX, DISCOVER, DINERS_CLUB, JCB }
+	public static enum CARD_TYPE { VISA, MASTER_CARD, AMEX, DISCOVER, DINERS_CLUB, JCB, UNKNOWN }
 	
-	private CARD_TYPE mCardType;
+	private CARD_TYPE mCardType = CARD_TYPE.UNKNOWN;
 	
 	public CreditCardValue(String creditCardNumber, short cvv, short expiryMonth, short expiryYear, String holderName) {
 		this.mCardNumber = creditCardNumber;

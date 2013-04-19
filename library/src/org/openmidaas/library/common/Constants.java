@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.openmidaas.library.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 
  * Public constants used by the library. 
@@ -22,15 +25,23 @@ package org.openmidaas.library.common;
  */
 public final class Constants {
 	private Constants(){}
-	public static final String AVP_SB_BASE_URL = "http://avpsandbox-securekey.dotcloud.com";
+	//public static final String AVP_SB_BASE_URL = "http://avpsandbox-securekey.dotcloud.com";
+	public static final String AVP_SB_BASE_URL = "http://avp10-kfarhadi.dotcloud.com";
 	public static final String AVP_LIVE_BASE_URL = "http://avplive-securekey.dotcloud.com";
 	public static final String INIT_AUTH_URL = "/1/requestAttributeVerification";
 	public static final String COMPLETE_AUTH_URL = "/1/completeAttributeVerification";
 	public static final String REGISTRATION_URL = "/1/device/register";
 	public enum ATTRIBUTE_STATE { VERIFIED, PENDING_VERIFICATION, NOT_VERIFIABLE, NOT_VERIFIED, ERROR_IN_SAVE, UNKNOWN };
-	public static final class RESERVED_WORDS{
-		public static final String CREDIT_CARD = "credit_card";
-		public static final String SHIPPING_ADDRESS = "shipping_address";
-		public static final String SUBJECT_TOKEN = "subject_token";
+	
+	public enum RESERVED_WORDS { email, credit_card, shipping_address, subject_token }
+	private static List<String> mReservedWordsAsString = new ArrayList<String>();
+	static {
+		mReservedWordsAsString.clear();
+		for(RESERVED_WORDS word:RESERVED_WORDS.values()) {
+			mReservedWordsAsString.add(word.toString());
+		}
+	}
+	public static List<String> getReservedWordsAsList() {
+		return mReservedWordsAsString;
 	}
 }

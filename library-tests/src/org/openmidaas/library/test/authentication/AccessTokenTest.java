@@ -33,7 +33,8 @@ public class AccessTokenTest extends InstrumentationTestCase{
 	private String expectedToken = DEVICE_ATTRIBUTE_VALUE+":"+DEVICE_AUTH_TOKEN;
 	protected void setUp() throws Exception {
 		MIDaaS.setContext( getInstrumentation().getContext());
-		deviceAttribute = AttributeFactory.getSubjectTokenFactory().createAttributeWithValue(DEVICE_ATTRIBUTE_VALUE);
+		deviceAttribute = AttributeFactory.getSubjectTokenFactory().createAttribute();
+		deviceAttribute.setValue(DEVICE_ATTRIBUTE_VALUE);
 		deviceAttribute.setSignedToken(DEVICE_ATTRIBUTE_VALUE);
 		token = AccessToken.createAccessTokenFromDeviceAttribute(deviceAttribute, DEVICE_AUTH_TOKEN);
 	}
