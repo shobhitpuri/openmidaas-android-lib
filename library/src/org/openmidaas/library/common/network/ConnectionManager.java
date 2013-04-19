@@ -34,15 +34,15 @@ public class ConnectionManager {
 	
 	private static String TAG = "ConnectionManager";
 	
-	private static INetworkFactory mNetworkFactory;
+	private static NetworkFactory mNetworkFactory;
 	
-	private static INetworkTransport mNetworkTransport;
+	private static NetworkTransport mNetworkTransport;
 	
 	/**
 	 * Sets the network factory and creates the transport. 
 	 * @param networkFactory - the network factory implementation of INetworkFactory
 	 */
-	public static void setNetworkFactory(INetworkFactory networkFactory) {
+	public static void setNetworkFactory(NetworkFactory networkFactory) {
 		mNetworkFactory = networkFactory;
 		mNetworkTransport = mNetworkFactory.createTransport();
 	}

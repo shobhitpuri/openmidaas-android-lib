@@ -21,7 +21,7 @@ import org.openmidaas.library.model.core.AbstractAttribute;
 public class SubjectToken extends AbstractAttribute<String>{
 	
 	protected SubjectToken(){
-		mName = Constants.RESERVED_WORDS.SUBJECT_TOKEN;
+		mName = Constants.RESERVED_WORDS.subject_token.toString();
 	}
 
 	@Override

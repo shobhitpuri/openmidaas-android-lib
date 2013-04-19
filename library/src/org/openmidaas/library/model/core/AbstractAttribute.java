@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 
 /**
  * Abstract class that defines an attribute
@@ -35,13 +34,11 @@ public abstract class AbstractAttribute<T> {
 	
 	protected CompleteAttributeVerificationDelegate mCompleteVerificationDelegate = null;
 	
-	protected AttributePersistenceDelegate mPersistenceDelegate = null;
-	
 	protected String mName;
 	
 	protected T mValue;
 	
-	private String mLabel;
+	private String mLabel = null;
 	
 	protected String mSignedToken = null;
 	
@@ -124,6 +121,10 @@ public abstract class AbstractAttribute<T> {
 		return mPendingData;
 	}
 	
+	public void save() throws MIDaaSException {
+		AttributePersistenceCoordinator.saveAttribute(this);
+	}
+	
 	/**
 	 * Returns the state of the attribute. 
 	 * @return
@@ -158,7 +159,6 @@ public abstract class AbstractAttribute<T> {
 	public final  void setValue(T value) throws InvalidAttributeValueException {
 		if(validateAttribute(value)) {
 			this.mValue = value;
-			//save();
 		} else {
 			throw new InvalidAttributeValueException();
 		}

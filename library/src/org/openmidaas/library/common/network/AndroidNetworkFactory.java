@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.openmidaas.library.common.network;
 
-public class AndroidNetworkFactory implements INetworkFactory{
+public class AndroidNetworkFactory implements NetworkFactory{
 
 	private String mUrl;
 	
@@ -24,7 +24,7 @@ public class AndroidNetworkFactory implements INetworkFactory{
 	}
 	
 	@Override
-	public INetworkTransport createTransport() {
+	public NetworkTransport createTransport() {
 		return (new AndroidNetworkTransport(mUrl));
 	}
 }

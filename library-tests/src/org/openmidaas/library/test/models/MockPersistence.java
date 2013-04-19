@@ -24,8 +24,10 @@ import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.core.AttributeDataCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
+import org.openmidaas.library.persistence.core.CreditCardDataCallback;
 import org.openmidaas.library.persistence.core.EmailDataCallback;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
+import org.openmidaas.library.persistence.core.ShippingAddressDataCallback;
 import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 
 public class MockPersistence implements AttributePersistenceDelegate{
@@ -57,7 +59,7 @@ public class MockPersistence implements AttributePersistenceDelegate{
 	public void getSubjectToken(SubjectTokenCallback callback) {
 		List<SubjectToken> mList = new ArrayList<SubjectToken>();
 		for(AbstractAttribute<?> attribute: mDataList) {
-			if(attribute.getName().equalsIgnoreCase(Constants.RESERVED_WORDS.SUBJECT_TOKEN)) {
+			if(attribute.getName().equalsIgnoreCase(Constants.RESERVED_WORDS.subject_token.toString())) {
 				mList.add((SubjectToken) attribute);
 			}
 		}
@@ -66,6 +68,18 @@ public class MockPersistence implements AttributePersistenceDelegate{
 
 	@Override
 	public void getAllAttributes(AttributeDataCallback callback) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getShippingAddresses(ShippingAddressDataCallback callback) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getCreditCards(CreditCardDataCallback callback) {
 		// TODO Auto-generated method stub
 		
 	}

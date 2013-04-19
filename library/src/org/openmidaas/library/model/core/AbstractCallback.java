@@ -20,12 +20,12 @@ package org.openmidaas.library.model.core;
  * other callback implementations can use. 
  *
  */
-public abstract class AbstractCallback {
+public interface AbstractCallback {
 	/**
 	 * This method is called when a successful 
 	 * operation takes place. 
 	 */
-	public abstract void onSuccess();
+	public void onSuccess();
 	
 	/**
 	 * This method is called when an error occurs while
@@ -33,6 +33,6 @@ public abstract class AbstractCallback {
 	 * @param exception - The OpenMIDaaSException containing 
 	 * the error code and description. 
 	 */
-	public abstract void onError(MIDaaSException exception);
+	public void onError(MIDaaSException exception);
 	
 }

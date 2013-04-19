@@ -29,4 +29,5 @@ public abstract class AttributesTable implements BaseColumns {
 	public static final String COLUMN_NAME_VALUE 	= "value";
 	public static final String COLUMN_NAME_TOKEN	= "token";
 	public static final String COLUMN_NAME_PENDING	= "pending";
+	public static final String COLUMN_NAME_LABEL	= "label";
 }
