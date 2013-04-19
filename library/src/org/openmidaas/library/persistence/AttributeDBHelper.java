@@ -61,6 +61,7 @@ public class AttributeDBHelper extends SQLiteOpenHelper{
 		db.execSQL("CREATE TABLE " + AttributesTable.TABLE_NAME + " (" + 
 				AttributesTable._ID 					+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
 				AttributesTable.COLUMN_NAME_NAME 	+ " TEXT NOT NULL, " +
+				AttributesTable.COLUMN_NAME_LABEL	+ " TEXT, " +
 				AttributesTable.COLUMN_NAME_VALUE 	+ " TEXT UNIQUE, " +
 				AttributesTable.COLUMN_NAME_TOKEN 	+ " TEXT, " + 
 				AttributesTable.COLUMN_NAME_PENDING 	+ " TEXT);");

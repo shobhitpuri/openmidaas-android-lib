@@ -18,6 +18,7 @@ package org.openmidaas.library.authentication;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.AccessToken;
@@ -28,14 +29,14 @@ import org.openmidaas.library.model.core.MIDaaSException;
 
 
 public class AuthenticationManager  {
+
+	private final int ACCESS_TOKEN_TIMEOUT_MS = 1000;
 	
 	private AccessToken mAccessToken;
 	
 	private AccessTokenStrategy mAccessTokenStrategy;
 	
 	private DeviceAuthenticationStrategy mDeviceAuthStrategy;
-	
-	private CountDownLatch MUTEX;
 	
 	private final String TAG = "AuthenticationManager";
 	
@@ -84,46 +85,33 @@ public class AuthenticationManager  {
 	 * Blocking operation. Waits till the access token 
 	 * is obtained. 
 	 * @return the access token object or null if unable to get 
-	 * the access token
+	 * the access token. The client should handle retries if required
+	 * when a null access token is returned.
 	 */
 	public synchronized AccessToken getAccessToken() {
-		MUTEX = new CountDownLatch(1);
+		final CountDownLatch MUTEX = new CountDownLatch(1);
 		if(mAccessToken == null){
 			MIDaaS.logDebug(TAG, "getting a new access token");
 			mAccessTokenStrategy.getAccessToken(new AccessTokenCallback() {
 				@Override
 				public void onSuccess(AccessToken accessToken) {
 					mAccessToken = accessToken;
-					synchronized(MUTEX) {
-						MUTEX.countDown();
-					}
+					MUTEX.countDown();
 				}
 		
 				@Override
 				public void onError(MIDaaSException exception) {
-					synchronized(MUTEX) {
-						MUTEX.countDown();
-					}
+					MUTEX.countDown();
 				}
 			});
-			synchronized(MUTEX) {
-				try {
-					MUTEX.await();
-				} catch (InterruptedException e) {
-					mAccessToken = null;
-				}
+			try {
+				MUTEX.await(ACCESS_TOKEN_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e) {
+				MIDaaS.logError(TAG, e.getMessage());
 			}
 			return mAccessToken;	
-		} else {
-			MIDaaS.logDebug(TAG, "access token OK, returning...");
-			return mAccessToken;
-		}
-	}
-	
-	/**
-	 * Request for an access token in the background.
-	 */
-	public void getAccessTokenInBackground() {
-		//TODO: Future work
+		} 
+		MIDaaS.logDebug(TAG, "access token OK, returning...");
+		return mAccessToken;
 	}
 }

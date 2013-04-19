@@ -13,34 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.test.network;
+package org.openmidaas.library.common.network;
 
-import org.openmidaas.library.common.network.NetworkFactory;
-import org.openmidaas.library.common.network.NetworkTransport;
-
-import android.content.Context;
-
-public class MockTransportFactory implements NetworkFactory{
-	
-	private String mFileName;
-
-	private Context mContext;
-	
-	private MockTransport transport;
-	
-	public MockTransportFactory(Context context, String filename) {
-		mContext = context;
-		mFileName = filename;
-	}
-	
-	@Override
-	public NetworkTransport createTransport() {
-		transport = new MockTransport(mContext);
-		transport.setMockDataFile(mFileName);
-		return (transport);
-	}
-
-	public void setFilename(String fileName) {
-		transport.setMockDataFile(fileName);
-	}
+/**
+ * Factory interface to create a transport
+ */
+public interface NetworkFactory {
+	/**
+	 * Creates a new network transport and returns it. 
+	 * @return returns the network transport
+	 */
+	 NetworkTransport createTransport();
 }

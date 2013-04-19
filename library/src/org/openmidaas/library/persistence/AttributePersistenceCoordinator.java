@@ -21,8 +21,10 @@ import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.core.AttributeDataCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
+import org.openmidaas.library.persistence.core.CreditCardDataCallback;
 import org.openmidaas.library.persistence.core.EmailDataCallback;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
+import org.openmidaas.library.persistence.core.ShippingAddressDataCallback;
 import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 
 /**
@@ -43,6 +45,7 @@ public class AttributePersistenceCoordinator {
 	public static void setPersistenceDelegate(AttributePersistenceDelegate delegate) {
 		mDelegate = delegate;
 	}
+	
 	
 	/**
 	 * Removes the specified attribute from persistence storage
@@ -117,6 +120,26 @@ public class AttributePersistenceCoordinator {
 			@Override
 			public void execute() {
 				mDelegate.getAllAttributes(callback);
+			}
+		});
+	}
+	
+	public static void getCreditCardAttributes(final CreditCardDataCallback callback) {
+		MIDaaS.logDebug(TAG, "fetching credit card attributes");
+		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
+			@Override
+			public void execute() {
+				mDelegate.getCreditCards(callback);
+			}
+		});
+	}
+	
+	public static void getShippingAddressAttributes(final ShippingAddressDataCallback callback) {
+		MIDaaS.logDebug(TAG, "fetching shipping address attributes");
+		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
+			@Override
+			public void execute() {
+				mDelegate.getShippingAddresses(callback);
 			}
 		});
 	}

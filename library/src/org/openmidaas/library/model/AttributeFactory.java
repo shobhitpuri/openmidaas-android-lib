@@ -22,8 +22,8 @@ package org.openmidaas.library.model;
  */
 public class AttributeFactory {
 
-	public static EmailAttributeFactory getEmailAttributeFactory() {
-		return new EmailAttributeFactory();
+	public static EmailAttribute getEmailAttribute() {		
+		return (new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification()));
 	}
 	
 	public static GenericAttributeFactory getGenericAttributeFactory() {
@@ -34,4 +34,11 @@ public class AttributeFactory {
 		return new SubjectTokenFactory();
 	}
 	
+	public static CreditCardAttributeFactory getCreditCardAttributeFactory() {
+		return new CreditCardAttributeFactory();
+	}
+	
+	public static ShippingAddressAttributeFactory getShippingAddressAttributeFactory() {
+		return new ShippingAddressAttributeFactory();
+	}
 }

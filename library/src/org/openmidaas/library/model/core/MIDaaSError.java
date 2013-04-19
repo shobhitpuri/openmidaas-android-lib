@@ -21,7 +21,9 @@ public enum MIDaaSError {
 	DEVICE_REGISTRATION_ERROR(102, "There as an error with device registration."),
 	ATTRIBUTE_ALREADY_EXISTS(200, "The current attribute already exists. "),
 	DATABASE_ERROR(201, "There was an error with the database"),
-	ATTRIBUTE_RETRIEVAL_MISMATCH(202, "The attribute being retrieved is not what is was originally requested");
+	ATTRIBUTE_RETRIEVAL_MISMATCH(202, "The attribute being retrieved is not what is was originally requested"),
+	ATTRIBUTE_NAME_ERROR(203, "The requested attribute does not match the attribute being retrieved from the database."),
+	ATTRIBUTE_VALUE_ERROR(204, "The attribute value could not be set.");
 	
 	private final int mErrorCode;
 	

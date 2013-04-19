@@ -32,9 +32,7 @@ public class DeviceRegistrar {
 	 * @param delegate device registration delegate
 	 */
 	public static void setDeviceRegistrationDelegate(DeviceRegistrationDelegate delegate) {
-		if(mDelegate == null) {
-			mDelegate = delegate;
-		}
+		mDelegate = delegate;
 	}
 	
 	/**

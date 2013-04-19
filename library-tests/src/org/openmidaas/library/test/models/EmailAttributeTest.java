@@ -60,14 +60,15 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 		private Context mContext;
 		static boolean isInit = false;
 		private MockTransportFactory mockFactory;
-		
+		private String validEmail = "rob@gmail.com";
 		protected void setUp() throws Exception {
 			mContext = getInstrumentation().getContext();
 			MIDaaS.setContext(mContext);
 			// set the persistence delegate to a simple list. database doesn't seem to work after deletion. 
 			AttributePersistenceCoordinator.setPersistenceDelegate(new MockPersistence());
 			AuthenticationManager.getInstance().setAccessTokenStrategy(new MockAccessTokenSuccessStrategy());
-			emailAttribute =  AttributeFactory.getEmailAttributeFactory().createAttributeWithValue("rob@gmail.com");
+			emailAttribute =  EmailAttributeFactory.createAttribute();
+			emailAttribute.setValue(validEmail);
 			mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
 			ConnectionManager.setNetworkFactory(mockFactory);
 			isInit = true;
@@ -140,11 +141,10 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			}
 		}
 		
+		
 		@MediumTest
 		public void testEmailVerification() throws Exception {
 			mContext = getInstrumentation().getContext();
-			
-			//emailAttribute = AttributeFactory.getEmailAttributeFactory().createAttributeWithValue("rob@gmail.com");
 			final CountDownLatch mLatch = new CountDownLatch(1);
 			
 			initializeEmailVerificationSuccess();
@@ -154,7 +154,6 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 		private void initializeEmailVerificationSuccess() throws Exception {
 			final CountDownLatch mLatch = new CountDownLatch(1);
 			mockFactory.setFilename("init_email_ver_success.json");
-			//emailAttribute = AttributeFactory.createEmailAttributeFactory().createAttribute("rob@gmail.com");
 			emailAttribute.startVerification(new InitializeVerificationCallback() {
 
 				@Override
