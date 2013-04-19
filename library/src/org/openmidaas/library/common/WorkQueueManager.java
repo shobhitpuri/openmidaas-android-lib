@@ -33,7 +33,7 @@ public class WorkQueueManager {
 		public void execute();
 	}
 
-	private static final long POLL_TIMEOUT_MS = 500;
+	private static final long POLL_TIMEOUT_MS = 150;
 	
 	private final String TAG = "WorkQueueManager";
 	
@@ -79,13 +79,16 @@ public class WorkQueueManager {
 	private void startProcessingQueue() {
 		while(!isStopRequested) {
 			try {
+				// wait till the tiemout
 				Worker worker = workQueue.poll(POLL_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-				if(worker == null) {
-					continue;
-				}
+				// first check if stop was requested
 				if(isStopRequested) {
 					MIDaaS.logDebug(TAG, "stopping work queue...");
 					break;
+				}
+				// if worker is null (nothing was added to the queue, continue)
+				if(worker == null) {
+					continue;
 				}
 				MIDaaS.logDebug(TAG, "doing work...");
 				worker.execute();
@@ -99,9 +102,13 @@ public class WorkQueueManager {
 		}
 	}
 	
+	/**
+	 * Terminates the current work queue
+	 */
 	public synchronized void terminateWorkQueue() {
 		MIDaaS.logDebug(TAG, "stopping work queue...");
 		isStopRequested = true;
+		// add a dummy worker to notify the queue that something is added. 
 		addWorkerToQueue(new Worker() {
 
 			@Override

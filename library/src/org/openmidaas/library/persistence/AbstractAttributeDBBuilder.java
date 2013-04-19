@@ -42,7 +42,7 @@ public abstract class AbstractAttributeDBBuilder<T extends AbstractAttribute<?>>
 		if(pendingData != null) {
 			mAttribute.setPendingData(pendingData);
 		}
-		String signedToken = mCursor.getString(mCursor.getColumnIndex(AttributesTable.COLUMN_NAME_PENDING));
+		String signedToken = mCursor.getString(mCursor.getColumnIndex(AttributesTable.COLUMN_NAME_TOKEN));
 		if(signedToken != null) {
 			mAttribute.setSignedToken(signedToken);
 		}
