@@ -21,7 +21,7 @@ import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.model.CreditCardAttribute;
 import org.openmidaas.library.model.InvalidAttributeNameException;
-import org.openmidaas.library.model.ShippingAddressAttribute;
+import org.openmidaas.library.model.AddressAttribute;
 import org.openmidaas.library.model.SubjectToken;
 import org.openmidaas.library.model.EmailAttribute;
 import org.openmidaas.library.model.GenericAttribute;
@@ -32,7 +32,7 @@ import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.core.AttributeDataCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 import org.openmidaas.library.persistence.core.CreditCardDataCallback;
-import org.openmidaas.library.persistence.core.ShippingAddressDataCallback;
+import org.openmidaas.library.persistence.core.AddressDataCallback;
 import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 import org.openmidaas.library.persistence.core.EmailDataCallback;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
@@ -62,7 +62,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	
 	private GenericDBBuilder mGenericBuilder;
 	
-	private ShippingAddressDBBuilder mShippingAddressBuilder;
+	private AddressDBBuilder mShippingAddressBuilder;
 	
 	private CreditCardDBBuilder mCreditCardDBBuilder;
 	
@@ -71,7 +71,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 		mSubjectTokenBuilder = new SubjectTokenDBBuilder();
 		mEmailBuilder = new EmailDBBuilder();
 		mGenericBuilder = new GenericDBBuilder();
-		mShippingAddressBuilder = new ShippingAddressDBBuilder();
+		mShippingAddressBuilder = new AddressDBBuilder();
 		mCreditCardDBBuilder = new CreditCardDBBuilder();
 	}
 	
@@ -142,8 +142,8 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 			List<AbstractAttribute<?>> mList = new ArrayList<AbstractAttribute<?>>();
 			List<EmailAttribute> emailList = 
 					this.<EmailAttribute>getAttributeFor(Constants.RESERVED_WORDS.email.toString(), this.mEmailBuilder);
-			List<ShippingAddressAttribute> shippingAddressList = 
-					this.<ShippingAddressAttribute>getAttributeFor(Constants.RESERVED_WORDS.shipping_address.toString(), this.mShippingAddressBuilder);
+			List<AddressAttribute> shippingAddressList = 
+					this.<AddressAttribute>getAttributeFor(Constants.RESERVED_WORDS.address.toString(), this.mShippingAddressBuilder);
 			List<CreditCardAttribute> creditCardList = 
 					this.<CreditCardAttribute>getAttributeFor(Constants.RESERVED_WORDS.credit_card.toString(), this.mCreditCardDBBuilder);
 			List<GenericAttribute> genericList = new ArrayList<GenericAttribute>();
@@ -214,10 +214,10 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	}
 	
 	@Override
-	public void getShippingAddresses(final ShippingAddressDataCallback callback) {
+	public void getAddresses(final AddressDataCallback callback) {
 		try {
-			List<ShippingAddressAttribute> list = 
-					this.<ShippingAddressAttribute>getAttributeFor(Constants.RESERVED_WORDS.shipping_address.toString(), this.mShippingAddressBuilder);
+			List<AddressAttribute> list = 
+					this.<AddressAttribute>getAttributeFor(Constants.RESERVED_WORDS.address.toString(), this.mShippingAddressBuilder);
 			callback.onSuccess(list);
 		} catch (InvalidAttributeNameException e1) {
 			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_ERROR));

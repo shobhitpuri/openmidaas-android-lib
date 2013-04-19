@@ -22,22 +22,22 @@ import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.model.AddressValue;
 import org.openmidaas.library.model.InvalidAttributeNameException;
 import org.openmidaas.library.model.InvalidAttributeValueException;
-import org.openmidaas.library.model.ShippingAddressAttribute;
-import org.openmidaas.library.model.ShippingAddressAttributeFactory;
+import org.openmidaas.library.model.AddressAttribute;
+import org.openmidaas.library.model.AddressAttributeFactory;
 
 import android.database.Cursor;
 
-public class ShippingAddressDBBuilder extends AbstractAttributeDBBuilder<ShippingAddressAttribute>{
+public class AddressDBBuilder extends AbstractAttributeDBBuilder<AddressAttribute>{
 
 	@Override
-	protected ShippingAddressAttribute buildFromCursor(Cursor cursor)
+	protected AddressAttribute buildFromCursor(Cursor cursor)
 			throws InvalidAttributeNameException,
 			InvalidAttributeValueException {
-		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(Constants.RESERVED_WORDS.shipping_address.toString()))) {
+		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(Constants.RESERVED_WORDS.address.toString()))) {
 			throw new InvalidAttributeNameException("Attribute name does not match that present in cursor");
 		}
 		mCursor = cursor;
-		mAttribute = ShippingAddressAttributeFactory.createAttribute();
+		mAttribute = AddressAttributeFactory.createAttribute();
 		return (getAttribute());
 	}
 

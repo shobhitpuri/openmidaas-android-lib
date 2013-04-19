@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.openmidaas.library.common;
 
-import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;

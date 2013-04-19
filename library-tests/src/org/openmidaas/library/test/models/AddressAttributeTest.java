@@ -23,20 +23,20 @@ import org.openmidaas.library.model.AddressValue;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.CreditCardValue;
 import org.openmidaas.library.model.InvalidAttributeValueException;
-import org.openmidaas.library.model.ShippingAddressAttribute;
+import org.openmidaas.library.model.AddressAttribute;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
-public class ShippingAddressAttributeTest extends InstrumentationTestCase {
+public class AddressAttributeTest extends InstrumentationTestCase {
 	private final String VALID_STREET_ADDRESS = "30 St.George Street.";
 	private final String VALID_LOCALITY = "Toronto";
 	private final String VALID_REGION = "Ontario";
 	private final String VALID_POSTAL_CODE = "M2P 2C5";
 	private final String VALID_COUNTRY = "Canada";
-	private ShippingAddressAttribute mShippingAddressAttribute;
+	private AddressAttribute mShippingAddressAttribute;
 	protected void setUp() throws Exception {
 		MIDaaS.setContext(getInstrumentation().getContext());
 		AttributePersistenceCoordinator.setPersistenceDelegate(new MockPersistence());
@@ -54,6 +54,20 @@ public class ShippingAddressAttributeTest extends InstrumentationTestCase {
 			Assert.assertEquals(VALID_COUNTRY, mShippingAddressAttribute.getValue().getCountry());
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
+		} catch (MIDaaSException e) {
+			Assert.fail();
+		}
+	}
+	
+	@SmallTest
+	public void testInvalidValueSetAndSave() {
+		try {
+			createAttribute(new AddressValue(VALID_STREET_ADDRESS, VALID_LOCALITY, VALID_REGION, VALID_POSTAL_CODE, VALID_COUNTRY));
+			mShippingAddressAttribute.getValue().setStreetAddress(null);
+			mShippingAddressAttribute.save();
+			Assert.fail("Expected InvalidAttributeValueException");
+		} catch (InvalidAttributeValueException e) {
+			
 		} catch (MIDaaSException e) {
 			Assert.fail();
 		}

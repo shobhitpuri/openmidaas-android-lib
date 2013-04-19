@@ -22,7 +22,6 @@ import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.authentication.core.DeviceRegistrationDelegate;
 import org.openmidaas.library.common.network.AVSServer;
-import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.SubjectToken;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.SubjectTokenFactory;

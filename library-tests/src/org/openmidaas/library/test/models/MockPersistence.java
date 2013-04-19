@@ -27,7 +27,7 @@ import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 import org.openmidaas.library.persistence.core.CreditCardDataCallback;
 import org.openmidaas.library.persistence.core.EmailDataCallback;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
-import org.openmidaas.library.persistence.core.ShippingAddressDataCallback;
+import org.openmidaas.library.persistence.core.AddressDataCallback;
 import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 
 public class MockPersistence implements AttributePersistenceDelegate{
@@ -73,7 +73,7 @@ public class MockPersistence implements AttributePersistenceDelegate{
 	}
 
 	@Override
-	public void getShippingAddresses(ShippingAddressDataCallback callback) {
+	public void getAddresses(AddressDataCallback callback) {
 		// TODO Auto-generated method stub
 		
 	}

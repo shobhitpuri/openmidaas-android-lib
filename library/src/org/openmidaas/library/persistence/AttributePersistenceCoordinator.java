@@ -24,7 +24,7 @@ import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 import org.openmidaas.library.persistence.core.CreditCardDataCallback;
 import org.openmidaas.library.persistence.core.EmailDataCallback;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
-import org.openmidaas.library.persistence.core.ShippingAddressDataCallback;
+import org.openmidaas.library.persistence.core.AddressDataCallback;
 import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 
 /**
@@ -134,12 +134,12 @@ public class AttributePersistenceCoordinator {
 		});
 	}
 	
-	public static void getShippingAddressAttributes(final ShippingAddressDataCallback callback) {
+	public static void getShippingAddressAttributes(final AddressDataCallback callback) {
 		MIDaaS.logDebug(TAG, "fetching shipping address attributes");
 		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
 			@Override
 			public void execute() {
-				mDelegate.getShippingAddresses(callback);
+				mDelegate.getAddresses(callback);
 			}
 		});
 	}

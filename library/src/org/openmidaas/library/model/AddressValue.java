@@ -35,64 +35,88 @@ public class AddressValue {
 	
 	public static final String COUNTRY = "country";
 	
-	private String streetAddress;
+	private String mStreetAddress;
 	
-	private String locality;
+	private String mLocality;
 	
-	private String region;
+	private String mRegion;
 	
-	private String postalCode;
+	private String mPostalCode;
 	
-	private String country;
+	private String mCountry;
 	
-	private String formattedAddress;
+	private String mFormattedAddress;
 	
 	public AddressValue(String streetAddress, String locality, String region, String postalCode, String country) {
-		this.streetAddress = streetAddress;
-		this.locality = locality;
-		this.region = region;
-		this.postalCode = postalCode;
-		this.country = country;
+		this.mStreetAddress = streetAddress;
+		this.mLocality = locality;
+		this.mRegion = region;
+		this.mPostalCode = postalCode;
+		this.mCountry = country;
 	}
 
 	public String getAddressLine() {
-		return streetAddress;
+		return mStreetAddress;
 	}
 
 	public String getLocality() {
-		return locality;
+		return mLocality;
 	}
 
 	public String getRegion() {
-		return region;
+		return mRegion;
 	}
 
 	public String getPostalCode() {
-		return postalCode;
+		return mPostalCode;
 	}
 
 	public String getCountry() {
-		return country;
+		return mCountry;
 	}
 
 	private void setFormattedAddress() {
-		this.formattedAddress = this.streetAddress+"\n"+this.locality+" " + this.region + " " + this.postalCode + "\n" + this.country;
+		this.mFormattedAddress = this.mStreetAddress+"\n"+this.mLocality+" " + this.mRegion + " " + this.mPostalCode + "\n" + this.mCountry;
 	}
 	
 	public String getFormattedAddress() {
 		setFormattedAddress();
-		return formattedAddress;
+		return mFormattedAddress;
 	}
 	
+	public void setStreetAddress(String streetAddress) {
+		this.mStreetAddress = streetAddress;
+	}
+
+	public void setLocality(String locality) {
+		this.mLocality = locality;
+	}
+
+	public void setRegion(String region) {
+		this.mRegion = region;
+	}
+
+	public void setPostalCode(String postalCode) {
+		this.mPostalCode = postalCode;
+	}
+
+	public void setCountry(String country) {
+		this.mCountry = country;
+	}
+
+	public void setFormattedAddress(String formattedAddress) {
+		this.mFormattedAddress = formattedAddress;
+	}
+
 	@Override
 	public String toString() {
 		JSONObject object = new JSONObject();
 		try {
-			object.put(STREET_ADDRESS, this.streetAddress);
-			object.put(LOCALITY, this.locality);
-			object.put(REGION, this.region);
-			object.put(POSTAL_CODE, this.postalCode);
-			object.put(COUNTRY, this.country);
+			object.put(STREET_ADDRESS, this.mStreetAddress);
+			object.put(LOCALITY, this.mLocality);
+			object.put(REGION, this.mRegion);
+			object.put(POSTAL_CODE, this.mPostalCode);
+			object.put(COUNTRY, this.mCountry);
 		} catch (JSONException e) {
 			object = null;
 		}

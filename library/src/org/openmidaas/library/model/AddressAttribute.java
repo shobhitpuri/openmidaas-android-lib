@@ -27,7 +27,7 @@ import org.openmidaas.library.model.core.AbstractAttribute;
 public class AddressAttribute extends AbstractAttribute<AddressValue> {
 	
 	protected AddressAttribute() {
-		mName = Constants.RESERVED_WORDS.ADDRESS;
+		mName = Constants.RESERVED_WORDS.address.toString();
 		mState = ATTRIBUTE_STATE.NOT_VERIFIED;
 	}
 

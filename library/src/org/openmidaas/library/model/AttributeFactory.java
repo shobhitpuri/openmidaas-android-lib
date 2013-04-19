@@ -38,7 +38,7 @@ public class AttributeFactory {
 		return new CreditCardAttributeFactory();
 	}
 	
-	public static ShippingAddressAttributeFactory getShippingAddressAttributeFactory() {
-		return new ShippingAddressAttributeFactory();
+	public static AddressAttributeFactory getShippingAddressAttributeFactory() {
+		return new AddressAttributeFactory();
 	}
 }

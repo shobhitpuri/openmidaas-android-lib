@@ -121,8 +121,12 @@ public abstract class AbstractAttribute<T> {
 		return mPendingData;
 	}
 	
-	public void save() throws MIDaaSException {
-		AttributePersistenceCoordinator.saveAttribute(this);
+	public void save() throws MIDaaSException, InvalidAttributeValueException {
+		if(validateAttribute(this.mValue)) {
+			AttributePersistenceCoordinator.saveAttribute(this);
+		} else {
+			throw new InvalidAttributeValueException();
+		}
 	}
 	
 	/**
@@ -159,6 +163,8 @@ public abstract class AbstractAttribute<T> {
 	public final  void setValue(T value) throws InvalidAttributeValueException {
 		if(validateAttribute(value)) {
 			this.mValue = value;
+			this.mPendingData = null;
+			this.mSignedToken = null;
 		} else {
 			throw new InvalidAttributeValueException();
 		}

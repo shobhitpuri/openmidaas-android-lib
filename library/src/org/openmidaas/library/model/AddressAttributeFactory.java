@@ -15,46 +15,16 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openmidaas.library.model.core.AbstractAttributeFactory;
-import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-import org.openmidaas.library.persistence.AttributesTable;
-
-import android.database.Cursor;
 
 /**
  * 
  * Shipping address attribute factory
  *
  */
-public class AddressAttributeFactory implements AbstractAttributeFactory<AddressAttribute, AddressValue>{
+public class AddressAttributeFactory{
 
-	@Override
-	public AddressAttribute createAttributeWithValue(AddressValue value)
-			throws InvalidAttributeValueException, MIDaaSException {
+	public static AddressAttribute createAttribute() {
 		AddressAttribute attribute = new AddressAttribute();
-		attribute.setValue(value);
-		AttributePersistenceCoordinator.saveAttribute(attribute);
-		return attribute;
-	}
-
-	@Override
-	public AddressAttribute createAttributeFromCursor(Cursor cursor)
-			throws InvalidAttributeValueException {
-		AddressAttribute attribute = new AddressAttribute();
-		attribute.setId(Long.parseLong(cursor.getString(cursor.getColumnIndex(AttributesTable._ID))));
-		attribute.setSignedToken(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_TOKEN)));
-		attribute.setPendingData(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_PENDING)));
-		try {
-			JSONObject object = new JSONObject(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_VALUE)));
-			AddressValue value = new AddressValue(object.getString(AddressValue.STREET_ADDRESS), object.getString(AddressValue.LOCALITY),
-					object.getString(AddressValue.REGION), object.getString(AddressValue.POSTAL_CODE), object.getString(AddressValue.COUNTRY));
-			attribute.setValue(value);
-		} catch (JSONException e) {
-			throw new InvalidAttributeValueException();
-		}
 		return attribute;
 	}
 }

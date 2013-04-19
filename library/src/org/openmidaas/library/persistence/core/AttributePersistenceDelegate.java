@@ -45,14 +45,21 @@ public interface AttributePersistenceDelegate extends PersistenceDelegate<Abstra
 	public void getSubjectToken(SubjectTokenCallback callback);
 	
 	/**
+	 * Returns all addresses 
+	 * @param callback - callback for a list of addresses
+	 */
+	public void getAddresses(AddressDataCallback callback);
+	
+	/**
+	 * Returns all credit cards
+	 * @param callback - callback for a list of credit cards
+	 */
+	public void getCreditCards(CreditCardDataCallback callback);
+	
+	/**
 	 * Returns all attributes in a list via the callback. 
-	 * The attributes are sorted by state: pending, verified, generic/others. 
 	 * @param callback - callback for a list of all attributes. 
 	 */
 	public void getAllAttributes(AttributeDataCallback callback);
-	
-	public void getShippingAddresses(ShippingAddressDataCallback callback);
-	
-	public void getCreditCards(CreditCardDataCallback callback);
 	
 }

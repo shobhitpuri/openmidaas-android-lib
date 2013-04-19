@@ -15,8 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library.persistence.core;
 
-import org.openmidaas.library.model.ShippingAddressAttribute;
+import org.openmidaas.library.model.AddressAttribute;
 
-public abstract class ShippingAddressDataCallback extends AbstractAttributeDataCallback<ShippingAddressAttribute>{
+public abstract class AddressDataCallback extends AbstractAttributeDataCallback<AddressAttribute>{
 
 }

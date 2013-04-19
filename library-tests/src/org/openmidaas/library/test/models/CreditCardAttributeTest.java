@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.model.AddressValue;
 import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.CreditCardAttribute;
 import org.openmidaas.library.model.CreditCardValue;
@@ -58,6 +59,20 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 			Assert.assertEquals("VISA", creditCardAttribute.getValue().getCardType().toString());
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
+		} catch (MIDaaSException e) {
+			Assert.fail();
+		}
+	}
+	
+	@SmallTest
+	public void testInvalidValueSetAndSave() {
+		try {
+			createAttribute(new CreditCardValue(VALID_CARD_NUMBER, VALID_CVV,VALID_EXPIRY_MONTH, VALID_EXPIRY_YEAR, CARD_HOLDER_NAME));
+			creditCardAttribute.getValue().setCardNumber(null);
+			creditCardAttribute.save();
+			Assert.fail("Expected InvalidAttributeValueException");
+		} catch (InvalidAttributeValueException e) {
+			
 		} catch (MIDaaSException e) {
 			Assert.fail();
 		}

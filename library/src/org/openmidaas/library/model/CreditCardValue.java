@@ -84,7 +84,27 @@ public class CreditCardValue {
 	public CARD_TYPE getCardType() {
 		return mCardType;
 	}
-	
+
+	public void setCardNumber(String cardNumber) {
+		this.mCardNumber = cardNumber;
+	}
+
+	public void setExpiryMonth(short expiryMonth) {
+		this.mExpiryMonth = expiryMonth;
+	}
+
+	public void setExpiryYear(short expiryYear) {
+		this.mExpiryYear = expiryYear;
+	}
+
+	public void setHolderName(String holderName) {
+		this.mHolderName = holderName;
+	}
+
+	public void setCVV(short cvv) {
+		this.mCVV = cvv;
+	}
+
 	@Override
 	protected void finalize() throws Throwable {
 		this.mCardNumber = null;
