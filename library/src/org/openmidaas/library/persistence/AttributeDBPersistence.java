@@ -251,11 +251,16 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	 * @param attribute -  the attribute data to persist. 
 	 * @return the content values object that is eventually stored in the DB.
 	 */
-	private ContentValues getContentValuesForAttribute(AbstractAttribute<?> attribute) {
+	private ContentValues getContentValuesForAttribute(AbstractAttribute<?> attribute) throws Exception {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(AttributesTable.COLUMN_NAME_NAME, attribute.getName());
 		contentValues.put(AttributesTable.COLUMN_NAME_LABEL, attribute.getLabel());
-		contentValues.put(AttributesTable.COLUMN_NAME_VALUE, attribute.getValue().toString());
+		if(attribute.getValue().toString() != null) {
+			contentValues.put(AttributesTable.COLUMN_NAME_VALUE, attribute.getValue().toString());
+		} else {
+			// should never get to this point. All checks for the value should be done prior to this. 
+			throw new Exception();
+		}
 		contentValues.put(AttributesTable.COLUMN_NAME_TOKEN, attribute.getSignedToken());
 		contentValues.put(AttributesTable.COLUMN_NAME_PENDING, attribute.getPendingData());
 		if(attribute.getLabel() == null) {
