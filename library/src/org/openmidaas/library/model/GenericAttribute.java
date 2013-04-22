@@ -17,6 +17,7 @@ package org.openmidaas.library.model;
 
 import org.openmidaas.library.model.core.AbstractAttribute;
 
+
 /**
  * Defines a generic attribute type. 
  * Generic attributes are non-verifiable and by 

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
+
 /**
  * Delegate class that completes an attribute verification. 
  * Verification is specific to the type of attribute. For 
