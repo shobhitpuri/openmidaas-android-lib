@@ -1,0 +1,9 @@
+{
+	"http": {
+		"statusCode": "201 Created",
+		"body":"header.payload.signature",
+		"headers":[ {
+			"content-type": "application/json"
+		}]
+	}
+}

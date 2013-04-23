@@ -1,0 +1,9 @@
+{
+	"http": {
+		"statusCode": "200 OK",
+		"body":"header.payload.signature",
+		"headers":[ {
+			"content-type": "application/json"
+		}]
+	}
+}
