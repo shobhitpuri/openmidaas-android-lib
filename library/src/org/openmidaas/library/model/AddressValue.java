@@ -76,7 +76,7 @@ public class AddressValue {
 	}
 
 	private void setFormattedAddress() {
-		this.mFormattedAddress = this.mStreetAddress+"\n"+this.mLocality+" " + this.mRegion + " " + this.mPostalCode + "\n" + this.mCountry;
+		this.mFormattedAddress = this.mStreetAddress+"\n"+this.mLocality+", " + this.mRegion + ", " + this.mPostalCode + "\n" + this.mCountry;
 	}
 	
 	public String getFormattedAddress() {
