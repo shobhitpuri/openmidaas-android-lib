@@ -15,12 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library.test.authentication;
 
-import org.openmidaas.library.authentication.core.AccessToken;
-import org.openmidaas.library.authentication.core.AccessTokenStrategy;
 import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
-import org.openmidaas.library.model.AttributeFactory;
-import org.openmidaas.library.model.InvalidAttributeValueException;
-import org.openmidaas.library.model.SubjectToken;
+import org.openmidaas.library.authentication.core.AccessTokenStrategy;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 

@@ -20,7 +20,6 @@ import java.util.concurrent.CountDownLatch;
 
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.CreditCardAttribute;
 import org.openmidaas.library.model.CreditCardAttributeFactory;
 import org.openmidaas.library.model.CreditCardValue;
@@ -37,7 +36,6 @@ import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.persistence.core.AttributeDataCallback;
 import org.openmidaas.library.persistence.core.CreditCardDataCallback;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
-import org.openmidaas.library.test.models.MockPersistence;
 
 import android.content.Context;
 import android.test.InstrumentationTestCase;
@@ -54,12 +52,10 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 	private static final String TEST_VALUE_1 = "TEST_VALUE_1";
 	private static final String TEST_VALUE_2 = "TEST_VALUE_2";
 	private static final String TEST_VALUE_3 = "TEST_VALUE_3";
-	private static final String SIGNED_TOKEN = "123456";
 	private boolean mNotification = false;
 	private Context mContext;
 	// create a generic attribute of type "test"
 
-	private GenericAttributeFactory factory = AttributeFactory.getGenericAttributeFactory();
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
 		MIDaaS.setContext(mContext);
@@ -74,7 +70,6 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 		//mContext.deleteDatabase("attributes.db");
 		GenericAttribute a1 = GenericAttributeFactory.createAttribute(TEST_NAME);
 		a1.setValue("a1");
-		final CountDownLatch mLatch = new CountDownLatch(1);
 		mNotification = false;
 		if(AttributePersistenceCoordinator.removeAttribute(a1)) {
 		} else {
@@ -135,7 +130,7 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 			email.setValue("rob@gmail.com");
 			email.save();
 			CreditCardAttribute cc = CreditCardAttributeFactory.createAttribute();
-			cc.setValue(new CreditCardValue("4485227712981401", (short)123, (short)01, (short)15, "Rob Smith"));
+			cc.setValue(new CreditCardValue("4485227712981401", "123", "01", "15", "Rob Smith"));
 			cc.save();
 			AttributePersistenceCoordinator.getAllAttributes(new AttributeDataCallback() {
 
@@ -177,9 +172,9 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 		mContext.deleteDatabase("attributes.db");
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		final String cardNumber = "4485227712981401";
-		final short cvv = 123;
-		final short expiryMonth = 01;
-		final short expiryYear = 15;
+		final String cvv = "123";
+		final String expiryMonth = "01";
+		final String expiryYear = "15";
 		final String name = "Rob Smith";
 		mNotification = false;
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistence());
@@ -194,8 +189,8 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 				@Override
 				public void onSuccess(List<CreditCardAttribute> list) {
 					for(CreditCardAttribute cc: list) {
-						if(cc.getValue().getCreditCardNumber().equalsIgnoreCase(cardNumber) && cc.getValue().getCVV() == cvv
-								&& cc.getValue().getExpiryMonth() == expiryMonth && cc.getValue().getExpiryYear() == expiryYear
+						if(cc.getValue().getCreditCardNumber().equalsIgnoreCase(cardNumber) && cc.getValue().getCVV().equals(cvv)
+								&& cc.getValue().getExpiryMonth().equals(expiryMonth) && cc.getValue().getExpiryYear().equals(expiryYear)
 								&& cc.getValue().getHolderName().equalsIgnoreCase(name)) {
 							mNotification = true;
 						}

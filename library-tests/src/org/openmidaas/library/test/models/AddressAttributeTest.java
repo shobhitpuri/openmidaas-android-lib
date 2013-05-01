@@ -19,14 +19,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.model.AddressAttributeFactory;
 import org.openmidaas.library.model.AddressValue;
-import org.openmidaas.library.model.AttributeFactory;
-import org.openmidaas.library.model.CreditCardValue;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.AddressAttribute;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
@@ -165,9 +163,7 @@ public class AddressAttributeTest extends InstrumentationTestCase {
 	}
 	
 	private void createAttribute(AddressValue value) throws InvalidAttributeValueException, MIDaaSException {
-		mShippingAddressAttribute = AttributeFactory.getShippingAddressAttributeFactory().createAttribute();
+		mShippingAddressAttribute = AddressAttributeFactory.createAttribute();
 		mShippingAddressAttribute.setValue(value);
 	}
-	
-
 }

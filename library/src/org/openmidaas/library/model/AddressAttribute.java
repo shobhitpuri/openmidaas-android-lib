@@ -58,4 +58,9 @@ public class AddressAttribute extends AbstractAttribute<AddressValue> {
 		}
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return (mValue.getFormattedAddress());
+	}
 }

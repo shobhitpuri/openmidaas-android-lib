@@ -210,4 +210,9 @@ public abstract class AbstractAttribute<T> {
 		attributeObject.put("value", getValue());
 		return attributeObject;
 	}
+	
+	@Override
+	public String toString() {
+		return (mValue.toString());
+	}
 }

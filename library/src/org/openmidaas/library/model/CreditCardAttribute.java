@@ -65,24 +65,35 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 		
 	 */
 	private boolean validateCard(CreditCardValue value) {
-		// The SimpleDateFormat below sets invalid month formats to 1 (Jan) (e.g. 14)
-		// we need to ensure it doesn't get passed to the function. 
-		if(value.getExpiryMonth() < 1 || value.getExpiryMonth() >12) {
-			return false;
-		}
 		// holder name should not be blank
 		if(value.getHolderName() == null || value.getHolderName().isEmpty()) {
 			return false;
 		}
-		
-		if(value.getCVV() < 100) {
-			// 3 or more digits in the CVV
+		try {
+			if(value.getExpiryMonth() == null || value.getExpiryYear() == null || value.getExpiryMonth().isEmpty() || value.getExpiryYear().isEmpty()) {
+				return false;
+			}
+			// The SimpleDateFormat below sets invalid month formats to 1 (Jan) (e.g. 14)
+			// we need to ensure it doesn't get passed to the function. 
+			if((Integer.parseInt(value.getExpiryMonth())) < 1 || (Integer.parseInt(value.getExpiryMonth())) >12) {
+				return false;
+			}
+			// check cvv
+			if(value.getCVV() != null) {
+				if(value.getCVV().isEmpty()) {
+					return false;
+				}
+				if((Integer.parseInt(value.getCVV())) < 100) {
+					// 3 or more digits in the CVV
+					return false;
+				} 
+			}
+		} catch(NumberFormatException e) {
 			return false;
 		}
 		
 		// get the format as MM/yy
 		SimpleDateFormat date = new SimpleDateFormat("MM/yy", Locale.US);
-		
 		Date expiry;
 		try {
 			// check the expiry date. 
@@ -103,7 +114,7 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 				value.setCardType(CARD_TYPE.VISA);
 				
 			} else if(Pattern.matches(MC_PATTERN, cardNumber)) {
-				value.setCardType(CARD_TYPE.MASTER_CARD);
+				value.setCardType(CARD_TYPE.MASTERCARD);
 				
 			} else if(Pattern.matches(AMEX_PATTERN, cardNumber)) {
 				value.setCardType(CARD_TYPE.AMEX);
@@ -122,5 +133,11 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 			}
 			return true;
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return (mValue.getCreditCardNumber() + "\n" + String.format("%02d", mValue.getExpiryMonth()) + 
+				"/" +mValue.getExpiryYear() + "\n" + mValue.getHolderName());
 	}
 }

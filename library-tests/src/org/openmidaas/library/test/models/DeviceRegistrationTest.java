@@ -26,21 +26,17 @@ import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.test.network.MockTransportFactory;
-
 import android.content.Context;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
-import android.util.Log;
 
 public class DeviceRegistrationTest extends InstrumentationTestCase{
 	
 	private MockTransportFactory mockFactory;
 	private Context mContext;
 	private boolean notificationSuccess = false;
-	private static boolean isInit = false;
 	
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
@@ -48,8 +44,6 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 		mockFactory = new MockTransportFactory(mContext, "device_reg_success.json");
 		ConnectionManager.setNetworkFactory(mockFactory);
 		AttributePersistenceCoordinator.setPersistenceDelegate(new MockPersistence());
-		//mContext.deleteDatabase("attributes.db");
-		isInit = true;
 	}
 
 	
@@ -110,8 +104,7 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 
 			@Override
 			public void onRegistering() {
-				// TODO Auto-generated method stub
-				
+
 			}	
 		});
 		
@@ -143,19 +136,11 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 
 			@Override
 			public void onRegistering() {
-				// TODO Auto-generated method stub
-				
+
 			}	
 		});
 		
 		mLatch.await();
-	//	mContext.deleteDatabase(mContext.getDatabasePath("attributes.db").toString());
 		Assert.assertEquals(false, notificationSuccess);
 	}
-	
-//	@Override
-//	protected void tearDown () {
-//		mContext.deleteDatabase("attributes.db");	
-//	}
-
 }

@@ -37,19 +37,19 @@ public class CreditCardValue {
 	
 	private String mCardNumber;
 	
-	private short mExpiryMonth;
+	private String mExpiryMonth;
 	
-	private short mExpiryYear;
+	private String mExpiryYear;
 	
 	private String mHolderName;
 	
-	private short mCVV = 0;
+	private String mCVV = null;
 	
-	public static enum CARD_TYPE { VISA, MASTER_CARD, AMEX, DISCOVER, DINERS_CLUB, JCB, UNKNOWN }
+	public static enum CARD_TYPE { VISA, MASTERCARD, AMEX, DISCOVER, DINERS_CLUB, JCB, UNKNOWN }
 	
 	private CARD_TYPE mCardType = CARD_TYPE.UNKNOWN;
 	
-	public CreditCardValue(String creditCardNumber, short cvv, short expiryMonth, short expiryYear, String holderName) {
+	public CreditCardValue(String creditCardNumber, String cvv, String expiryMonth, String expiryYear, String holderName) {
 		this.mCardNumber = creditCardNumber;
 		this.mExpiryMonth = expiryMonth;
 		this.mExpiryYear = expiryYear;
@@ -61,11 +61,11 @@ public class CreditCardValue {
 		return mCardNumber;
 	}
 
-	public short getExpiryMonth() {
+	public String getExpiryMonth() {
 		return mExpiryMonth;
 	}
 
-	public short getExpiryYear() {
+	public String getExpiryYear() {
 		return mExpiryYear;
 	}
 
@@ -73,7 +73,7 @@ public class CreditCardValue {
 		return mHolderName;
 	}
 
-	public short getCVV() {
+	public String getCVV() {
 		return mCVV;
 	}
 
@@ -89,11 +89,11 @@ public class CreditCardValue {
 		this.mCardNumber = cardNumber;
 	}
 
-	public void setExpiryMonth(short expiryMonth) {
+	public void setExpiryMonth(String expiryMonth) {
 		this.mExpiryMonth = expiryMonth;
 	}
 
-	public void setExpiryYear(short expiryYear) {
+	public void setExpiryYear(String expiryYear) {
 		this.mExpiryYear = expiryYear;
 	}
 
@@ -101,16 +101,16 @@ public class CreditCardValue {
 		this.mHolderName = holderName;
 	}
 
-	public void setCVV(short cvv) {
+	public void setCVV(String cvv) {
 		this.mCVV = cvv;
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
 		this.mCardNumber = null;
-		this.mCVV = 0;
-		this.mExpiryMonth = 0;
-		this.mExpiryYear = 0;
+		this.mCVV = null;
+		this.mExpiryMonth = null;
+		this.mExpiryYear = null;
 		this.mHolderName = null;
 		this.mCardType = null;
 		super.finalize();
@@ -121,7 +121,10 @@ public class CreditCardValue {
 		JSONObject object = new JSONObject();
 		try {
 			object.put(CARD_NUMBER, this.mCardNumber);
-			object.put(CARD_CVV, this.mCVV);
+			if(this.mCVV != null) { 
+				if(!this.mCVV.isEmpty())
+					object.put(CARD_CVV, this.mCVV);
+			}
 			object.put(CARD_EXPIRY_MONTH, this.mExpiryMonth);
 			object.put(CARD_EXPIRY_YEAR, this.mExpiryYear);
 			object.put(CARD_HOLDER_NAME, this.mHolderName);

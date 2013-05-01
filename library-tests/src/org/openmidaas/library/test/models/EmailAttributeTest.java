@@ -16,44 +16,24 @@
 package org.openmidaas.library.test.models;
 
 import java.util.concurrent.CountDownLatch;
-
-
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import junit.framework.Assert;
 import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
 import org.openmidaas.library.authentication.AuthenticationManager;
-import org.openmidaas.library.authentication.AVSDeviceRegistration;
-import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.network.ConnectionManager;
-import org.openmidaas.library.model.AttributeFactory;
 import org.openmidaas.library.model.EmailAttribute;
 import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
-import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.test.authentication.MockAccessTokenSuccessStrategy;
 import org.openmidaas.library.test.network.MockTransportFactory;
-
-import com.google.mockwebserver.MockResponse;
-import com.google.mockwebserver.MockWebServer;
-import com.google.mockwebserver.RecordedRequest;
 
 import android.content.Context;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
-import android.util.Log;
-import junit.framework.Assert;
-import junit.framework.TestCase;
 public class EmailAttributeTest extends InstrumentationTestCase{
 		static EmailAttribute emailAttribute; 
 		private boolean notificationSuccess = false;
@@ -145,7 +125,6 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 		@MediumTest
 		public void testEmailVerification() throws Exception {
 			mContext = getInstrumentation().getContext();
-			final CountDownLatch mLatch = new CountDownLatch(1);
 			
 			initializeEmailVerificationSuccess();
 			completeEmailVerificationSuccess();	
