@@ -134,7 +134,7 @@ public class AttributePersistenceCoordinator {
 		});
 	}
 	
-	public static void getShippingAddressAttributes(final AddressDataCallback callback) {
+	public static void getAddressAttributes(final AddressDataCallback callback) {
 		MIDaaS.logDebug(TAG, "fetching shipping address attributes");
 		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
 			@Override
