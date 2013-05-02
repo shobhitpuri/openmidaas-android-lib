@@ -124,6 +124,7 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 				value.setCardType(CARD_TYPE.JCB);
 				
 			} else {
+				MIDaaS.logError(TAG, "Credit card number is invalid");
 				return false;
 			}
 			return true;

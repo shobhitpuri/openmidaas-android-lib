@@ -51,11 +51,11 @@ public class CreditCardValue {
 	
 	private String mCVV = null;
 	
-	public static enum CARD_TYPE { VISA, MASTER_CARD, AMEX, DISCOVER, DINERS_CLUB, JCB, UNKNOWN }
+	public static enum CARD_TYPE { VISA, MASTER_CARD, AMEX, DISCOVER, DINERS_CLUB, JCB }
 	
 	private Map<CARD_TYPE, String> mCardTypeMap = new EnumMap<CARD_TYPE, String>(CARD_TYPE.class);
 	
-	private CARD_TYPE mCardType = CARD_TYPE.UNKNOWN;
+	private CARD_TYPE mCardType = null;
 	
 	public CreditCardValue(String creditCardNumber, String cvv, String expiryMonth, String expiryYear, String holderName) {
 		this.mCardNumber = creditCardNumber;
@@ -69,7 +69,6 @@ public class CreditCardValue {
 		mCardTypeMap.put(CARD_TYPE.DISCOVER, "Discover");
 		mCardTypeMap.put(CARD_TYPE.DINERS_CLUB, "Diners Club");
 		mCardTypeMap.put(CARD_TYPE.JCB, "JCB Co.");
-		mCardTypeMap.put(CARD_TYPE.UNKNOWN, "Unknown");
 	}
 
 	public String getCreditCardNumber() {
