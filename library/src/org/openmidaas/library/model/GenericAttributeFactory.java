@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.model.core.MIDaaSException;
 
@@ -23,6 +24,7 @@ import org.openmidaas.library.model.core.MIDaaSException;
  */
 public class GenericAttributeFactory {
 	
+	private static final String TAG = "GenericAttribute";
 	
 	/**
 	 * Creates a generic attribute with the specified name and value. 
@@ -35,11 +37,15 @@ public class GenericAttributeFactory {
 	 */
 	public static GenericAttribute createAttribute(String name) throws InvalidAttributeNameException {
 		
+	
+		
 		if(name == null || name.isEmpty()) {
+			MIDaaS.logError(TAG, "Attribute name cannot be null or empty");
 			throw new InvalidAttributeNameException("Attribute name cannot be null or empty");
 		}
 		for(Constants.RESERVED_WORDS attrName: Constants.RESERVED_WORDS.values()) {
 			if(name.equalsIgnoreCase(attrName.toString())) {
+				MIDaaS.logError(TAG, "The specified name conflicts with a reserved attribute name");
 				throw new InvalidAttributeNameException("The specified name conflicts with a reserved attribute name");
 			}	
 		}

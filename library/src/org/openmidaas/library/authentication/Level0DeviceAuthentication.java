@@ -31,6 +31,8 @@ import android.provider.Settings.Secure;
  */
 public class Level0DeviceAuthentication implements DeviceAuthenticationStrategy{
 
+	private final String TAG = "Level0DeviceAuthentication";
+	
 	@Override
 	public void performDeviceAuthentication(
 			DeviceAuthenticationCallback callback) {
@@ -39,6 +41,7 @@ public class Level0DeviceAuthentication implements DeviceAuthenticationStrategy{
 		if(deviceId != null) {
 			callback.onSuccess(deviceId);
 		} else {
+			MIDaaS.logError(TAG, "Cannot authenticate device");
 			callback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
 		}
 	}

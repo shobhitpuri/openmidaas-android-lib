@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.openmidaas.library.persistence;
 
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.model.EmailAttribute;
 import org.openmidaas.library.model.EmailAttributeFactory;
@@ -29,6 +30,8 @@ import android.database.Cursor;
  */
 public class EmailDBBuilder extends AbstractAttributeDBBuilder<EmailAttribute> {
 	
+	private final String TAG = "EmailDBBuilder";
+	
 	@Override
 	protected void setValue() throws InvalidAttributeValueException {
 		mAttribute.setValue(mCursor.getString(mCursor.getColumnIndex(AttributesTable.COLUMN_NAME_VALUE)));
@@ -37,6 +40,7 @@ public class EmailDBBuilder extends AbstractAttributeDBBuilder<EmailAttribute> {
 	@Override
 	protected EmailAttribute buildFromCursor(Cursor cursor) throws InvalidAttributeNameException, InvalidAttributeValueException {
 		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(Constants.RESERVED_WORDS.email.toString()))) {
+			MIDaaS.logError(TAG, "Attribute name does not match that present in cursor for type email");
 			throw new InvalidAttributeNameException("Attribute name does not match that present in cursor");
 		}
 		mCursor = cursor;

@@ -82,6 +82,7 @@ public class AVSAccessTokenStrategy implements AccessTokenStrategy, DeviceAuthen
 
 			@Override
 			public void onError(MIDaaSException exception) {
+				MIDaaS.logError(TAG, exception.getError().getErrorMessage());
 				mAccessTokenCallback.onError(exception);
 			}
 			
@@ -90,6 +91,7 @@ public class AVSAccessTokenStrategy implements AccessTokenStrategy, DeviceAuthen
 
 	@Override
 	public void onError(MIDaaSException exception) {
+		MIDaaS.logError(TAG, exception.getError().getErrorMessage());
 		mAccessTokenCallback.onError(exception);
 	}
 }

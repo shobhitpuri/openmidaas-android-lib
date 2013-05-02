@@ -99,6 +99,7 @@ public class AuthenticationManager  {
 		
 				@Override
 				public void onError(MIDaaSException exception) {
+					MIDaaS.logError(TAG, exception.getError().getErrorMessage());
 					MUTEX.countDown();
 				}
 			});

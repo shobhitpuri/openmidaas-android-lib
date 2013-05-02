@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.MIDaaS;
 
 /**
  * 
@@ -27,6 +28,8 @@ import org.json.JSONObject;
  *
  */
 public class CreditCardValue {
+	
+	private final String TAG = "CreditCardValue";
 	
 	public static final String CARD_NUMBER = "creditCard";
 	
@@ -138,6 +141,7 @@ public class CreditCardValue {
 			object.put(CARD_EXPIRY_YEAR, this.mExpiryYear);
 			object.put(CARD_HOLDER_NAME, this.mHolderName);
 		} catch (JSONException e) {
+			MIDaaS.logError(TAG, e.getMessage());
 			object = null;
 		}
 		return object.toString();	

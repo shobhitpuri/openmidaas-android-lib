@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.core.AbstractAttribute;
@@ -25,6 +26,8 @@ import org.openmidaas.library.model.core.AbstractAttribute;
  *
  */
 public class AddressAttribute extends AbstractAttribute<AddressValue> {
+	
+	private final String TAG = "AddressAttribute";
 	
 	protected AddressAttribute() {
 		mName = Constants.RESERVED_WORDS.address.toString();
@@ -39,21 +42,27 @@ public class AddressAttribute extends AbstractAttribute<AddressValue> {
 	@Override
 	protected boolean validateAttribute(AddressValue value) {
 		if(value == null) {
+			MIDaaS.logError(TAG, "AddressValue is null");
 			return false;
 		}
 		if(value.getAddressLine() == null || value.getAddressLine().isEmpty()) {
+			MIDaaS.logError(TAG, "Street address is null/empty");
 			return false;
 		}
 		if(value.getLocality() == null || value.getLocality().isEmpty()) {
+			MIDaaS.logError(TAG, "Locality is null/empty");
 			return false;
 		}
 		if(value.getRegion() == null || value.getRegion().isEmpty()) {
+			MIDaaS.logError(TAG, "Region is null/empty");
 			return false;
 		}
 		if(value.getPostalCode() == null || value.getPostalCode().isEmpty()) {
+			MIDaaS.logError(TAG, "Postal code is null/empty");
 			return false;
 		}
 		if(value.getCountry() == null || value.getCountry().isEmpty()) {
+			MIDaaS.logError(TAG, "Country is null/empty");
 			return false;
 		}
 		return true;

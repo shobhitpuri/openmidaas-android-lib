@@ -106,10 +106,12 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 				
 				@Override
 				public void onFailure(Throwable e, String response){
+					MIDaaS.logError(TAG, response);
 					mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 				}
 			});
 		} catch (JSONException e) {
+			MIDaaS.logError(TAG, e.getMessage());
 			mInitCallback.onError(null);
 		}
 	}

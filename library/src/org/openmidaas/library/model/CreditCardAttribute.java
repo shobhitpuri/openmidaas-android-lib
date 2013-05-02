@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
+
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.CreditCardValue.CARD_TYPE;
@@ -31,6 +33,8 @@ import org.openmidaas.library.model.core.AbstractAttribute;
  *
  */
 public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
+	
+	private final String TAG = "CreditCardAttribute";
 	// source: http://www.regular-expressions.info/creditcard.html
 	private final String VISA_PATTERN = "^4[0-9]{12}(?:[0-9]{3})?$";
 	private final String MC_PATTERN = "^5[1-5][0-9]{14}$";
@@ -47,42 +51,28 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 	@Override
 	protected boolean validateAttribute(CreditCardValue value) {
 		if (value == null) {
-			return false;
-		} else {
-			return (validateCard(value));
-		}
-	}
-	
-	@Override
-	public void setPendingData(String data) {
-		mPendingData = data;
-	}
-	/**
-	 * Checks to see if properties of the credit card object are valid. 
-	 * @param value
-	 * @return
-			return true;
-		
-	 */
-	private boolean validateCard(CreditCardValue value) {
-		if (value == null) {
+			MIDaaS.logError(TAG, "CreditCardValue is null");
 			return false;
 		}
 		// holder name should not be blank
 		if(value.getHolderName() == null || value.getHolderName().isEmpty()) {
+			MIDaaS.logError(TAG, "Card holder name is null/empty");
 			return false;
 		}
 		try {
 			if(value.getExpiryMonth() == null || value.getExpiryYear() == null || value.getExpiryMonth().isEmpty() || value.getExpiryYear().isEmpty()) {
+				MIDaaS.logError(TAG, "Expiry month/year is null/empty");
 				return false;
 			}
 			// The SimpleDateFormat below sets invalid month formats to 1 (Jan) (e.g. 14)
 			// we need to ensure it doesn't get passed to the function. 
 			if((Integer.parseInt(value.getExpiryMonth())) < 1 || (Integer.parseInt(value.getExpiryMonth())) >12) {
+				MIDaaS.logError(TAG, "Expiry month is invalid");
 				return false;
 			}
 			// check cvv
 			if(value.getCVV() == null) {
+				MIDaaS.logError(TAG, "CVV is null");
 				return false;
 			}
 			// check to see if cvv is an integer and not a-z
@@ -90,6 +80,7 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 				Integer.parseInt(value.getCVV());
 			}
 		} catch(NumberFormatException e) {
+			MIDaaS.logError(TAG, "CVV is NaN");
 			return false;
 		}
 		
@@ -100,14 +91,17 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 			// check the expiry date. 
 			expiry = date.parse(value.getExpiryMonth()+"/"+value.getExpiryYear()+"");
 		} catch (ParseException e) {
+			MIDaaS.logError(TAG, "Unable to parse date format.");
 			return false;
 		}
 		boolean expired = expiry.before(new Date());
 		if(expired) {
+			MIDaaS.logError(TAG, "Card has expired.");
 			return false;
 		}
 
 		if(value.getCreditCardNumber() == null || value.getCreditCardNumber().isEmpty()) {
+			MIDaaS.logError(TAG, "Credit card number is null/empty");
 			return false;
 		} else {
 			String cardNumber = value.getCreditCardNumber();
@@ -137,8 +131,14 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 	}
 	
 	@Override
+	public void setPendingData(String data) {
+		mPendingData = data;
+	}
+	
+	@Override
 	public String toString() {
 		if(mValue != null) {
+			MIDaaS.logError(TAG, "Value is null");
 			return (mValue.getCreditCardNumber() + "\n" + String.format("%02d", Integer.parseInt(mValue.getExpiryMonth())) + 
 					"/" +mValue.getExpiryYear() + "\n" + mValue.getHolderName());
 		 

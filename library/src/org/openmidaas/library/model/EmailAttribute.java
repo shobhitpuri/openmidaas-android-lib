@@ -18,6 +18,7 @@ package org.openmidaas.library.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.common.WorkQueueManager;
@@ -32,6 +33,8 @@ import org.openmidaas.library.model.core.InitializeVerificationCallback;
  * Email Attribute class.
  */
 public class EmailAttribute extends AbstractAttribute<String> {
+	
+	private final String TAG = "EmailAttribute";
 	
 	//Credit for REGEX rule: http://www.mkyong.com/regular-expressions/how-to-validate-email-address-with-regular-expression/
 	private final String EMAIL_REGEX_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
@@ -57,6 +60,7 @@ public class EmailAttribute extends AbstractAttribute<String> {
 	@Override
 	protected boolean validateAttribute(String value) {
 		if(value == null || value.isEmpty()) {
+			MIDaaS.logError(TAG, "Attribute value is null/empty");
 			return false;
 		}
 		Pattern pattern = Pattern.compile(EMAIL_REGEX_PATTERN);

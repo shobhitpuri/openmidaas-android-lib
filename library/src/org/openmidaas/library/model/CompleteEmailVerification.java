@@ -16,6 +16,7 @@
 package org.openmidaas.library.model;
 
 import org.json.JSONException;
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
@@ -34,6 +35,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  */
 public class CompleteEmailVerification implements CompleteAttributeVerificationDelegate{
 
+	private final String TAG = "CompleteEmailVerification";
+	
 	/**
 	 * This methods is an implementation of the interface that 
 	 * completes an attribute verification. 
@@ -43,10 +46,12 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 	@Override
 	public void completeVerification(final AbstractAttribute<?> attribute, final String code, final CompleteVerificationCallback completeVerificationCallback) {
 		try {
+			MIDaaS.logDebug(TAG, "Completing attribute verification");
 			AVSServer.completeAttributeVerification(attribute, code, new AsyncHttpResponseHandler() {
 				
 				@Override
 				public void onSuccess(String response) {
+					MIDaaS.logDebug(TAG, "Attribute verified successfully");
 					attribute.setSignedToken(response);
 					attribute.setPendingData(null);
 					
@@ -54,20 +59,24 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 						if(AttributePersistenceCoordinator.saveAttribute(attribute)) {
 							completeVerificationCallback.onSuccess();
 						} else {
+							MIDaaS.logError(TAG, "Attribute could not be saved");
 							completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
 						}
 						
 					} catch (MIDaaSException e) {
+						MIDaaS.logError(TAG, e.getError().getErrorMessage());
 						completeVerificationCallback.onError(e);
 					}
 				}
 				
 				@Override
 				public void onFailure(Throwable e, String response){
+					MIDaaS.logError(TAG, response);
 					completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 				}
 			});
 		} catch (JSONException e1) {
+			MIDaaS.logError(TAG, e1.getMessage());
 			completeVerificationCallback.onError(null);
 		}
 	}

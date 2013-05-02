@@ -89,16 +89,18 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 						MIDaaS.logError(TAG, "could not save attribute to the database. Returning false");
 						val = false;
 					} else {
+						MIDaaS.logDebug(TAG, "saving new value: " + data.getName());
 						data.setId(rowId);
 						val =  true;
 					}
 				}
 				// id we have a PK, update the corresponding row. 
 				else {
-					
+					MIDaaS.logDebug(TAG, "updating previous value: " + data.getName());
 					int v = database.update(AttributesTable.TABLE_NAME, getContentValuesForAttribute(data), "_id =" + data.getId(), null);
 					// only 1 row should be updated!
 					if (v == 1) {
+						MIDaaS.logDebug(TAG, "update successful");
 						val = true;
 					}
 				}
@@ -121,6 +123,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 		try {
 			database = dbHelper.getWritableDatabase();
 			if (data.getId() != -1) {
+				MIDaaS.logDebug(TAG, "deleting: " + data.getName());
 				database.delete(AttributesTable.TABLE_NAME, "_id = " + data.getId(), null);
 				dbHelper.close();
 				val = true;
@@ -319,8 +322,10 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 		List<T> list = new ArrayList<T>();
 		Cursor cursor = null;
 		try {
+			MIDaaS.logDebug(TAG, "fetching data for: " + attributeName);
 			cursor = fetchByAttributeName(attributeName);
 			if(cursor == null) {
+				MIDaaS.logError(TAG, "Cursor is null. Unable to retrieve data from persistence store. ");
 				throw new MIDaaSException(MIDaaSError.DATABASE_ERROR);
 			}
 			else if(cursor.moveToFirst()) {

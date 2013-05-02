@@ -44,6 +44,7 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 	@Override
 	public void startVerification(final AbstractAttribute<?> attribute,
 			final InitializeVerificationCallback initVerificationCallback) {
+		MIDaaS.logDebug(TAG, "Starting email verification");
 		try {
 			AVSServer.startAttributeVerification(attribute, new AsyncHttpResponseHandler() {
 				
@@ -57,24 +58,29 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 								MIDaaS.logDebug(TAG, "done init email verification.");
 								initVerificationCallback.onSuccess();
 							} else {
+								MIDaaS.logError(TAG, "error saving email attribute.");
 								initVerificationCallback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
 							}
 						} catch (MIDaaSException e) {
+							MIDaaS.logError(TAG, e.getError().getErrorMessage());
 							initVerificationCallback.onError(e);
 						}
 						
 					} else {
+						MIDaaS.logError(TAG, "Server returned an empty response.");
 						initVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 					}
 				}
 				
 				@Override
 				public void onFailure(Throwable e, String response){
+					MIDaaS.logError(TAG, response);
 					initVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 				}
 			});
 			
 		} catch (JSONException e) {
+			MIDaaS.logError(TAG, e.getMessage());
 			initVerificationCallback.onError(null);
 		}
 	}

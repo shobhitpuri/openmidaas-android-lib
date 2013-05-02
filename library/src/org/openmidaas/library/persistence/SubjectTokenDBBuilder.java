@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.openmidaas.library.persistence;
 
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.model.InvalidAttributeNameException;
 import org.openmidaas.library.model.InvalidAttributeValueException;
@@ -25,11 +26,14 @@ import android.database.Cursor;
 
 public class SubjectTokenDBBuilder extends AbstractAttributeDBBuilder<SubjectToken> {
 
+	private final String TAG = "SubjectTokenDBBuilder";
+	
 	@Override
 	protected SubjectToken buildFromCursor(Cursor cursor)
 			throws InvalidAttributeNameException,
 			InvalidAttributeValueException {
 		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(Constants.RESERVED_WORDS.subject_token.toString()))) {
+			MIDaaS.logError(TAG, "Attribute name does not match that present in cursor for type: subject_token");
 			throw new InvalidAttributeNameException("Attribute name does not match that present in cursor");
 		}
 		mCursor = cursor;

@@ -17,6 +17,7 @@ package org.openmidaas.library.model.core;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
@@ -27,6 +28,8 @@ import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
  */
 
 public abstract class AbstractAttribute<T> {
+	
+	private final String TAG = "AbstractAttribute";
 	
 	protected long mId = -1;
 	
@@ -110,6 +113,7 @@ public abstract class AbstractAttribute<T> {
 	 * @throws UnsupportedOperationException
 	 */
 	public void setPendingData(String data) throws UnsupportedOperationException {
+		MIDaaS.logDebug(TAG, "Cannot set pending data for a unverifiable attribute.");
 		throw new UnsupportedOperationException("Cannot set pending data for a unverifiable attribute.");
 	}
 	
@@ -125,6 +129,7 @@ public abstract class AbstractAttribute<T> {
 		if(validateAttribute(this.mValue)) {
 			AttributePersistenceCoordinator.saveAttribute(this);
 		} else {
+			MIDaaS.logDebug(TAG, "Attribute value could not be set. Check the value you are setting.");
 			throw new InvalidAttributeValueException("Attribute value could not be set. Check the value you are setting.");
 		}
 	}
@@ -164,6 +169,7 @@ public abstract class AbstractAttribute<T> {
 		if(validateAttribute(value)) {
 			this.mValue = value;
 		} else {
+			MIDaaS.logDebug(TAG, "Attribute value could not be set. Check the value you are setting.");
 			throw new InvalidAttributeValueException("Attribute value could not be set. Check the value you are setting.");
 		}
 	}
@@ -182,6 +188,7 @@ public abstract class AbstractAttribute<T> {
 	 * @throws NotVerifiableException - throws if the attribute is not verifiable
 	 */
 	public void startVerification(InitializeVerificationCallback callback) throws UnsupportedOperationException {
+		MIDaaS.logDebug(TAG, "Cannot start verification");
 		throw new UnsupportedOperationException("Cannot start verification"); 
 	}
 	
@@ -192,6 +199,7 @@ public abstract class AbstractAttribute<T> {
 	 * @throws NotVerifiableException
 	 */
 	public void completeVerification(String code, CompleteVerificationCallback callback) throws UnsupportedOperationException  {
+		MIDaaS.logDebug(TAG, "Cannot complete verification");
 		throw new UnsupportedOperationException("Cannot complete verification");
 	}
 	

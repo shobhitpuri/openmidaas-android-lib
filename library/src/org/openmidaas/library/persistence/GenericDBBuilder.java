@@ -16,6 +16,7 @@
 package org.openmidaas.library.persistence;
 
 
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeNameException;
@@ -24,6 +25,8 @@ import org.openmidaas.library.model.InvalidAttributeValueException;
 import android.database.Cursor;
 
 public class GenericDBBuilder extends AbstractAttributeDBBuilder<GenericAttribute>{
+	
+	private final String TAG = "GenericDBBuilder";
 	
 	private String mName;
 	
@@ -45,6 +48,7 @@ public class GenericDBBuilder extends AbstractAttributeDBBuilder<GenericAttribut
 			throws InvalidAttributeNameException,
 			InvalidAttributeValueException {
 		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(mName))) {
+			MIDaaS.logError(TAG, "Attribute name does not match that present in cursor for type: " + mName);
 			throw new InvalidAttributeNameException("Attribute name does not match that present in cursor");
 		}
 		mCursor = cursor;

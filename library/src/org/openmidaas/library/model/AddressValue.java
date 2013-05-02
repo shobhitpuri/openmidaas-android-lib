@@ -17,6 +17,7 @@ package org.openmidaas.library.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.MIDaaS;
 
 /**
  * 
@@ -24,6 +25,8 @@ import org.json.JSONObject;
  *
  */
 public class AddressValue {
+	
+	private final String TAG = "AddressValue";
 	
 	public static final String STREET_ADDRESS = "streetAddress";
 	
@@ -118,6 +121,7 @@ public class AddressValue {
 			object.put(POSTAL_CODE, this.mPostalCode);
 			object.put(COUNTRY, this.mCountry);
 		} catch (JSONException e) {
+			MIDaaS.logError(TAG, e.getMessage());
 			object = null;
 		}
 		return object.toString();	
