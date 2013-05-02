@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,17 +38,19 @@ public class CreditCardValue {
 
 	public static final String CARD_CVV = "cardCvv";
 	
-	private String mCardNumber;
+	private String mCardNumber = null;
 	
-	private String mExpiryMonth;
+	private String mExpiryMonth = null;
 	
-	private String mExpiryYear;
+	private String mExpiryYear = null;
 	
-	private String mHolderName;
+	private String mHolderName = null;
 	
 	private String mCVV = null;
 	
-	public static enum CARD_TYPE { VISA, MASTERCARD, AMEX, DISCOVER, DINERS_CLUB, JCB, UNKNOWN }
+	public static enum CARD_TYPE { VISA, MASTER_CARD, AMEX, DISCOVER, DINERS_CLUB, JCB, UNKNOWN }
+	
+	private Map<CARD_TYPE, String> mCardTypeMap = new EnumMap<CARD_TYPE, String>(CARD_TYPE.class);
 	
 	private CARD_TYPE mCardType = CARD_TYPE.UNKNOWN;
 	
@@ -55,6 +60,13 @@ public class CreditCardValue {
 		this.mExpiryYear = expiryYear;
 		this.mHolderName = holderName;
 		this.mCVV = cvv;
+		mCardTypeMap.put(CARD_TYPE.VISA, "Visa");
+		mCardTypeMap.put(CARD_TYPE.MASTER_CARD, "MasterCard");
+		mCardTypeMap.put(CARD_TYPE.AMEX, "Amex");
+		mCardTypeMap.put(CARD_TYPE.DISCOVER, "Discover");
+		mCardTypeMap.put(CARD_TYPE.DINERS_CLUB, "Diners Club");
+		mCardTypeMap.put(CARD_TYPE.JCB, "JCB Co.");
+		mCardTypeMap.put(CARD_TYPE.UNKNOWN, "Unknown");
 	}
 
 	public String getCreditCardNumber() {
@@ -81,8 +93,8 @@ public class CreditCardValue {
 		this.mCardType = type;
 	}
 	
-	public CARD_TYPE getCardType() {
-		return mCardType;
+	public String getCardType() {
+		return mCardTypeMap.get(this.mCardType);
 	}
 
 	public void setCardNumber(String cardNumber) {
@@ -121,10 +133,7 @@ public class CreditCardValue {
 		JSONObject object = new JSONObject();
 		try {
 			object.put(CARD_NUMBER, this.mCardNumber);
-			if(this.mCVV != null) { 
-				if(!this.mCVV.isEmpty())
-					object.put(CARD_CVV, this.mCVV);
-			}
+			object.put(CARD_CVV, this.mCVV);
 			object.put(CARD_EXPIRY_MONTH, this.mExpiryMonth);
 			object.put(CARD_EXPIRY_YEAR, this.mExpiryYear);
 			object.put(CARD_HOLDER_NAME, this.mHolderName);

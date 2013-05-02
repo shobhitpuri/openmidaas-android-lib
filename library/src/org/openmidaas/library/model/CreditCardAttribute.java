@@ -65,6 +65,9 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 		
 	 */
 	private boolean validateCard(CreditCardValue value) {
+		if (value == null) {
+			return false;
+		}
 		// holder name should not be blank
 		if(value.getHolderName() == null || value.getHolderName().isEmpty()) {
 			return false;
@@ -79,14 +82,12 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 				return false;
 			}
 			// check cvv
-			if(value.getCVV() != null) {
-				if(value.getCVV().isEmpty()) {
-					return false;
-				}
-				if((Integer.parseInt(value.getCVV())) < 100) {
-					// 3 or more digits in the CVV
-					return false;
-				} 
+			if(value.getCVV() == null) {
+				return false;
+			}
+			// check to see if cvv is an integer and not a-z
+			if(!(value.getCVV().isEmpty())) {
+				Integer.parseInt(value.getCVV());
 			}
 		} catch(NumberFormatException e) {
 			return false;
@@ -114,7 +115,7 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 				value.setCardType(CARD_TYPE.VISA);
 				
 			} else if(Pattern.matches(MC_PATTERN, cardNumber)) {
-				value.setCardType(CARD_TYPE.MASTERCARD);
+				value.setCardType(CARD_TYPE.MASTER_CARD);
 				
 			} else if(Pattern.matches(AMEX_PATTERN, cardNumber)) {
 				value.setCardType(CARD_TYPE.AMEX);
@@ -137,7 +138,11 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 	
 	@Override
 	public String toString() {
-		return (mValue.getCreditCardNumber() + "\n" + String.format("%02d", mValue.getExpiryMonth()) + 
-				"/" +mValue.getExpiryYear() + "\n" + mValue.getHolderName());
+		if(mValue != null) {
+			return (mValue.getCreditCardNumber() + "\n" + String.format("%02d", Integer.parseInt(mValue.getExpiryMonth())) + 
+					"/" +mValue.getExpiryYear() + "\n" + mValue.getHolderName());
+		 
+		}
+		return "";
 	}
 }

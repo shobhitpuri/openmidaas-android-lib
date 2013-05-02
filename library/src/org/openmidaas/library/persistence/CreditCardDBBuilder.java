@@ -43,22 +43,8 @@ public class CreditCardDBBuilder extends AbstractAttributeDBBuilder<CreditCardAt
 	@Override
 	protected void setValue() throws InvalidAttributeValueException {
 		try {
-			String cvv = null;
 			JSONObject object = new JSONObject(mCursor.getString(mCursor.getColumnIndex(AttributesTable.COLUMN_NAME_VALUE)));
-			// if there is a cvv key
-			if(object.has(CreditCardValue.CARD_CVV)) {
-				// if the cvv key has a "null" value
-				if(object.isNull(CreditCardValue.CARD_CVV)) {
-					cvv = null;
-					// if the value is empty
-				} else if(object.getString(CreditCardValue.CARD_CVV).isEmpty()) {
-					cvv = null;
-					// get the value if everything is ok
-				} else {
-					cvv = object.getString(CreditCardValue.CARD_CVV);
-				}
-			}
-			CreditCardValue value = new CreditCardValue(object.getString(CreditCardValue.CARD_NUMBER), cvv ,
+			CreditCardValue value = new CreditCardValue(object.getString(CreditCardValue.CARD_NUMBER), object.getString(CreditCardValue.CARD_CVV) ,
 					object.getString(CreditCardValue.CARD_EXPIRY_MONTH),object.getString(CreditCardValue.CARD_EXPIRY_YEAR), 
 					object.getString(CreditCardValue.CARD_HOLDER_NAME));
 			mAttribute.setValue(value);

@@ -34,7 +34,7 @@ public class AddressAttributeTest extends InstrumentationTestCase {
 	private final String VALID_REGION = "Ontario";
 	private final String VALID_POSTAL_CODE = "M2P 2C5";
 	private final String VALID_COUNTRY = "Canada";
-	private AddressAttribute mShippingAddressAttribute;
+	private AddressAttribute addressAttribute;
 	protected void setUp() throws Exception {
 		MIDaaS.setContext(getInstrumentation().getContext());
 		AttributePersistenceCoordinator.setPersistenceDelegate(new MockPersistence());
@@ -45,11 +45,11 @@ public class AddressAttributeTest extends InstrumentationTestCase {
 		
 		try {
 			createAttribute(new AddressValue(VALID_STREET_ADDRESS, VALID_LOCALITY, VALID_REGION, VALID_POSTAL_CODE, VALID_COUNTRY));
-			Assert.assertEquals(VALID_STREET_ADDRESS, mShippingAddressAttribute.getValue().getAddressLine());
-			Assert.assertEquals(VALID_LOCALITY, mShippingAddressAttribute.getValue().getLocality());
-			Assert.assertEquals(VALID_REGION, mShippingAddressAttribute.getValue().getRegion());
-			Assert.assertEquals(VALID_POSTAL_CODE, mShippingAddressAttribute.getValue().getPostalCode());
-			Assert.assertEquals(VALID_COUNTRY, mShippingAddressAttribute.getValue().getCountry());
+			Assert.assertEquals(VALID_STREET_ADDRESS, addressAttribute.getValue().getAddressLine());
+			Assert.assertEquals(VALID_LOCALITY, addressAttribute.getValue().getLocality());
+			Assert.assertEquals(VALID_REGION, addressAttribute.getValue().getRegion());
+			Assert.assertEquals(VALID_POSTAL_CODE, addressAttribute.getValue().getPostalCode());
+			Assert.assertEquals(VALID_COUNTRY, addressAttribute.getValue().getCountry());
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
 		} catch (MIDaaSException e) {
@@ -58,11 +58,17 @@ public class AddressAttributeTest extends InstrumentationTestCase {
 	}
 	
 	@SmallTest
+	public void testEmptyToStringCallAfterAttributeIsCreated() {
+		AddressAttribute addressAttribute = AddressAttributeFactory.createAttribute();
+		Assert.assertEquals("", addressAttribute.toString());
+	}
+	
+	@SmallTest
 	public void testInvalidValueSetAndSave() {
 		try {
 			createAttribute(new AddressValue(VALID_STREET_ADDRESS, VALID_LOCALITY, VALID_REGION, VALID_POSTAL_CODE, VALID_COUNTRY));
-			mShippingAddressAttribute.getValue().setStreetAddress(null);
-			mShippingAddressAttribute.save();
+			addressAttribute.getValue().setStreetAddress(null);
+			addressAttribute.save();
 			Assert.fail("Expected InvalidAttributeValueException");
 		} catch (InvalidAttributeValueException e) {
 			
@@ -163,7 +169,7 @@ public class AddressAttributeTest extends InstrumentationTestCase {
 	}
 	
 	private void createAttribute(AddressValue value) throws InvalidAttributeValueException, MIDaaSException {
-		mShippingAddressAttribute = AddressAttributeFactory.createAttribute();
-		mShippingAddressAttribute.setValue(value);
+		addressAttribute = AddressAttributeFactory.createAttribute();
+		addressAttribute.setValue(value);
 	}
 }

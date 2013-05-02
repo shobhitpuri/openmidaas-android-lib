@@ -37,7 +37,7 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 	private final String INVALID_EXPIRY_YEAR = "10";
 	private final String CARD_HOLDER_NAME = "Rob Smith";
 	private final String VALID_CVV = "123";
-	private final String INVALID_CVV = "1";
+	private final String expectedValidCreditCardToString = VALID_CARD_NUMBER + "\n" + VALID_EXPIRY_MONTH + "/" + VALID_EXPIRY_YEAR + "\n" + CARD_HOLDER_NAME;		
 	private CreditCardValue mValue; 
 	private CreditCardAttribute creditCardAttribute;
 	protected void setUp() throws Exception {
@@ -54,7 +54,7 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 			Assert.assertEquals(VALID_EXPIRY_YEAR, creditCardAttribute.getValue().getExpiryYear());
 			Assert.assertEquals(CARD_HOLDER_NAME, creditCardAttribute.getValue().getHolderName());
 			Assert.assertEquals(VALID_CVV, creditCardAttribute.getValue().getCVV());
-			Assert.assertEquals("VISA", creditCardAttribute.getValue().getCardType().toString());
+			Assert.assertEquals("Visa", creditCardAttribute.getValue().getCardType().toString());
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
 		} catch (MIDaaSException e) {
@@ -75,15 +75,33 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 	}
 	
 	@SmallTest
+	public void testEmptyToStringCallAfterAttributeIsCreated() {
+		CreditCardAttribute ccAttribute = CreditCardAttributeFactory.createAttribute();
+		Assert.assertEquals("", ccAttribute.toString());
+	}
+	
+	@SmallTest
+	public void testToStringOfCreditCardAttributeClass() {
+		try {
+			createAttribute(new CreditCardValue(VALID_CARD_NUMBER, VALID_CVV,VALID_EXPIRY_MONTH, VALID_EXPIRY_YEAR, CARD_HOLDER_NAME));
+			Assert.assertEquals(expectedValidCreditCardToString, creditCardAttribute.toString());
+		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
+		} catch (MIDaaSException e) {
+			Assert.fail();
+		}
+	}
+	
+	@SmallTest
 	public void testNoCVVSet() {
 		try {
-			createAttribute(new CreditCardValue(VALID_CARD_NUMBER, null,VALID_EXPIRY_MONTH, VALID_EXPIRY_YEAR, CARD_HOLDER_NAME));
+			createAttribute(new CreditCardValue(VALID_CARD_NUMBER, "",VALID_EXPIRY_MONTH, VALID_EXPIRY_YEAR, CARD_HOLDER_NAME));
 			Assert.assertEquals(VALID_CARD_NUMBER, creditCardAttribute.getValue().getCreditCardNumber());
 			Assert.assertEquals(VALID_EXPIRY_MONTH, creditCardAttribute.getValue().getExpiryMonth());
 			Assert.assertEquals(VALID_EXPIRY_YEAR, creditCardAttribute.getValue().getExpiryYear());
 			Assert.assertEquals(CARD_HOLDER_NAME, creditCardAttribute.getValue().getHolderName());
-			Assert.assertNull(creditCardAttribute.getValue().getCVV());
-			Assert.assertEquals("VISA", creditCardAttribute.getValue().getCardType().toString());
+			Assert.assertEquals("", creditCardAttribute.getValue().getCVV());
+			Assert.assertEquals("Visa", creditCardAttribute.getValue().getCardType().toString());
 		} catch (InvalidAttributeValueException e) {
 			Assert.fail();
 		} catch (MIDaaSException e) {
@@ -161,7 +179,6 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 		} catch (JSONException e) {
 			Assert.fail();
 		}
-		
 	}
 	
 	@SmallTest
@@ -184,17 +201,6 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 		}
 	}
 	
-	@SmallTest
-	public void testInvalidCVV() {
-		try {
-			createAttribute(new CreditCardValue(VALID_CARD_NUMBER, INVALID_CVV, VALID_EXPIRY_MONTH, VALID_EXPIRY_YEAR, CARD_HOLDER_NAME));
-			Assert.fail();
-		} catch (InvalidAttributeValueException e) {
-			
-		} catch (MIDaaSException e) {
-			Assert.fail();
-		}
-	}
 	
 	private void createAttribute(CreditCardValue value) throws InvalidAttributeValueException, MIDaaSException {
 		creditCardAttribute = CreditCardAttributeFactory.createAttribute();
