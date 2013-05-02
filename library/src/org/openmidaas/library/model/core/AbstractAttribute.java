@@ -125,7 +125,7 @@ public abstract class AbstractAttribute<T> {
 		if(validateAttribute(this.mValue)) {
 			AttributePersistenceCoordinator.saveAttribute(this);
 		} else {
-			throw new InvalidAttributeValueException();
+			throw new InvalidAttributeValueException("Attribute value could not be set. Check the value you are setting.");
 		}
 	}
 	
@@ -164,7 +164,7 @@ public abstract class AbstractAttribute<T> {
 		if(validateAttribute(value)) {
 			this.mValue = value;
 		} else {
-			throw new InvalidAttributeValueException();
+			throw new InvalidAttributeValueException("Attribute value could not be set. Check the value you are setting.");
 		}
 	}
 

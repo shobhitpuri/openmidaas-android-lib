@@ -17,6 +17,7 @@ package org.openmidaas.library.persistence;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.model.CreditCardAttribute;
 import org.openmidaas.library.model.CreditCardAttributeFactory;
@@ -28,6 +29,8 @@ import android.database.Cursor;
 
 public class CreditCardDBBuilder extends AbstractAttributeDBBuilder<CreditCardAttribute>{
 
+	private final String TAG = "CreditCardDBBuilder";
+	
 	@Override
 	protected CreditCardAttribute buildFromCursor(Cursor cursor)
 			throws InvalidAttributeNameException,
@@ -49,7 +52,8 @@ public class CreditCardDBBuilder extends AbstractAttributeDBBuilder<CreditCardAt
 					object.getString(CreditCardValue.CARD_HOLDER_NAME));
 			mAttribute.setValue(value);
 		} catch (JSONException e) {
-			throw new InvalidAttributeValueException();
+			MIDaaS.logError(TAG, e.getMessage());
+			throw new InvalidAttributeValueException("Attribute value could not be set. " + e.getMessage());
 		}
 	}
 }

@@ -17,6 +17,7 @@ package org.openmidaas.library.persistence;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 
 import org.openmidaas.library.model.AddressValue;
@@ -28,6 +29,8 @@ import org.openmidaas.library.model.AddressAttributeFactory;
 import android.database.Cursor;
 
 public class AddressDBBuilder extends AbstractAttributeDBBuilder<AddressAttribute>{
+	
+	private final String TAG = "AddressDBBuilder";
 
 	@Override
 	protected AddressAttribute buildFromCursor(Cursor cursor)
@@ -49,7 +52,8 @@ public class AddressDBBuilder extends AbstractAttributeDBBuilder<AddressAttribut
 					object.getString(AddressValue.REGION), object.getString(AddressValue.POSTAL_CODE), object.getString(AddressValue.COUNTRY));
 			mAttribute.setValue(value);
 		} catch (JSONException e) {
-			throw new InvalidAttributeValueException();
+			MIDaaS.logError(TAG, e.getMessage());
+			throw new InvalidAttributeValueException("Attribute value could not be set. " + e.getMessage());
 		}
 	}
 }

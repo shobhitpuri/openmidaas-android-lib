@@ -15,11 +15,13 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-public class InvalidAttributeValueException extends Exception{
+public class InvalidAttributeValueException extends Exception {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3932593137845843047L;
+	
+	private static final long serialVersionUID = 1L;
+
+	public InvalidAttributeValueException(String message) {
+		super(message);
+	}
 
 }
