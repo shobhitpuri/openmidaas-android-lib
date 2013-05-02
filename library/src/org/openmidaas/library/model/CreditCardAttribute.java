@@ -138,11 +138,11 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 	@Override
 	public String toString() {
 		if(mValue != null) {
-			MIDaaS.logError(TAG, "Value is null");
 			return (mValue.getCreditCardNumber() + "\n" + String.format("%02d", Integer.parseInt(mValue.getExpiryMonth())) + 
 					"/" +mValue.getExpiryYear() + "\n" + mValue.getHolderName());
 		 
 		}
+		MIDaaS.logError(TAG, "Value is null");
 		return "";
 	}
 }

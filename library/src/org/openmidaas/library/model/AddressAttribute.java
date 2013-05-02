@@ -73,6 +73,7 @@ public class AddressAttribute extends AbstractAttribute<AddressValue> {
 		if(mValue != null) {
 			return (mValue.getFormattedAddress());
 		} 
+		MIDaaS.logError(TAG, "Value is null");
 		return "";
 	}
 }
