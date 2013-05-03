@@ -17,7 +17,6 @@ package org.openmidaas.library;
 
 import java.util.Map;
 
-import org.json.JSONException;
 import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
 import org.openmidaas.library.authentication.AVSDeviceRegistration;
 import org.openmidaas.library.authentication.AuthenticationManager;
@@ -31,15 +30,12 @@ import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.InitializationCallback;
-import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 import android.content.Context;
 import android.util.Log;
-
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
 /**
  * Class that controls device registration
@@ -226,11 +222,12 @@ public final class MIDaaS{
 	/**
 	 * Returns an attribute bundle signed by the AVS server 
 	 * for a set of verified attributes.
-	 * @param clientId
-	 * @param state
-	 * @param attributeBundleMap
-	 * @param callback
-	 * @throws IllegalArgumentException
+	 * @param clientId the client making the request
+	 * @param state the sate parameter if present
+	 * @param attributeBundleMap the attribute map. The key of the map is set as the key in the response
+	 * object
+	 * @param callback callback method provides the response once done. 
+	 * @throws IllegalArgumentException 
 	 */
 	public static void getVerifiedAttributeBundle(final String clientId, final String state, final Map<String, AbstractAttribute<?>> attributeBundleMap, 
 			final VerifiedAttributeBundleCallback callback) throws IllegalArgumentException{
@@ -246,21 +243,32 @@ public final class MIDaaS{
 				
 				@Override
 				public void execute() {
-					try {
-						AVSServer.bundleVerifiedAttributes(clientId, state, attributeBundleMap, callback);
-					} catch(JSONException e) {
-						callback.onError(new MIDaaSException(MIDaaSError.INTERNAL_LIBRARY_ERROR));
-					} 
+					AVSServer.bundleVerifiedAttributes(clientId, state, attributeBundleMap, callback); 
 				}
-			
 			});
 		}
 	}
 	
+	/**
+	 * 
+	 * Callback interface to get the verified attribute bundle
+	 *
+	 */
 	public static interface VerifiedAttributeBundleCallback {
 		
+		/**
+		 * Called when the verifiedResponse is successfully received
+		 * from the AVS server.
+		 * @param verifiedResponse the base-64 encoded response 
+		 * from the AVS server
+		**/
 		public void onSuccess(String verifiedResponse);
 		
+		/**
+		 * Called when a error occurs either internally or sent
+		 * by the server. 
+		 * @param exception MIDaaSException 
+		 */
 		public void onError(MIDaaSException exception);
 	}
 }

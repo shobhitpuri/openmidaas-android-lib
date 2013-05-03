@@ -96,7 +96,7 @@ public class AVSServer {
 		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getBasicAuthHeader(token), object, responseHandler);	
 	}
 	/**
-	 * 
+	 * Bundles the attributes for the app. 
 	 * @param clientId
 	 * @param state
 	 * @param verifiedAttributeMap
@@ -104,20 +104,24 @@ public class AVSServer {
 	 * @throws JSONException
 	 */
 	public static void bundleVerifiedAttributes(String clientId, String state, Map<String, AbstractAttribute<?>> verifiedAttributeMap, 
-			final VerifiedAttributeBundleCallback callback) throws JSONException {
+			final VerifiedAttributeBundleCallback callback) {
 		JSONObject data = new JSONObject();
-		data.put(CLIENT_ID, clientId);
-		data.put(ATTRIBUTES, new JSONObject());
-		for(Map.Entry<String, AbstractAttribute<?>> entry: verifiedAttributeMap.entrySet()) {
-			if(entry.getValue() != null) { 
-				if(entry.getValue().getState().equals(ATTRIBUTE_STATE.VERIFIED)) {
-					data.getJSONObject(ATTRIBUTES).put(entry.getKey(), entry.getValue());
+		try {
+			data.put(CLIENT_ID, clientId);
+			data.put(ATTRIBUTES, new JSONObject());
+			for(Map.Entry<String, AbstractAttribute<?>> entry: verifiedAttributeMap.entrySet()) {
+				if(entry.getValue() != null) { 
+					if(entry.getValue().getState().equals(ATTRIBUTE_STATE.VERIFIED)) {
+						data.getJSONObject(ATTRIBUTES).put(entry.getKey(), entry.getValue());
+					} else {
+						callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_STATE_ERROR));
+					}
 				} else {
-					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_STATE_ERROR));
+					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
 				}
-			} else {
-				callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
 			}
+		} catch(JSONException e) {
+			callback.onError(new MIDaaSException(MIDaaSError.INTERNAL_LIBRARY_ERROR));
 		}
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
 		if(token == null) {

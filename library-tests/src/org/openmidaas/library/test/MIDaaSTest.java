@@ -186,6 +186,7 @@ public class MIDaaSTest extends InstrumentationTestCase {
 	}
 	
 	protected void tearDown() {
+		AuthenticationManager.getInstance().setAccessTokenStrategy(null);
 		
 	}
 
