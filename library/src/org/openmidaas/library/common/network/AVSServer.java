@@ -43,10 +43,6 @@ public class AVSServer {
 	
 	private static HashMap<String, String> headers = new HashMap<String, String>();
 	
-	private final static String CLIENT_ID = "client_id";
-	
-	private final static String ATTRIBUTES = "attrs";
-	
 	public static void setWithSSL(boolean val) {
 		SERVER_WITH_SSL = val;
 	}
@@ -107,12 +103,15 @@ public class AVSServer {
 			final VerifiedAttributeBundleCallback callback) {
 		JSONObject data = new JSONObject();
 		try {
-			data.put(CLIENT_ID, clientId);
-			data.put(ATTRIBUTES, new JSONObject());
+			data.put(Constants.RequestKeys.CLIENT_ID, clientId);
+			data.put(Constants.AttributeBundleKeys.ATTRIBUTES, new JSONObject());
+			if(state != null && !state.equals("")) {
+				data.put(Constants.RequestKeys.STATE, state);
+			}
 			for(Map.Entry<String, AbstractAttribute<?>> entry: verifiedAttributeMap.entrySet()) {
 				if(entry.getValue() != null) { 
 					if(entry.getValue().getState().equals(ATTRIBUTE_STATE.VERIFIED)) {
-						data.getJSONObject(ATTRIBUTES).put(entry.getKey(), entry.getValue());
+						data.getJSONObject(Constants.AttributeBundleKeys.ATTRIBUTES).put(entry.getKey(), entry.getValue());
 					} else {
 						callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_STATE_ERROR));
 					}

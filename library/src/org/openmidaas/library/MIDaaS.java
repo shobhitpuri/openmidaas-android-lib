@@ -17,6 +17,8 @@ package org.openmidaas.library;
 
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
 import org.openmidaas.library.authentication.AVSDeviceRegistration;
 import org.openmidaas.library.authentication.AuthenticationManager;
@@ -246,6 +248,23 @@ public final class MIDaaS{
 					AVSServer.bundleVerifiedAttributes(clientId, state, attributeBundleMap, callback); 
 				}
 			});
+		}
+	}
+	
+	public static String getAttributeBundle(String clientId, String state, Map<String, AbstractAttribute<?>> attributeBundleMap) throws IllegalArgumentException {
+		try {
+			JSONObject bundleData = new JSONObject();
+			bundleData.put(Constants.AttributeBundleKeys.ISSUER, Constants.APP_ISSUER_ID);
+			bundleData.put(Constants.AttributeBundleKeys.AUDIENCE, clientId);
+			bundleData.put(Constants.AttributeBundleKeys.ATTRIBUTES, new JSONObject());
+			for(Map.Entry<String, AbstractAttribute<?>> entry: attributeBundleMap.entrySet()) {
+				if(entry.getValue() != null) { 
+					
+				}
+			}
+			return bundleData.toString();
+		} catch(JSONException e) {
+			return null;
 		}
 	}
 	
