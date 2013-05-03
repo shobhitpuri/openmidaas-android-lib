@@ -17,13 +17,16 @@ package org.openmidaas.library.common.network;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.MIDaaS.VerifiedAttributeBundleCallback;
 import org.openmidaas.library.authentication.AuthenticationManager;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.common.Constants;
+import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
@@ -39,6 +42,10 @@ public class AVSServer {
 	private static boolean SERVER_WITH_SSL = false;
 	
 	private static HashMap<String, String> headers = new HashMap<String, String>();
+	
+	private final static String CLIENT_ID = "client_id";
+	
+	private final static String ATTRIBUTES = "attrs";
 	
 	public static void setWithSSL(boolean val) {
 		SERVER_WITH_SSL = val;
@@ -87,6 +94,49 @@ public class AVSServer {
 		object.put("code", verificationCode);
 		object.put("verificationToken", attribute.getPendingData());
 		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getBasicAuthHeader(token), object, responseHandler);	
+	}
+	/**
+	 * 
+	 * @param clientId
+	 * @param state
+	 * @param verifiedAttributeMap
+	 * @param responseHandler
+	 * @throws JSONException
+	 */
+	public static void bundleVerifiedAttributes(String clientId, String state, Map<String, AbstractAttribute<?>> verifiedAttributeMap, 
+			final VerifiedAttributeBundleCallback callback) throws JSONException {
+		JSONObject data = new JSONObject();
+		data.put(CLIENT_ID, clientId);
+		data.put(ATTRIBUTES, new JSONObject());
+		for(Map.Entry<String, AbstractAttribute<?>> entry: verifiedAttributeMap.entrySet()) {
+			if(entry.getValue() != null) { 
+				if(entry.getValue().getState().equals(ATTRIBUTE_STATE.VERIFIED)) {
+					data.getJSONObject(ATTRIBUTES).put(entry.getKey(), entry.getValue());
+				} else {
+					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_STATE_ERROR));
+				}
+			} else {
+				callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+			}
+		}
+		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
+		if(token == null) {
+			callback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
+		}
+		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.BUNDLE_ATTRIBUTES_URL, getBasicAuthHeader(token), data, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) { 
+				if(response == null || response.isEmpty()) {
+					callback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+				} else {
+					callback.onSuccess(response);
+				}
+			}
+			@Override
+			public void onFailure(Throwable e, String response){
+				callback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+			}
+		});
 	}
 	
 	/**

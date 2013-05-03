@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.openmidaas.library;
 
+import java.util.Map;
+
+import org.json.JSONException;
 import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
 import org.openmidaas.library.authentication.AVSDeviceRegistration;
 import org.openmidaas.library.authentication.AuthenticationManager;
@@ -22,13 +25,21 @@ import org.openmidaas.library.authentication.DeviceRegistrar;
 import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.WorkQueueManager;
+import org.openmidaas.library.common.WorkQueueManager.Worker;
+import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
+import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.InitializationCallback;
+import org.openmidaas.library.model.core.MIDaaSError;
+import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+
 import android.content.Context;
 import android.util.Log;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 /**
  * Class that controls device registration
@@ -42,6 +53,7 @@ public final class MIDaaS{
 	public static final int LOG_LEVEL_WARN = 5;
 	public static final int LOG_LEVEL_ERROR = 6;
 	private static final Object LOG_LOCK = new Object();
+	private static final Object LOCK = new Object();
 	private static Context mContext;
 	
 	/**
@@ -209,5 +221,46 @@ public final class MIDaaS{
 	 */
 	public static void logVerbose(String tag, String message, Throwable throwable) {
 		log(2, tag, message, throwable);
+	}
+	
+	/**
+	 * Returns an attribute bundle signed by the AVS server 
+	 * for a set of verified attributes.
+	 * @param clientId
+	 * @param state
+	 * @param attributeBundleMap
+	 * @param callback
+	 * @throws IllegalArgumentException
+	 */
+	public static void getVerifiedAttributeBundle(final String clientId, final String state, final Map<String, AbstractAttribute<?>> attributeBundleMap, 
+			final VerifiedAttributeBundleCallback callback) throws IllegalArgumentException{
+		synchronized (LOCK) {
+			if(clientId == null || clientId.isEmpty()) {
+				throw new IllegalArgumentException("Client ID must be provided");
+			}
+			if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
+				throw new IllegalArgumentException("Attribute bundle is null or of size 0");
+			}
+
+			WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
+				
+				@Override
+				public void execute() {
+					try {
+						AVSServer.bundleVerifiedAttributes(clientId, state, attributeBundleMap, callback);
+					} catch(JSONException e) {
+						callback.onError(new MIDaaSException(MIDaaSError.INTERNAL_LIBRARY_ERROR));
+					} 
+				}
+			
+			});
+		}
+	}
+	
+	public static interface VerifiedAttributeBundleCallback {
+		
+		public void onSuccess(String verifiedResponse);
+		
+		public void onError(MIDaaSException exception);
 	}
 }
