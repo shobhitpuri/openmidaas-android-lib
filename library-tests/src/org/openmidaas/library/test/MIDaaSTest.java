@@ -189,5 +189,13 @@ public class MIDaaSTest extends InstrumentationTestCase {
 		AuthenticationManager.getInstance().setAccessTokenStrategy(null);
 		
 	}
+	
+	@SmallTest
+	public void testAttributeBundle() {
+		Map<String, AbstractAttribute<?>> map = new HashMap<String, AbstractAttribute<?>>();
+		map.put("mock1", new MockAttribute());
+		String bundleAsString = MIDaaS.getAttributeBundle(VALID_CLIENT_ID, null, map);
+		Assert.assertNotNull(bundleAsString);
+	}
 
 }

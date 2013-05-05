@@ -24,6 +24,7 @@ public class MockAttribute extends AbstractAttribute<String>{
 		mName = "MockAttribute";
 		mState = ATTRIBUTE_STATE.NOT_VERIFIED;
 		mSignedToken = "1234";
+		mValue = "MockAttribute";
 	}
 	
 	@Override
