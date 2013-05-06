@@ -23,7 +23,7 @@ public class MockAttribute extends AbstractAttribute<String>{
 	public MockAttribute() {
 		mName = "MockAttribute";
 		mState = ATTRIBUTE_STATE.NOT_VERIFIED;
-		mSignedToken = "1234";
+		mSignedToken = "1234.1234.1234";
 		mValue = "MockAttribute";
 	}
 	

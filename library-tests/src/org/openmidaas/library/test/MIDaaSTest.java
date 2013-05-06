@@ -28,7 +28,9 @@ import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.test.authentication.MockAccessTokenSuccessStrategy;
 import org.openmidaas.library.test.models.MockPersistence;
+import org.openmidaas.library.test.network.MockTransport;
 import org.openmidaas.library.test.network.MockTransportFactory;
+import org.openmidaas.library.test.network.MockVerifiedAttributeBundleRequest;
 
 import android.content.Context;
 import android.test.InstrumentationTestCase;
@@ -37,7 +39,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 public class MIDaaSTest extends InstrumentationTestCase {
 	private Context mContext;
 	private MockTransportFactory mockFactory;
-	private final String VALID_CLIENT_ID = "http://merchant.org";
+	public static final String VALID_CLIENT_ID = "http://merchant.org";
 	private final String STATE = "some_state";
 	private boolean mStatus = false;
 	protected void setUp() {
@@ -45,12 +47,17 @@ public class MIDaaSTest extends InstrumentationTestCase {
 		MIDaaS.setContext(mContext);
 		AttributePersistenceCoordinator.setPersistenceDelegate(new MockPersistence());
 		AuthenticationManager.getInstance().setAccessTokenStrategy(new MockAccessTokenSuccessStrategy());
-		mockFactory = new MockTransportFactory(mContext, "verification_bundle_response.json");
+		mockFactory = new MockTransportFactory("verification_bundle_response.json");
+		mockFactory.setTrasport(new MockTransport(mContext));
 		ConnectionManager.setNetworkFactory(mockFactory);
 	}
 	
 	@SmallTest
 	public void testValidAttributeBundle() {
+		
+		mockFactory.setTrasport(new MockVerifiedAttributeBundleRequest(mContext));
+		mockFactory.setFilename("verification_bundle_response.json");
+		ConnectionManager.setNetworkFactory(mockFactory);
 		final CountDownLatch latch = new CountDownLatch(1);
 		Map<String, AbstractAttribute<?>> map = new HashMap<String, AbstractAttribute<?>>();
 		map.put("mock1", new MockAttribute());
@@ -84,6 +91,7 @@ public class MIDaaSTest extends InstrumentationTestCase {
 	
 	@SmallTest
 	public void testNullClientId() {
+		
 		final CountDownLatch latch = new CountDownLatch(1);
 		Map<String, AbstractAttribute<?>> map = new HashMap<String, AbstractAttribute<?>>();
 		map.put("mock1", new MockAttribute());
@@ -119,6 +127,9 @@ public class MIDaaSTest extends InstrumentationTestCase {
 	
 	@SmallTest
 	public void testNullState() {
+		mockFactory.setTrasport(new MockVerifiedAttributeBundleRequest(mContext));
+		mockFactory.setFilename("verification_bundle_response.json");
+		ConnectionManager.setNetworkFactory(mockFactory);
 		final CountDownLatch latch = new CountDownLatch(1);
 		Map<String, AbstractAttribute<?>> map = new HashMap<String, AbstractAttribute<?>>();
 		map.put("mock1", new MockAttribute());

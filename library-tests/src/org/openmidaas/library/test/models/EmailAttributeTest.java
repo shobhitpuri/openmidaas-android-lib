@@ -28,6 +28,7 @@ import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.test.authentication.MockAccessTokenSuccessStrategy;
+import org.openmidaas.library.test.network.MockTransport;
 import org.openmidaas.library.test.network.MockTransportFactory;
 
 import android.content.Context;
@@ -49,7 +50,8 @@ public class EmailAttributeTest extends InstrumentationTestCase{
 			AuthenticationManager.getInstance().setAccessTokenStrategy(new MockAccessTokenSuccessStrategy());
 			emailAttribute =  EmailAttributeFactory.createAttribute();
 			emailAttribute.setValue(validEmail);
-			mockFactory = new MockTransportFactory(mContext, "init_email_ver_success.json");
+			mockFactory = new MockTransportFactory("init_email_ver_success.json");
+			mockFactory.setTrasport(new MockTransport(mContext));
 			ConnectionManager.setNetworkFactory(mockFactory);
 			isInit = true;
 		}
