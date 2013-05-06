@@ -111,7 +111,7 @@ public class AVSServer {
 			for(Map.Entry<String, AbstractAttribute<?>> entry: verifiedAttributeMap.entrySet()) {
 				if(entry.getValue() != null) { 
 					if(entry.getValue().getState().equals(ATTRIBUTE_STATE.VERIFIED)) {
-						data.getJSONObject(Constants.AttributeBundleKeys.ATTRIBUTES).put(entry.getKey(), entry.getValue());
+						data.getJSONObject(Constants.AttributeBundleKeys.ATTRIBUTES).put(entry.getKey(), entry.getValue().getSignedToken());
 					} else {
 						callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_STATE_ERROR));
 					}
