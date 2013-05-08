@@ -18,29 +18,27 @@ package org.openmidaas.library.test.network;
 import org.openmidaas.library.common.network.NetworkFactory;
 import org.openmidaas.library.common.network.NetworkTransport;
 
-import android.content.Context;
-
 public class MockTransportFactory implements NetworkFactory{
 	
 	private String mFileName;
-
-	private Context mContext;
 	
 	private MockTransport transport;
 	
-	public MockTransportFactory(Context context, String filename) {
-		mContext = context;
+	public MockTransportFactory(String filename) {
 		mFileName = filename;
 	}
 	
 	@Override
 	public NetworkTransport createTransport() {
-		transport = new MockTransport(mContext);
 		transport.setMockDataFile(mFileName);
 		return (transport);
 	}
 
 	public void setFilename(String fileName) {
 		transport.setMockDataFile(fileName);
+	}
+	
+	public void setTrasport(MockTransport transport) {
+		this.transport = transport;
 	}
 }

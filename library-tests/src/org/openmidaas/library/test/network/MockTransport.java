@@ -30,9 +30,9 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class MockTransport implements NetworkTransport{
 
-	private Context mContext;
+	protected Context mContext;
 	
-	private String mFilename;
+	protected String mFilename;
 	
 	public MockTransport(Context context) {
 		mContext = context;
