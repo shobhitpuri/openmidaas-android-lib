@@ -25,7 +25,6 @@ import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
 import org.openmidaas.library.authentication.AVSDeviceRegistration;
 import org.openmidaas.library.authentication.AuthenticationManager;
 import org.openmidaas.library.authentication.DeviceRegistrar;
-import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.authentication.SKDeviceAuthentication;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.WorkQueueManager;
