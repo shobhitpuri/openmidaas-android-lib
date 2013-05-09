@@ -1,7 +1,7 @@
 {
 	"http": {
 		"statusCode": "201 Created",
-		"body":"{\"subjectToken\": \"header.payload.signature\", \"accessToken\": \"some_access_token\", \"expiresIn\": \"600\"}",
+		"body":"{\"subjectToken\": \"header.payload.signature\", \"accessToken\": \"some_access_token\", \"expiresIn\": 600}",
 		"headers":[ {
 			"content-type": "application/json"
 		}]

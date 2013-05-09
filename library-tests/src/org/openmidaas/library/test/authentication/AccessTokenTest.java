@@ -28,7 +28,7 @@ public class AccessTokenTest extends InstrumentationTestCase{
 	
 	protected void setUp() throws Exception {
 		MIDaaS.setContext( getInstrumentation().getContext());
-		token = AccessToken.createAccessToken(TestValues.AccessToken.ACCESS_TOKEN_VALUE, TestValues.AccessToken.VALID_EXPIRY);
+		token = AccessToken.createAccessToken(AuthenticationTestValues.AccessToken.ACCESS_TOKEN_VALUE, AuthenticationTestValues.AccessToken.VALID_EXPIRY);
 	}
 	
 	@SmallTest
@@ -36,7 +36,7 @@ public class AccessTokenTest extends InstrumentationTestCase{
 		
 		Assert.assertNotNull(token);
 		Assert.assertFalse(token.isExpired());
-		Assert.assertEquals(TestValues.AccessToken.ACCESS_TOKEN_VALUE, token.toString());
+		Assert.assertEquals(AuthenticationTestValues.AccessToken.ACCESS_TOKEN_VALUE, token.toString());
 	}
 	
 	@SmallTest
@@ -46,14 +46,14 @@ public class AccessTokenTest extends InstrumentationTestCase{
 	
 	@SmallTest
 	public void testInvalidExpiresIn() {
-		token = AccessToken.createAccessToken(TestValues.AccessToken.ACCESS_TOKEN_VALUE, TestValues.AccessToken.INVALID_EXPIRY);
+		token = AccessToken.createAccessToken(AuthenticationTestValues.AccessToken.ACCESS_TOKEN_VALUE, AuthenticationTestValues.AccessToken.INVALID_EXPIRY);
 		Assert.assertNull(token);
 	}
 	
 	@SmallTest
 	public void testValidExpiresInWithExpiryCheck() {
 		// sets the expiresIn to 2 seconds, creates the access token, waits for 3 seconds and makes sure that the token has expired
-		token = AccessToken.createAccessToken(TestValues.AccessToken.ACCESS_TOKEN_VALUE, TestValues.AccessToken.SHORT_EXPIRY);
+		token = AccessToken.createAccessToken(AuthenticationTestValues.AccessToken.ACCESS_TOKEN_VALUE, AuthenticationTestValues.AccessToken.SHORT_EXPIRY);
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {

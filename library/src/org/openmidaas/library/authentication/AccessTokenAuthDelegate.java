@@ -109,7 +109,7 @@ public class AccessTokenAuthDelegate implements DeviceAuthenticationCallback{
 			}
 			@Override
 			public void onFailure(Throwable e, String response){
-				
+				mCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 			}
 		});
 	}

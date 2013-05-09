@@ -23,7 +23,7 @@ public class MockAccessTokenSuccessStrategy implements AccessTokenStrategy {
 
 	@Override
 	public void getAccessToken(AccessTokenCallback callback) {
-		callback.onSuccess(AccessToken.createAccessToken(TestValues.AccessToken.ACCESS_TOKEN_VALUE, TestValues.AccessToken.VALID_EXPIRY));
+		callback.onSuccess(AccessToken.createAccessToken(AuthenticationTestValues.AccessToken.ACCESS_TOKEN_VALUE, AuthenticationTestValues.AccessToken.VALID_EXPIRY));
 	}
 
 }

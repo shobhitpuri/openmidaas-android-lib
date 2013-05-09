@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.openmidaas.library.test.authentication;
 
-public final class TestValues {
+public final class AuthenticationTestValues {
 
 	public static final class AccessToken {
 		public static final String ACCESS_TOKEN_VALUE = "some_token_value";

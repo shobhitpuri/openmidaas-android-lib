@@ -16,26 +16,16 @@
 package org.openmidaas.library.authentication;
 
 import java.util.List;
-import org.json.JSONException;
-import org.json.JSONObject;
+
 import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.authentication.core.AccessToken;
-import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.authentication.core.DeviceRegistrationDelegate;
-import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.SubjectToken;
-import org.openmidaas.library.model.InvalidAttributeValueException;
-import org.openmidaas.library.model.SubjectTokenFactory;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.persistence.core.SubjectTokenCallback;
-
-import android.os.Build;
-
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 	
@@ -45,7 +35,6 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 	
 	private InitializationCallback mInitCallback;
 	
-	private SubjectToken deviceToken;
 	
 	public AVSDeviceRegistration() {
 		mAuthenticationStrategy = AuthenticationManager.getInstance().getDeviceAuthenticationStrategy();
@@ -63,7 +52,9 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 					
 					MIDaaS.logDebug(TAG, "Device NOT registered. Registering device.");
 					mInitCallback.onRegistering();
-					authenticateDevice();
+					RegistrationAuthDelegate deviceAuthCallback = new RegistrationAuthDelegate();
+					deviceAuthCallback.setInitCallback(mInitCallback);
+					mAuthenticationStrategy.performDeviceAuthentication(deviceAuthCallback);
 					
 				} else if(list.size() > 1) {
 					// if we have more than one device attribute, we have an error. 
@@ -83,78 +74,5 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 			}
 		});
 
-	}
-	
-	
-	private void performRegistration(String deviceId) {     
-		try {
-			AVSServer.registerDevice(deviceId, new AsyncHttpResponseHandler() {
-				@Override
-				public void onSuccess(String response) {
-					try {
-						MIDaaS.logDebug(TAG, "device successfully registered. persisting registration.");
-						JSONObject responseObject = new JSONObject(response);
-						if(responseObject.has("subjectToken") && !(responseObject.isNull("subjectToken"))) {
-							deviceToken =SubjectTokenFactory.createAttribute();
-							deviceToken.setValue(Build.MODEL);
-							deviceToken.setSignedToken(responseObject.getString("subjectToken"));
-							deviceToken.save();
-							// if we didn't get the access token, we can get it on-demand at a later time. 
-							if((responseObject.has("accessToken") && !(responseObject.isNull("accessToken"))) 
-									&& (responseObject.has("expiresIn") && !(responseObject.isNull("expiresIn")))) {
-								AccessToken token = AccessToken.createAccessToken(responseObject.getString("accessToken"), responseObject.getInt("expiresIn"));
-								if(token != null) {
-									AuthenticationManager.getInstance().setAccessToken(token);
-								} else {
-									mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
-								}
-							}
-						} else {
-							mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
-						}
-						
-						
-						mInitCallback.onSuccess();
-					} catch (InvalidAttributeValueException e) {
-						// should never get here b/c we're returning true. 
-						MIDaaS.logError(TAG, "logic error. should never have thrown exception");
-					} catch (MIDaaSException e) {
-						MIDaaS.logError(TAG, e.getError().getErrorMessage());
-						mInitCallback.onError(e);
-						
-					} catch (JSONException e) {
-						MIDaaS.logError(TAG, e.getMessage());
-						mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
-					}
-				}
-				
-				@Override
-				public void onFailure(Throwable e, String response){
-					MIDaaS.logError(TAG, response);
-					mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
-				}
-			});
-		} catch (JSONException e) {
-			MIDaaS.logError(TAG, e.getMessage());
-			mInitCallback.onError(null);
-		}
-	}
-	
-	private void authenticateDevice() {
-		mAuthenticationStrategy.performDeviceAuthentication(new DeviceAuthenticationCallback() {
-
-			@Override
-			public void onSuccess(String deviceId) {
-				MIDaaS.logDebug(TAG, "device successfully authenticated. registering device with server now.");
-				performRegistration(deviceId);
-			}
-
-			@Override
-			public void onError(MIDaaSException exception) {
-				MIDaaS.logError(TAG, "error authenticating device.");
-				mInitCallback.onError(exception);
-			}
-			
-		});
 	}
 }

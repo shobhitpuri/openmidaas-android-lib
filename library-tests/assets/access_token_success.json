@@ -1,0 +1,9 @@
+{
+	"http": {
+		"statusCode": "200 OK",
+		"body":"{\"accessToken\": \"some_access_token\", \"expiresIn\": 600}",
+		"headers":[ {
+			"content-type": "application/json"
+		}]
+	}
+}
