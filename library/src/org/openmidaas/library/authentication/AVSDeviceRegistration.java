@@ -17,7 +17,9 @@ package org.openmidaas.library.authentication;
 
 import java.util.List;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.authentication.core.DeviceRegistrationDelegate;
@@ -51,6 +53,7 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 	
 	public void registerDevice(final InitializationCallback initCallback) {
 		mInitCallback = initCallback;
+		// first get the subject token
 		AttributePersistenceCoordinator.getSubjectToken(new SubjectTokenCallback() {
 
 			@Override
@@ -90,17 +93,38 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 				public void onSuccess(String response) {
 					try {
 						MIDaaS.logDebug(TAG, "device successfully registered. persisting registration.");
-						deviceToken =SubjectTokenFactory.createAttribute();
-						deviceToken.setValue(Build.MODEL);
-						deviceToken.setSignedToken(response);
-						deviceToken.save();
+						JSONObject responseObject = new JSONObject(response);
+						if(responseObject.has("subjectToken") && !(responseObject.isNull("subjectToken"))) {
+							deviceToken =SubjectTokenFactory.createAttribute();
+							deviceToken.setValue(Build.MODEL);
+							deviceToken.setSignedToken(responseObject.getString("subjectToken"));
+							deviceToken.save();
+							// if we didn't get the access token, we can get it on-demand at a later time. 
+							if((responseObject.has("accessToken") && !(responseObject.isNull("accessToken"))) 
+									&& (responseObject.has("expiresIn") && !(responseObject.isNull("expiresIn")))) {
+								AccessToken token = AccessToken.createAccessToken(responseObject.getString("accessToken"), responseObject.getInt("expiresIn"));
+								if(token != null) {
+									AuthenticationManager.getInstance().setAccessToken(token);
+								} else {
+									mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+								}
+							}
+						} else {
+							mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+						}
+						
+						
 						mInitCallback.onSuccess();
 					} catch (InvalidAttributeValueException e) {
 						// should never get here b/c we're returning true. 
 						MIDaaS.logError(TAG, "logic error. should never have thrown exception");
 					} catch (MIDaaSException e) {
-						mInitCallback.onError(e);
 						MIDaaS.logError(TAG, e.getError().getErrorMessage());
+						mInitCallback.onError(e);
+						
+					} catch (JSONException e) {
+						MIDaaS.logError(TAG, e.getMessage());
+						mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 					}
 				}
 				

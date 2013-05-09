@@ -18,24 +18,12 @@ package org.openmidaas.library.test.authentication;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
 import org.openmidaas.library.authentication.core.AccessTokenStrategy;
-import org.openmidaas.library.model.InvalidAttributeValueException;
-import org.openmidaas.library.model.SubjectToken;
-import org.openmidaas.library.model.SubjectTokenFactory;
-import org.openmidaas.library.model.core.MIDaaSError;
-import org.openmidaas.library.model.core.MIDaaSException;
 
 public class MockAccessTokenSuccessStrategy implements AccessTokenStrategy {
 
 	@Override
 	public void getAccessToken(AccessTokenCallback callback) {
-		try {
-			SubjectToken deviceAttribute = SubjectTokenFactory.createAttribute();
-			deviceAttribute.setValue("1234");
-			deviceAttribute.setSignedToken("1234");
-			callback.onSuccess(AccessToken.createAccessTokenFromDeviceAttribute(deviceAttribute, "5678"));
-		} catch (InvalidAttributeValueException e) {
-			callback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
-		}
+		callback.onSuccess(AccessToken.createAccessToken(TestValues.AccessToken.ACCESS_TOKEN_VALUE, TestValues.AccessToken.VALID_EXPIRY));
 	}
 
 }

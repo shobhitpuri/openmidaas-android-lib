@@ -18,34 +18,47 @@ package org.openmidaas.library.test.authentication;
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.AccessToken;
-import org.openmidaas.library.model.SubjectToken;
-import org.openmidaas.library.model.SubjectTokenFactory;
 
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
 public class AccessTokenTest extends InstrumentationTestCase{
 	
-	private final String DEVICE_ATTRIBUTE_VALUE = "DEVICE_ATTRIBUTE_VALUE";
-	private final String DEVICE_AUTH_TOKEN = "DEVICE_AUTH_TOKEN";
 	private AccessToken token;
-	private SubjectToken deviceAttribute;
-	private String expectedToken = DEVICE_ATTRIBUTE_VALUE+":"+DEVICE_AUTH_TOKEN;
+	
 	protected void setUp() throws Exception {
 		MIDaaS.setContext( getInstrumentation().getContext());
-		deviceAttribute = SubjectTokenFactory.createAttribute();
-		deviceAttribute.setValue(DEVICE_ATTRIBUTE_VALUE);
-		deviceAttribute.setSignedToken(DEVICE_ATTRIBUTE_VALUE);
-		token = AccessToken.createAccessTokenFromDeviceAttribute(deviceAttribute, DEVICE_AUTH_TOKEN);
+		token = AccessToken.createAccessToken(TestValues.AccessToken.ACCESS_TOKEN_VALUE, TestValues.AccessToken.VALID_EXPIRY);
 	}
 	
 	@SmallTest
 	public void testCreateAccessToken() {
-		Assert.assertEquals(expectedToken, token.getToken());
+		
+		Assert.assertNotNull(token);
+		Assert.assertFalse(token.isExpired());
+		Assert.assertEquals(TestValues.AccessToken.ACCESS_TOKEN_VALUE, token.toString());
 	}
 	
 	@SmallTest
 	public void testExpiry() {
 		Assert.assertFalse(token.isExpired());
+	}
+	
+	@SmallTest
+	public void testInvalidExpiresIn() {
+		token = AccessToken.createAccessToken(TestValues.AccessToken.ACCESS_TOKEN_VALUE, TestValues.AccessToken.INVALID_EXPIRY);
+		Assert.assertNull(token);
+	}
+	
+	@SmallTest
+	public void testValidExpiresInWithExpiryCheck() {
+		// sets the expiresIn to 2 seconds, creates the access token, waits for 3 seconds and makes sure that the token has expired
+		token = AccessToken.createAccessToken(TestValues.AccessToken.ACCESS_TOKEN_VALUE, TestValues.AccessToken.SHORT_EXPIRY);
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			Assert.fail();
+		}
+		Assert.assertTrue(token.isExpired());
 	}
 }

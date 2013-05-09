@@ -20,22 +20,21 @@ import junit.framework.Assert;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.AuthenticationManager;
 import org.openmidaas.library.authentication.core.AccessToken;
+
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
 public class AuthenticationManagerTest  extends InstrumentationTestCase {
 	
 	protected void setUp() throws Exception {
-		MIDaaS.setContext( getInstrumentation().getContext());
-		
-		
+		MIDaaS.setContext( getInstrumentation().getContext());	
 	}
 
 	@SmallTest
 	public void testGetAccessTokenSuccess() {
 		AuthenticationManager.getInstance().setAccessTokenStrategy(new MockAccessTokenSuccessStrategy());
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
-		Assert.assertEquals("1234:5678", token.toString());
+		Assert.assertEquals(TestValues.AccessToken.ACCESS_TOKEN_VALUE, token.toString());
 	}
 	
 	@SmallTest

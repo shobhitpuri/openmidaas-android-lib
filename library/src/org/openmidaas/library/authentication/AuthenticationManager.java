@@ -81,6 +81,10 @@ public class AuthenticationManager  {
 		return mDeviceAuthStrategy;
 	}
 	
+	protected void setAccessToken(AccessToken token) {
+		this.mAccessToken = token;
+	}
+	
 	/**
 	 * Blocking operation. Waits till the access token 
 	 * is obtained. 

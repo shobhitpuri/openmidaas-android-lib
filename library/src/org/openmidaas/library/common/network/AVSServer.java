@@ -27,6 +27,7 @@ import org.openmidaas.library.authentication.AuthenticationManager;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
+import org.openmidaas.library.model.SubjectToken;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
@@ -45,6 +46,19 @@ public class AVSServer {
 	
 	public static void setWithSSL(boolean val) {
 		SERVER_WITH_SSL = val;
+	}
+	
+	public static void getAuthToken(SubjectToken subjectToken, String txnId, AsyncHttpResponseHandler responseHandler) throws JSONException {
+		if(subjectToken == null) {
+			throw new IllegalArgumentException("Subject token is missing");
+		}
+		if(txnId == null) {
+			throw new IllegalArgumentException("Transaction id is missing");
+		}
+		JSONObject data = new JSONObject();
+		data.put("subjectToken", subjectToken.getSignedToken());
+		data.put("deviceToken", txnId);
+		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.TOKEN_URL, null, data, responseHandler);
 	}
 	
 	/**
