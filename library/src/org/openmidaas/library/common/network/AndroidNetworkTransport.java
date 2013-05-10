@@ -57,7 +57,6 @@ public final class AndroidNetworkTransport implements NetworkTransport {
 	@Override
 	public void doGetRequest(boolean withSSL, String url, Map<String, String> requestParams,
 			AsyncHttpResponseHandler responseHandler) {
-		// TODO: Implement for future GET requests if any. 
 	}
 
 }

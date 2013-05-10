@@ -27,13 +27,13 @@ public class AuthenticationManagerTest  extends InstrumentationTestCase {
 	
 	protected void setUp() throws Exception {
 		MIDaaS.setContext( getInstrumentation().getContext());
-		AuthenticationManager.getInstance().setAccessTokenStrategy(new MockAccessTokenSuccessStrategy());
+		
 		
 	}
 
 	@SmallTest
 	public void testGetAccessTokenSuccess() {
-		
+		AuthenticationManager.getInstance().setAccessTokenStrategy(new MockAccessTokenSuccessStrategy());
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
 		Assert.assertEquals("1234:5678", token.toString());
 	}

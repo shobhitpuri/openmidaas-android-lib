@@ -23,7 +23,9 @@ public enum MIDaaSError {
 	DATABASE_ERROR(201, "There was an error with the database"),
 	ATTRIBUTE_RETRIEVAL_MISMATCH(202, "The attribute being retrieved is not what is was originally requested"),
 	ATTRIBUTE_NAME_ERROR(203, "The requested attribute does not match the attribute being retrieved from the database."),
-	ATTRIBUTE_VALUE_ERROR(204, "The attribute value could not be set.");
+	ATTRIBUTE_VALUE_ERROR(204, "The attribute value is invalid."),
+	ATTRIBUTE_STATE_ERROR(205, "The current attribute state does not match with what is required."),
+	INTERNAL_LIBRARY_ERROR(300, "There an interal error occurred in the library.");
 	
 	private final int mErrorCode;
 	

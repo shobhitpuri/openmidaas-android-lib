@@ -27,7 +27,9 @@ import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+import org.openmidaas.library.test.network.MockTransport;
 import org.openmidaas.library.test.network.MockTransportFactory;
+
 import android.content.Context;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -41,7 +43,11 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
 		MIDaaS.setContext(mContext);
-		mockFactory = new MockTransportFactory(mContext, "device_reg_success.json");
+		mockFactory = new MockTransportFactory("device_reg_success.json");
+		mockFactory.setTrasport(new MockTransport(mContext));
+		
+		ConnectionManager.setNetworkFactory(mockFactory);
+		
 		ConnectionManager.setNetworkFactory(mockFactory);
 		AttributePersistenceCoordinator.setPersistenceDelegate(new MockPersistence());
 	}

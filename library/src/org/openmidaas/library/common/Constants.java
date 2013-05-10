@@ -25,11 +25,13 @@ import java.util.List;
  */
 public final class Constants {
 	private Constants(){}
+	private static final String SERVER_API_VERSION = "/1";
 	public static final String AVP_SB_BASE_URL = "https://midaas-avp.securekeylabs.com";
 	public static final String AVP_LIVE_BASE_URL = "http://avplive-securekey.dotcloud.com";
-	public static final String INIT_AUTH_URL = "/1/requestAttributeVerification";
-	public static final String COMPLETE_AUTH_URL = "/1/completeAttributeVerification";
-	public static final String REGISTRATION_URL = "/1/device/register";
+	public static final String INIT_AUTH_URL = SERVER_API_VERSION + "/requestAttributeVerification";
+	public static final String COMPLETE_AUTH_URL = SERVER_API_VERSION + "/completeAttributeVerification";
+	public static final String REGISTRATION_URL = SERVER_API_VERSION + "/device/register";
+	public static final String BUNDLE_ATTRIBUTES_URL = SERVER_API_VERSION + "/bundleVerifiedAttributes";
 	public enum ATTRIBUTE_STATE { VERIFIED, PENDING_VERIFICATION, NOT_VERIFIABLE, NOT_VERIFIED, ERROR_IN_SAVE, UNKNOWN };
 	
 	public enum RESERVED_WORDS { email, credit_card, address, subject_token }

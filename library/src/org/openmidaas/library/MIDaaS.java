@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library;
 
+import java.util.Map;
+
 import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
 import org.openmidaas.library.authentication.AVSDeviceRegistration;
 import org.openmidaas.library.authentication.AuthenticationManager;
@@ -22,11 +24,16 @@ import org.openmidaas.library.authentication.DeviceRegistrar;
 import org.openmidaas.library.authentication.Level0DeviceAuthentication;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.WorkQueueManager;
+import org.openmidaas.library.common.WorkQueueManager.Worker;
+import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.common.network.AndroidNetworkFactory;
 import org.openmidaas.library.common.network.ConnectionManager;
+import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.InitializationCallback;
+import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -42,6 +49,7 @@ public final class MIDaaS{
 	public static final int LOG_LEVEL_WARN = 5;
 	public static final int LOG_LEVEL_ERROR = 6;
 	private static final Object LOG_LOCK = new Object();
+	private static final Object LOCK = new Object();
 	private static Context mContext;
 	
 	/**
@@ -209,5 +217,56 @@ public final class MIDaaS{
 	 */
 	public static void logVerbose(String tag, String message, Throwable throwable) {
 		log(2, tag, message, throwable);
+	}
+	
+	/**
+	 * Returns an attribute bundle signed by the AVS server 
+	 * for a set of verified attributes.
+	 * @param clientId the client making the request
+	 * @param state the sate parameter if present
+	 * @param attributeBundleMap the attribute map. The key of the map is set as the key in the response
+	 * object
+	 * @param callback callback method provides the response once done. 
+	 * @throws IllegalArgumentException 
+	 */
+	public static void getVerifiedAttributeBundle(final String clientId, final String state, final Map<String, AbstractAttribute<?>> attributeBundleMap, 
+		final VerifiedAttributeBundleCallback callback) throws IllegalArgumentException{
+		if(clientId == null || clientId.isEmpty()) {
+			throw new IllegalArgumentException("Client ID must be provided");
+		}
+		if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
+			throw new IllegalArgumentException("Attribute bundle is null or of size 0");
+		}
+
+		WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
+			
+			@Override
+			public void execute() {
+				AVSServer.bundleVerifiedAttributes(clientId, state, attributeBundleMap, callback); 
+			}
+		});
+	}
+	
+	/**
+	 * 
+	 * Callback interface to get the verified attribute bundle
+	 *
+	 */
+	public static interface VerifiedAttributeBundleCallback {
+		
+		/**
+		 * Called when the verifiedResponse is successfully received
+		 * from the AVS server.
+		 * @param verifiedResponse the base-64 encoded response 
+		 * from the AVS server
+		**/
+		public void onSuccess(String verifiedResponse);
+		
+		/**
+		 * Called when a error occurs either internally or sent
+		 * by the server. 
+		 * @param exception MIDaaSException 
+		 */
+		public void onError(MIDaaSException exception);
 	}
 }

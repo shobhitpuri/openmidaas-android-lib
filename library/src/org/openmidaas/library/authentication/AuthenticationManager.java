@@ -60,6 +60,7 @@ public class AuthenticationManager  {
 	 * @param accessTokenstrategy the access token strategy
 	 */
 	public void setAccessTokenStrategy(AccessTokenStrategy accessTokenstrategy) {
+		mAccessToken = null;
 		mAccessTokenStrategy = accessTokenstrategy;
 	}
 	
@@ -68,6 +69,7 @@ public class AuthenticationManager  {
 	 * @param deviceStrategy  the device authentication strategy
 	 */
 	public void setDeviceAuthenticationStrategy(DeviceAuthenticationStrategy deviceStrategy) {
+		mAccessToken = null;
 		mDeviceAuthStrategy = deviceStrategy;
 	}
 	
