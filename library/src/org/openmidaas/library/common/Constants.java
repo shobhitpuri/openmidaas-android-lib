@@ -32,6 +32,17 @@ public final class Constants {
 	public static final String COMPLETE_AUTH_URL = SERVER_API_VERSION + "/completeAttributeVerification";
 	public static final String REGISTRATION_URL = SERVER_API_VERSION + "/device/register";
 	public static final String BUNDLE_ATTRIBUTES_URL = SERVER_API_VERSION + "/bundleVerifiedAttributes";
+	public static final Object APP_ISSUER_ID = "org.openmidaas.library";
+	public static final class RequestKeys {
+		public static final String CLIENT_ID = "client_id";
+		public static final String STATE = "state";
+	}
+	public static final class AttributeBundleKeys {
+		public static final String ISSUER = "iss";
+		public static final String AUDIENCE = "aud";
+		public static final String ISSUED_AT = "iat";
+		public static final String ATTRIBUTES = "attrs";
+	}
 	public enum ATTRIBUTE_STATE { VERIFIED, PENDING_VERIFICATION, NOT_VERIFIABLE, NOT_VERIFIED, ERROR_IN_SAVE, UNKNOWN };
 	
 	public enum RESERVED_WORDS { email, credit_card, address, subject_token }

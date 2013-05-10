@@ -15,8 +15,12 @@
  ******************************************************************************/
 package org.openmidaas.library;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
 import org.openmidaas.library.authentication.AVSDeviceRegistration;
 import org.openmidaas.library.authentication.AuthenticationManager;
@@ -35,6 +39,7 @@ import org.openmidaas.library.persistence.AttributeDBPersistence;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 import android.content.Context;
+import android.util.Base64;
 import android.util.Log;
 
 /**
@@ -49,7 +54,6 @@ public final class MIDaaS{
 	public static final int LOG_LEVEL_WARN = 5;
 	public static final int LOG_LEVEL_ERROR = 6;
 	private static final Object LOG_LOCK = new Object();
-	private static final Object LOCK = new Object();
 	private static Context mContext;
 	
 	/**
@@ -245,6 +249,51 @@ public final class MIDaaS{
 				AVSServer.bundleVerifiedAttributes(clientId, state, attributeBundleMap, callback); 
 			}
 		});
+	}
+	
+	/**
+	 * Returns a locally created attribute bundle in a JWT format. 
+	 * @param clientId
+	 * @param state
+	 * @param attributeBundleMap
+	 * @return the JWT Base64 encoded or null if something went wrong. 
+	 * @throws IllegalArgumentException
+	 */
+	public static String getAttributeBundle(String clientId, String state, Map<String, AbstractAttribute<?>> attributeBundleMap) throws IllegalArgumentException {
+		if(clientId == null) {
+			throw new IllegalArgumentException("Client ID cannot be null");
+		}
+		if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
+			throw new IllegalArgumentException("Attribute map is either null or empty");
+		}
+		try {
+			JSONObject bundleData = new JSONObject();
+			bundleData.put(Constants.AttributeBundleKeys.ISSUER, Constants.APP_ISSUER_ID);
+			bundleData.put(Constants.AttributeBundleKeys.AUDIENCE, clientId);
+			JSONObject attributes = new JSONObject();
+			for(Map.Entry<String, AbstractAttribute<?>> entry: attributeBundleMap.entrySet()) {
+				if(entry.getValue() == null) { 
+					throw new NullPointerException("Key " + entry.getKey() + " has value null");
+				} else {
+					attributes.put(entry.getKey(), entry.getValue().toString());
+				}
+			}
+			Date now = new Date();
+			bundleData.put(Constants.AttributeBundleKeys.ISSUED_AT, now.getTime()/1000);
+			bundleData.put(Constants.AttributeBundleKeys.ATTRIBUTES, attributes);
+			return (getJWS(bundleData.toString()));
+		} catch(JSONException e) {
+			return null;
+		} catch (UnsupportedEncodingException e) {
+			return null;
+		}
+	}
+	
+	private static String getJWS(String body) throws JSONException, UnsupportedEncodingException {
+		JSONObject header = new JSONObject();
+		header.put("alg", "none");
+		return (Base64.encodeToString(header.toString().getBytes("UTF-8"), Base64.NO_PADDING + Base64.NO_WRAP) + "." + 
+				Base64.encodeToString(body.getBytes("UTF-8"), Base64.NO_PADDING + Base64.NO_WRAP) + ".");
 	}
 	
 	/**

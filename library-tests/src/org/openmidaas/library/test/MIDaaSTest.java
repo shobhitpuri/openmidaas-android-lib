@@ -15,10 +15,14 @@
  ******************************************************************************/
 package org.openmidaas.library.test;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.AuthenticationManager;
@@ -35,6 +39,7 @@ import org.openmidaas.library.test.network.MockVerifiedAttributeBundleRequest;
 import android.content.Context;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.util.Base64;
 
 public class MIDaaSTest extends InstrumentationTestCase {
 	private Context mContext;
@@ -54,7 +59,6 @@ public class MIDaaSTest extends InstrumentationTestCase {
 
 	@SmallTest
 	public void testValidAttributeBundle() {
-
 		mockFactory.setTrasport(new MockVerifiedAttributeBundleRequest(mContext));
 		mockFactory.setFilename("verification_bundle_response.json");
 		ConnectionManager.setNetworkFactory(mockFactory);
@@ -91,7 +95,6 @@ public class MIDaaSTest extends InstrumentationTestCase {
 
 	@SmallTest
 	public void testNullClientId() {
-
 		final CountDownLatch latch = new CountDownLatch(1);
 		Map<String, AbstractAttribute<?>> map = new HashMap<String, AbstractAttribute<?>>();
 		map.put("mock1", new MockAttribute());
@@ -198,6 +201,58 @@ public class MIDaaSTest extends InstrumentationTestCase {
 
 	protected void tearDown() {
 		AuthenticationManager.getInstance().setAccessTokenStrategy(null);
-
+		
 	}
+	
+	@SmallTest
+	public void testAttributeBundle() {
+		Map<String, AbstractAttribute<?>> map = new HashMap<String, AbstractAttribute<?>>();
+		map.put("mock1", new MockAttribute());
+		String bundleAsString = MIDaaS.getAttributeBundle(VALID_CLIENT_ID, null, map);
+		Assert.assertNotNull(bundleAsString);
+		String[] segments = bundleAsString.split("\\.");
+		String header = segments[0];
+		byte[] headerBytes = Base64.decode(header, Base64.NO_PADDING + Base64.NO_WRAP);
+		byte[] bodyBytes = Base64.decode(segments[1], Base64.NO_PADDING + Base64.NO_WRAP);
+		try {
+			String headerAsString = new String(headerBytes, "UTF-8");
+			JSONObject object = new JSONObject(headerAsString);
+			if(!object.getString("alg").equals("none")) {
+				Assert.fail();
+			}
+			String bodyAsString = new String(bodyBytes, "UTF-8");
+			JSONObject bodyObject = new JSONObject(bodyAsString);
+			if(!object.getString("alg").equals("none")) {
+				Assert.fail();
+			}
+			if(!bodyObject.getString("iss").equals("org.openmidaas.library")) {
+				Assert.fail();
+			}
+			if(!bodyObject.getString("aud").equals(VALID_CLIENT_ID)) {
+				Assert.fail();
+			}
+			if(bodyObject.isNull("attrs")) {
+				Assert.fail();
+			}
+			JSONObject attributes = bodyObject.getJSONObject("attrs"); 
+			Iterator<?> keys = attributes.keys();
+			// parsing through the "attrs" field now.
+			while(keys.hasNext()) {
+				String key = (String)keys.next();
+				if(attributes.get(key) != null) {
+					if(!attributes.get(key).equals("MockAttribute")) {
+						Assert.fail();
+					}
+				}
+			}
+		} catch (UnsupportedEncodingException e) {
+			Assert.fail();
+		} catch (JSONException e) {
+			Assert.fail();
+		}
+		
+	}
+
+
+	
 }

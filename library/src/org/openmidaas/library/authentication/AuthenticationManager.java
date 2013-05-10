@@ -90,7 +90,7 @@ public class AuthenticationManager  {
 	 */
 	public synchronized AccessToken getAccessToken() {
 		final CountDownLatch MUTEX = new CountDownLatch(1);
-		if(mAccessToken == null){
+		if(mAccessToken == null || mAccessToken.isExpired()){
 			MIDaaS.logDebug(TAG, "getting a new access token");
 			mAccessTokenStrategy.getAccessToken(new AccessTokenCallback() {
 				@Override
