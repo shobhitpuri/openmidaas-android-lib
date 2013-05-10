@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.openmidaas.library.common.network;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,8 +31,6 @@ import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 
-import android.util.Base64;
-
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class AVSServer {
@@ -48,16 +45,18 @@ public class AVSServer {
 		SERVER_WITH_SSL = val;
 	}
 	
-	public static void getAuthToken(SubjectToken subjectToken, String txnId, AsyncHttpResponseHandler responseHandler) throws JSONException {
+	public static void getAuthToken(SubjectToken subjectToken, String deviceToken, AsyncHttpResponseHandler responseHandler) throws JSONException {
 		if(subjectToken == null) {
+			MIDaaS.logError(TAG, "Subject token is missing");
 			throw new IllegalArgumentException("Subject token is missing");
 		}
-		if(txnId == null) {
-			throw new IllegalArgumentException("Transaction id is missing");
+		if(deviceToken == null || deviceToken.isEmpty()) {
+			MIDaaS.logError(TAG, "Device token is missing");
+			throw new IllegalArgumentException("Device token is missing");
 		}
 		JSONObject data = new JSONObject();
 		data.put("subjectToken", subjectToken.getSignedToken());
-		data.put("deviceToken", txnId);
+		data.put("deviceToken", deviceToken);
 		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.TOKEN_URL, null, data, responseHandler);
 	}
 	
@@ -67,9 +66,13 @@ public class AVSServer {
 	 * @param responseHandler the callback once registration is complete
 	 * @throws JSONException
 	 */
-	public static void registerDevice(String deviceAuthToken,
+	public static void registerDevice(String deviceToken,
 			AsyncHttpResponseHandler responseHandler) throws JSONException {
-		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.REGISTRATION_URL, null, new JSONObject().put("deviceToken", deviceAuthToken), responseHandler);
+		if(deviceToken == null || deviceToken.isEmpty()) {
+			MIDaaS.logError(TAG, "Device token is missing");
+			throw new IllegalArgumentException("Device token is missing");
+		}
+		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.REGISTRATION_URL, null, new JSONObject().put("deviceToken", deviceToken), responseHandler);
 	}
 
 	/**
@@ -82,9 +85,11 @@ public class AVSServer {
 			AsyncHttpResponseHandler responseHandler) throws JSONException {
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
 		if(token == null) {
+			MIDaaS.logError(TAG, "Error getting access token. Access token is null");
 			responseHandler.onFailure(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE), "");
+		} else {
+			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.INIT_AUTH_URL, getBasicAuthHeader(token), attribute.getAttributeAsJSONObject(), responseHandler);
 		}
-		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.INIT_AUTH_URL, getBasicAuthHeader(token), attribute.getAttributeAsJSONObject(), responseHandler);
 	}
 
 	/**
@@ -98,12 +103,14 @@ public class AVSServer {
 			AsyncHttpResponseHandler responseHandler) throws JSONException {
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
 		if(token == null) {
+			MIDaaS.logError(TAG, "Error getting access token. Access token is null");
 			responseHandler.onFailure(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE), "");
+		} else {
+			JSONObject object = attribute.getAttributeAsJSONObject();
+			object.put("code", verificationCode);
+			object.put("verificationToken", attribute.getPendingData());
+			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getBasicAuthHeader(token), object, responseHandler);	
 		}
-		JSONObject object = attribute.getAttributeAsJSONObject();
-		object.put("code", verificationCode);
-		object.put("verificationToken", attribute.getPendingData());
-		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getBasicAuthHeader(token), object, responseHandler);	
 	}
 	/**
 	 * Bundles the attributes for the app. 
@@ -127,10 +134,13 @@ public class AVSServer {
 					if(entry.getValue().getState().equals(ATTRIBUTE_STATE.VERIFIED)) {
 						data.getJSONObject(Constants.AttributeBundleKeys.ATTRIBUTES).put(entry.getKey(), entry.getValue().getSignedToken());
 					} else {
+						MIDaaS.logError(TAG, "Trying to bundle an attribute that's not in a verified state.");
 						callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_STATE_ERROR));
 					}
 				} else {
+					MIDaaS.logError(TAG, "No entry value for the attribute " + entry.getKey());
 					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+					return;
 				}
 			}
 		} catch(JSONException e) {
@@ -138,37 +148,36 @@ public class AVSServer {
 		}
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
 		if(token == null) {
+			MIDaaS.logError(TAG, "Error getting access token. Access token is null");
 			callback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
-		}
-		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.BUNDLE_ATTRIBUTES_URL, getBasicAuthHeader(token), data, new AsyncHttpResponseHandler() {
-			@Override
-			public void onSuccess(String response) { 
-				if(response == null || response.isEmpty()) {
-					callback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
-				} else {
-					callback.onSuccess(response);
+		} else {
+			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.BUNDLE_ATTRIBUTES_URL, getBasicAuthHeader(token), data, new AsyncHttpResponseHandler() {
+				@Override
+				public void onSuccess(String response) { 
+					if(response == null || response.isEmpty()) {
+						MIDaaS.logError(TAG, "Server responded is empty.");
+						callback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+					} else {
+						callback.onSuccess(response);
+					}
 				}
-			}
-			@Override
-			public void onFailure(Throwable e, String response){
-				callback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
-			}
-		});
+				@Override
+				public void onFailure(Throwable e, String response){
+					MIDaaS.logError(TAG, "Server responded with error");
+					callback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
+				}
+			});
+		}
 	}
 	
 	/**
-	 * Helper method to get the basic auth header
+	 * Helper method to get the authorization header
 	 * @param token - the access token
-	 * @return - the HTTP basic auth header
+	 * @return - the HTTP Authorization Bearer header
 	 */
 	private static HashMap<String, String> getBasicAuthHeader(AccessToken token) {
-		try {
-			headers.clear();
-			headers.put("Authorization", "Basic "+Base64.encodeToString(token.toString().getBytes("UTF-8"), Base64.NO_WRAP));
-			return headers;
-		} catch (UnsupportedEncodingException e) {
-			MIDaaS.logError(TAG, e.getMessage());
-		}
+		headers.clear();
+		headers.put("Authorization", "Bearer "+token.toString());
 		return headers;
 	}
 }

@@ -38,6 +38,13 @@ public class AccessToken {
 	
 	private long mExpiry;
 	
+	/* this provides a buffer window for the access token. 
+	 for example, if the expiration time sent by the server is 600 s = 10 m,
+	 the  actual access token expiry variable of this class is set to:
+	 now + (expiry - expiryBufferPercentage*expiry). 
+	*/
+	private static final int EXPIRY_BUFFER_PERCENTAGE = 10;
+	
 	/**
 	 * Creates a new access token object. 
 	 * @param token
@@ -61,8 +68,9 @@ public class AccessToken {
 	}
 	
 	public static AccessToken createAccessToken(String accessToken, int expiry) {
+		double buffer = expiry - (expiry*((EXPIRY_BUFFER_PERCENTAGE)/100.00));
 		long now = getNowInSeconds();
-		long exp = now + expiry;
+		long exp = now + (int)Math.floor(buffer);
 		if(exp <= now) {
 			return null;
 		}

@@ -60,7 +60,7 @@ public class AccessTokenAuthDelegate implements DeviceAuthenticationCallback{
 					MIDaaS.logError(TAG, "multiple subject tokens..error");
 					mCallback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));
 				} else {
-					MIDaaS.logDebug(TAG, "returning new access token");
+					MIDaaS.logDebug(TAG, "fetching access token from the server");
 					try {
 						obtainAccessToken(list.get(0), deviceToken);
 					} catch (JSONException e) {
@@ -86,6 +86,7 @@ public class AccessTokenAuthDelegate implements DeviceAuthenticationCallback{
 			@Override
 			public void onSuccess(String response) { 
 				if(response == null || response.isEmpty()) {
+					MIDaaS.logError(TAG, "Server response is empty.");
 					mCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 				} else {
 					try {
@@ -96,11 +97,16 @@ public class AccessTokenAuthDelegate implements DeviceAuthenticationCallback{
 							if(token != null) {
 								mCallback.onSuccess(token);
 							} else {
+								MIDaaS.logError(TAG, "Error could not create access token");
 								mCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 							}
+						} else {
+							MIDaaS.logError(TAG, "Server response is not what is expected");
+							mCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 						}
 					
 					} catch (JSONException e) {
+						MIDaaS.logError(TAG, "Internal error while parsing server JSON response");
 						mCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 					}
 					
@@ -109,6 +115,7 @@ public class AccessTokenAuthDelegate implements DeviceAuthenticationCallback{
 			}
 			@Override
 			public void onFailure(Throwable e, String response){
+				MIDaaS.logError(TAG, "Server responded with error " + response);
 				mCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 			}
 		});

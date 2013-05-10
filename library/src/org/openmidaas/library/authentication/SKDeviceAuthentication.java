@@ -27,27 +27,42 @@ import com.securekey.accessplatform.AccessPlatformListener;
 
 public class SKDeviceAuthentication implements DeviceAuthenticationStrategy, AccessPlatformListener {
 
+	private final String TAG = "SKDeviceAuthentication";
+	
 	private DeviceAuthenticationCallback mCallback;
 	
 	@Override
 	public void performDeviceAuthentication(
 			DeviceAuthenticationCallback callback) {
 		mCallback = callback;
+		MIDaaS.logDebug(TAG, "Authenticating device...");
 		AccessPlatform accessPlatform = AccessPlatformFactory.getAccessPlatform(MIDaaS.getContext());
 		accessPlatform.authenticateDevice(this);
 	}
 
 	@Override
 	public void requestComplete(String requestType, int status, int subStatus, String transactionId) {
+		MIDaaS.logDebug(TAG, "Authentication response received. ");
 		if(requestType.equals(AccessPlatform.AUTHENTICATE_DEVICE_REQUEST)) {
+			MIDaaS.logDebug(TAG, "Request matches expected response");
 			if(status == AccessPlatform.STATUS_OK && subStatus == AccessPlatform.SUBSTATUS_NO_ERROR) {
-				if(transactionId != null) 
+				MIDaaS.logDebug(TAG, "Response status is OK");
+				if(transactionId != null)  {
+					MIDaaS.logDebug(TAG, "response is not null. calling back.");
+					MIDaaS.logDebug("SKDeviceAuthentication", transactionId);
 					mCallback.onSuccess(transactionId);
-				else 
+				}
+				else {
+					MIDaaS.logError(TAG, "Error authenticating device. Response is null");
 					mCallback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
+				}
 			} else {
+				MIDaaS.logError(TAG, "Error authenticating device. Status is not OK");
 				mCallback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
 			}
+		} else {
+			MIDaaS.logError(TAG, "Error authenticating device. Response type does not match request type");
+			mCallback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
 		}
 	}
 }

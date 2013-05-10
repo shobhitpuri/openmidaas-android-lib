@@ -38,9 +38,10 @@ public class AVSAccessTokenStrategy implements AccessTokenStrategy {
 	
 	@Override
 	public void getAccessToken(AccessTokenCallback callback) {
-		MIDaaS.logDebug(TAG, "authenticationg device with: "  +mDeviceAuthStrategy.getClass().getName());
+		MIDaaS.logDebug(TAG, "Authenticationg device with: "  +mDeviceAuthStrategy.getClass().getName());
 		AccessTokenAuthDelegate authForAccessToken = new AccessTokenAuthDelegate();
 		authForAccessToken.setAccessTokenCallback(callback);
+		MIDaaS.logDebug(TAG, "Starting device authentication");
 		mDeviceAuthStrategy.performDeviceAuthentication(authForAccessToken);
 	}
 }
