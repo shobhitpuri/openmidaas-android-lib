@@ -64,14 +64,19 @@ public class RegistrationAuthDelegate implements DeviceAuthenticationCallback {
 								// if we didn't get the access token, we can get it on-demand at a later time. 
 								if((responseObject.has("accessToken") && !(responseObject.isNull("accessToken"))) 
 										&& (responseObject.has("expiresIn") && !(responseObject.isNull("expiresIn")))) {
+									MIDaaS.logDebug(TAG, "Registration response has an access token.");
 									AccessToken token = AccessToken.createAccessToken(responseObject.getString("accessToken"), responseObject.getInt("expiresIn"));
 									if(token != null) {
+										MIDaaS.logDebug(TAG, "Access token is ok.");
 										AuthenticationManager.getInstance().setAccessToken(token);
 									} else {
+										MIDaaS.logError(TAG, "Access token is null.");
 										mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 									}
 								}
+								MIDaaS.logDebug(TAG, "No access token object in server response. Access token will be created on-demand.");
 							} else {
+								MIDaaS.logError(TAG, "Server response doesn't match expected response");
 								mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 							}
 							mInitCallback.onSuccess();
@@ -96,6 +101,7 @@ public class RegistrationAuthDelegate implements DeviceAuthenticationCallback {
 				}
 			});
 		} catch (JSONException e) {
+			MIDaaS.logError(TAG, "Internal error");
 			MIDaaS.logError(TAG, e.getMessage());
 			mInitCallback.onError(null);
 		}
@@ -104,6 +110,7 @@ public class RegistrationAuthDelegate implements DeviceAuthenticationCallback {
 
 	@Override
 	public void onError(MIDaaSException exception) {
+		MIDaaS.logError(TAG, exception.getError().getErrorMessage());
 		mInitCallback.onError(exception);
 	}
 }
