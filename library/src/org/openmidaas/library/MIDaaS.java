@@ -54,7 +54,6 @@ public final class MIDaaS{
 	public static final int LOG_LEVEL_WARN = 5;
 	public static final int LOG_LEVEL_ERROR = 6;
 	private static final Object LOG_LOCK = new Object();
-	private static final Object LOCK = new Object();
 	private static Context mContext;
 	
 	/**
@@ -261,34 +260,32 @@ public final class MIDaaS{
 	 * @throws IllegalArgumentException
 	 */
 	public static String getAttributeBundle(String clientId, String state, Map<String, AbstractAttribute<?>> attributeBundleMap) throws IllegalArgumentException {
-		synchronized(LOCK) {
-			if(clientId == null) {
-				throw new IllegalArgumentException("Client ID cannot be null");
-			}
-			if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
-				throw new IllegalArgumentException("Attribute map is either null or empty");
-			}
-			try {
-				JSONObject bundleData = new JSONObject();
-				bundleData.put(Constants.AttributeBundleKeys.ISSUER, Constants.APP_ISSUER_ID);
-				bundleData.put(Constants.AttributeBundleKeys.AUDIENCE, clientId);
-				JSONObject attributes = new JSONObject();
-				for(Map.Entry<String, AbstractAttribute<?>> entry: attributeBundleMap.entrySet()) {
-					if(entry.getValue() == null) { 
-						throw new NullPointerException("Key " + entry.getKey() + " has value null");
-					} else {
-						attributes.put(entry.getKey(), entry.getValue().toString());
-					}
+		if(clientId == null) {
+			throw new IllegalArgumentException("Client ID cannot be null");
+		}
+		if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
+			throw new IllegalArgumentException("Attribute map is either null or empty");
+		}
+		try {
+			JSONObject bundleData = new JSONObject();
+			bundleData.put(Constants.AttributeBundleKeys.ISSUER, Constants.APP_ISSUER_ID);
+			bundleData.put(Constants.AttributeBundleKeys.AUDIENCE, clientId);
+			JSONObject attributes = new JSONObject();
+			for(Map.Entry<String, AbstractAttribute<?>> entry: attributeBundleMap.entrySet()) {
+				if(entry.getValue() == null) { 
+					throw new NullPointerException("Key " + entry.getKey() + " has value null");
+				} else {
+					attributes.put(entry.getKey(), entry.getValue().toString());
 				}
-				Date now = new Date();
-				bundleData.put(Constants.AttributeBundleKeys.ISSUED_AT, now.getTime()/1000);
-				bundleData.put(Constants.AttributeBundleKeys.ATTRIBUTES, attributes);
-				return (getJWS(bundleData.toString()));
-			} catch(JSONException e) {
-				return null;
-			} catch (UnsupportedEncodingException e) {
-				return null;
 			}
+			Date now = new Date();
+			bundleData.put(Constants.AttributeBundleKeys.ISSUED_AT, now.getTime()/1000);
+			bundleData.put(Constants.AttributeBundleKeys.ATTRIBUTES, attributes);
+			return (getJWS(bundleData.toString()));
+		} catch(JSONException e) {
+			return null;
+		} catch (UnsupportedEncodingException e) {
+			return null;
 		}
 	}
 	
