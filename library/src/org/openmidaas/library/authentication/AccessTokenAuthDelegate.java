@@ -95,6 +95,7 @@ public class AccessTokenAuthDelegate implements DeviceAuthenticationCallback{
 								&& (accessToken.has("expiresIn") && !(accessToken.isNull("expiresIn")))) {
 							AccessToken token = AccessToken.createAccessToken(accessToken.getString("accessToken"), accessToken.getInt("expiresIn"));
 							if(token != null) {
+								MIDaaS.logDebug(TAG, "got access token: ");
 								mCallback.onSuccess(token);
 							} else {
 								MIDaaS.logError(TAG, "Error could not create access token");

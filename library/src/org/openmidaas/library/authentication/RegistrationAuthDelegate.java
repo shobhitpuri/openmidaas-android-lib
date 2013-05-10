@@ -73,8 +73,9 @@ public class RegistrationAuthDelegate implements DeviceAuthenticationCallback {
 										MIDaaS.logError(TAG, "Access token is null.");
 										mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 									}
+								} else {
+									MIDaaS.logDebug(TAG, "No access token object in server response. Access token will be created on-demand.");
 								}
-								MIDaaS.logDebug(TAG, "No access token object in server response. Access token will be created on-demand.");
 							} else {
 								MIDaaS.logError(TAG, "Server response doesn't match expected response");
 								mInitCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
