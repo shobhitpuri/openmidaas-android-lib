@@ -7,6 +7,7 @@ import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 
 import com.securekey.accessplatform.AccessPlatform;
+import com.securekey.accessplatform.AccessPlatformException;
 import com.securekey.accessplatform.AccessPlatformFactory;
 import com.securekey.accessplatform.AccessPlatformListener;
 
@@ -14,12 +15,24 @@ public class SKDeviceAuthentication implements DeviceAuthenticationStrategy, Acc
 
 	private DeviceAuthenticationCallback mCallback;
 	
+	private final String TAG = "SKDeviceAuthentication";
+	
 	@Override
 	public void performDeviceAuthentication(
 			DeviceAuthenticationCallback callback) {
 		mCallback = callback;
-		AccessPlatform accessPlatform = AccessPlatformFactory.getAccessPlatform(MIDaaS.getContext());
-		accessPlatform.authenticateDevice(this);
+		AccessPlatform accessPlatform;
+		try {
+			accessPlatform = AccessPlatformFactory.getAccessPlatform(MIDaaS.getContext());
+			accessPlatform.authenticateDevice(this);
+		} catch (AccessPlatformException e) {
+			if(e.getMessage() != null)
+				MIDaaS.logError(TAG, e.getMessage());
+			else
+				MIDaaS.logError(TAG, "Authentication error");
+			mCallback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
+		}
+		
 	}
 
 	@Override
