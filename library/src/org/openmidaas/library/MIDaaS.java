@@ -235,23 +235,21 @@ public final class MIDaaS{
 	 * @throws IllegalArgumentException 
 	 */
 	public static void getVerifiedAttributeBundle(final String clientId, final String state, final Map<String, AbstractAttribute<?>> attributeBundleMap, 
-			final VerifiedAttributeBundleCallback callback) throws IllegalArgumentException{
-		synchronized (LOCK) {
-			if(clientId == null || clientId.isEmpty()) {
-				throw new IllegalArgumentException("Client ID must be provided");
-			}
-			if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
-				throw new IllegalArgumentException("Attribute bundle is null or of size 0");
-			}
-
-			WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
-				
-				@Override
-				public void execute() {
-					AVSServer.bundleVerifiedAttributes(clientId, state, attributeBundleMap, callback); 
-				}
-			});
+		final VerifiedAttributeBundleCallback callback) throws IllegalArgumentException{
+		if(clientId == null || clientId.isEmpty()) {
+			throw new IllegalArgumentException("Client ID must be provided");
 		}
+		if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
+			throw new IllegalArgumentException("Attribute bundle is null or of size 0");
+		}
+
+		WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
+			
+			@Override
+			public void execute() {
+				AVSServer.bundleVerifiedAttributes(clientId, state, attributeBundleMap, callback); 
+			}
+		});
 	}
 	
 	/**
