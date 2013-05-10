@@ -56,10 +56,9 @@ public class MIDaaSTest extends InstrumentationTestCase {
 		mockFactory.setTrasport(new MockTransport(mContext));
 		ConnectionManager.setNetworkFactory(mockFactory);
 	}
-	
+
 	@SmallTest
 	public void testValidAttributeBundle() {
-		
 		mockFactory.setTrasport(new MockVerifiedAttributeBundleRequest(mContext));
 		mockFactory.setFilename("verification_bundle_response.json");
 		ConnectionManager.setNetworkFactory(mockFactory);
@@ -68,13 +67,13 @@ public class MIDaaSTest extends InstrumentationTestCase {
 		map.put("mock1", new MockAttribute());
 		try {
 			MIDaaS.getVerifiedAttributeBundle(VALID_CLIENT_ID, STATE, map, new MIDaaS.VerifiedAttributeBundleCallback() {
-				
+
 				@Override
 				public void onSuccess(String verifiedResponse) {
 					mStatus = true;
 					latch.countDown();
 				}
-				
+
 				@Override
 				public void onError(MIDaaSException exception) {
 					mStatus = false;
@@ -93,22 +92,21 @@ public class MIDaaSTest extends InstrumentationTestCase {
 			Assert.fail();
 		}
 	}
-	
+
 	@SmallTest
 	public void testNullClientId() {
-		
 		final CountDownLatch latch = new CountDownLatch(1);
 		Map<String, AbstractAttribute<?>> map = new HashMap<String, AbstractAttribute<?>>();
 		map.put("mock1", new MockAttribute());
 		try {
 			MIDaaS.getVerifiedAttributeBundle(null, STATE, map, new MIDaaS.VerifiedAttributeBundleCallback() {
-				
+
 				@Override
 				public void onSuccess(String verifiedResponse) {
 					mStatus = true;
 					latch.countDown();
 				}
-				
+
 				@Override
 				public void onError(MIDaaSException exception) {
 					mStatus = false;
@@ -118,7 +116,7 @@ public class MIDaaSTest extends InstrumentationTestCase {
 		} catch (IllegalArgumentException e) {
 			mStatus = true;
 			latch.countDown();
-			
+
 		}
 		try {
 			latch.await();
@@ -129,7 +127,7 @@ public class MIDaaSTest extends InstrumentationTestCase {
 			Assert.fail();
 		}
 	}
-	
+
 	@SmallTest
 	public void testNullState() {
 		mockFactory.setTrasport(new MockVerifiedAttributeBundleRequest(mContext));
@@ -140,13 +138,13 @@ public class MIDaaSTest extends InstrumentationTestCase {
 		map.put("mock1", new MockAttribute());
 		try {
 			MIDaaS.getVerifiedAttributeBundle(VALID_CLIENT_ID, null, map, new MIDaaS.VerifiedAttributeBundleCallback() {
-				
+
 				@Override
 				public void onSuccess(String verifiedResponse) {
 					mStatus = true;
 					latch.countDown();
 				}
-				
+
 				@Override
 				public void onError(MIDaaSException exception) {
 					mStatus = false;
@@ -165,7 +163,7 @@ public class MIDaaSTest extends InstrumentationTestCase {
 			Assert.fail();
 		}
 	}
-	
+
 	@SmallTest
 	public void testNullAttributeValueInMap() {
 		final CountDownLatch latch = new CountDownLatch(1);
@@ -173,13 +171,13 @@ public class MIDaaSTest extends InstrumentationTestCase {
 		map.put("mock1", null);
 		try {
 			MIDaaS.getVerifiedAttributeBundle(VALID_CLIENT_ID, STATE, map, new MIDaaS.VerifiedAttributeBundleCallback() {
-				
+
 				@Override
 				public void onSuccess(String verifiedResponse) {
 					mStatus = true;
 					latch.countDown();
 				}
-				
+
 				@Override
 				public void onError(MIDaaSException exception) {
 					mStatus = false;
@@ -192,7 +190,7 @@ public class MIDaaSTest extends InstrumentationTestCase {
 		try {
 			latch.await();
 			if(!mStatus) {
-				
+
 			} else {
 				Assert.fail();
 			}
@@ -200,7 +198,7 @@ public class MIDaaSTest extends InstrumentationTestCase {
 			Assert.fail();
 		}
 	}
-	
+
 	protected void tearDown() {
 		AuthenticationManager.getInstance().setAccessTokenStrategy(null);
 		
@@ -255,4 +253,6 @@ public class MIDaaSTest extends InstrumentationTestCase {
 		
 	}
 
+
+	
 }

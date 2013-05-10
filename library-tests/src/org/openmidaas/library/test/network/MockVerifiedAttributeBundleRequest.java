@@ -31,8 +31,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class MockVerifiedAttributeBundleRequest extends MockTransport{
 	
-	//private Context mContext;
-	
 	
 	public MockVerifiedAttributeBundleRequest(Context context) {
 		super(context);
