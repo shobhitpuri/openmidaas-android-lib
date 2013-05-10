@@ -132,7 +132,11 @@ public class AVSServer {
 			for(Map.Entry<String, AbstractAttribute<?>> entry: verifiedAttributeMap.entrySet()) {
 				if(entry.getValue() != null) { 
 					if(entry.getValue().getState().equals(ATTRIBUTE_STATE.VERIFIED)) {
-						data.getJSONObject(Constants.AttributeBundleKeys.ATTRIBUTES).put(entry.getKey(), entry.getValue().getSignedToken());
+						if(entry.getValue().getSignedToken() != null) {
+							data.getJSONObject(Constants.AttributeBundleKeys.ATTRIBUTES).put(entry.getKey(), entry.getValue().getSignedToken());
+						} else {
+							callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+						}
 					} else {
 						MIDaaS.logError(TAG, "Trying to bundle an attribute that's not in a verified state.");
 						callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_STATE_ERROR));
