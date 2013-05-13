@@ -88,7 +88,7 @@ public class AVSServer {
 			MIDaaS.logError(TAG, "Error getting access token. Access token is null");
 			responseHandler.onFailure(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE), "");
 		} else {
-			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.INIT_AUTH_URL, getBasicAuthHeader(token), attribute.getAttributeAsJSONObject(), responseHandler);
+			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.INIT_AUTH_URL, getAuthHeader(token), attribute.getAttributeAsJSONObject(), responseHandler);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class AVSServer {
 			JSONObject object = attribute.getAttributeAsJSONObject();
 			object.put("code", verificationCode);
 			object.put("verificationToken", attribute.getPendingData());
-			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getBasicAuthHeader(token), object, responseHandler);	
+			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getAuthHeader(token), object, responseHandler);	
 		}
 	}
 	/**
@@ -155,7 +155,7 @@ public class AVSServer {
 			MIDaaS.logError(TAG, "Error getting access token. Access token is null");
 			callback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
 		} else {
-			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.BUNDLE_ATTRIBUTES_URL, getBasicAuthHeader(token), data, new AsyncHttpResponseHandler() {
+			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.BUNDLE_ATTRIBUTES_URL, getAuthHeader(token), data, new AsyncHttpResponseHandler() {
 				@Override
 				public void onSuccess(String response) { 
 					if(response == null || response.isEmpty()) {
@@ -179,7 +179,7 @@ public class AVSServer {
 	 * @param token - the access token
 	 * @return - the HTTP Authorization Bearer header
 	 */
-	private static HashMap<String, String> getBasicAuthHeader(AccessToken token) {
+	private static HashMap<String, String> getAuthHeader(AccessToken token) {
 		headers.clear();
 		headers.put("Authorization", "Bearer "+token.toString());
 		return headers;
