@@ -104,7 +104,6 @@ public final class MIDaaS{
 		// we will use a SQLITE database to persist attributes. 
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistence());
 		// set the authentication strategy to level0 device authentication 
-		//AuthenticationManager.getInstance().setDeviceAuthenticationStrategy(new Level0DeviceAuthentication());
 		AuthenticationManager.getInstance().setDeviceAuthenticationStrategy(new SKDeviceAuthentication());
 		// we will use our access token strategy that depends on level 0 device authentication
 		AuthenticationManager.getInstance().setAccessTokenStrategy(new AVSAccessTokenStrategy());
