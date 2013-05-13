@@ -15,20 +15,16 @@
  ******************************************************************************/
 package org.openmidaas.library.authentication;
 
-import java.util.List;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
-import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
 import org.openmidaas.library.authentication.core.AccessToken;
+import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.SubjectToken;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -38,42 +34,26 @@ public class AccessTokenAuthDelegate implements DeviceAuthenticationCallback{
 	
 	private AccessTokenCallback mCallback = null;
 	
+	private SubjectToken mSubjectToken = null;
+	
 	protected AccessTokenAuthDelegate(){}
 	
 	public void setAccessTokenCallback(AccessTokenCallback callback) {
 		mCallback = callback;
 	}
 	
+	public void setSubjectToken(SubjectToken token) {
+		mSubjectToken = token;
+	}
+	
 	@Override
 	public void onSuccess(final String deviceToken) {
-		AttributePersistenceCoordinator.getSubjectToken(new SubjectTokenCallback() {
-			
-			@Override
-			public void onSuccess(List<SubjectToken> list) {
-				MIDaaS.logDebug(TAG, "device authentication successful...");
-				// we now have the device token. With that, we will create an access token. 
-				// the access token is a combination of the device auth token and subject token. 
-				if(list.isEmpty()) {
-					MIDaaS.logError(TAG, "no subject token");
-					mCallback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));
-				} else if(list.size() > 1) {
-					MIDaaS.logError(TAG, "multiple subject tokens..error");
-					mCallback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));
-				} else {
-					MIDaaS.logDebug(TAG, "fetching access token from the server");
-					try {
-						obtainAccessToken(list.get(0), deviceToken);
-					} catch (JSONException e) {
-						
-					}
-				}
-			}
-
-			@Override
-			public void onError(MIDaaSException exception) {
-				mCallback.onError(exception);
-			}
-		});
+		try {
+			obtainAccessToken(mSubjectToken, deviceToken);
+		} catch (JSONException e) {
+			MIDaaS.logError(TAG, e.getMessage());
+			mCallback.onError(new MIDaaSException(MIDaaSError.INTERNAL_LIBRARY_ERROR));
+		}
 	}
 
 	@Override

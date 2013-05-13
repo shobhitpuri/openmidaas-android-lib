@@ -15,10 +15,17 @@
  ******************************************************************************/
 package org.openmidaas.library.authentication;
 
+import java.util.List;
+
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
 import org.openmidaas.library.authentication.core.AccessTokenStrategy;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
+import org.openmidaas.library.model.SubjectToken;
+import org.openmidaas.library.model.core.MIDaaSError;
+import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 
 /**
  * 
@@ -37,11 +44,39 @@ public class AVSAccessTokenStrategy implements AccessTokenStrategy {
 	}
 	
 	@Override
-	public void getAccessToken(AccessTokenCallback callback) {
+	public void getAccessToken(final AccessTokenCallback callback) {
 		MIDaaS.logDebug(TAG, "Authenticationg device with: "  +mDeviceAuthStrategy.getClass().getName());
-		AccessTokenAuthDelegate authForAccessToken = new AccessTokenAuthDelegate();
-		authForAccessToken.setAccessTokenCallback(callback);
-		MIDaaS.logDebug(TAG, "Starting device authentication");
-		mDeviceAuthStrategy.performDeviceAuthentication(authForAccessToken);
+		AttributePersistenceCoordinator.getSubjectToken(new SubjectTokenCallback() {
+			
+			@Override
+			public void onSuccess(List<SubjectToken> list) {
+				MIDaaS.logDebug(TAG, "device authentication successful...");
+				// we now have the device token. With that, we will create an access token. 
+				// the access token is a combination of the device auth token and subject token. 
+				if(list.isEmpty()) {
+					MIDaaS.logError(TAG, "no subject token");
+					callback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));
+				} else if(list.size() > 1) {
+					MIDaaS.logError(TAG, "multiple subject tokens..error");
+					callback.onError(new MIDaaSException(MIDaaSError.DEVICE_REGISTRATION_ERROR));
+				} else {
+					MIDaaS.logDebug(TAG, "fetching access token from the server");
+					
+					AccessTokenAuthDelegate authForAccessToken = new AccessTokenAuthDelegate();
+					authForAccessToken.setAccessTokenCallback(callback);
+					authForAccessToken.setSubjectToken(list.get(0));
+					MIDaaS.logDebug(TAG, "Starting device authentication");
+					mDeviceAuthStrategy.performDeviceAuthentication(authForAccessToken);
+				
+				}
+			}
+
+			@Override
+			public void onError(MIDaaSException exception) {
+				MIDaaS.logError(TAG, exception.getError().getErrorMessage());
+				callback.onError(exception);
+			}
+		});
+		
 	}
 }
