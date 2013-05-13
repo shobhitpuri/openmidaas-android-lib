@@ -44,6 +44,10 @@ public final class Constants {
 		public static final String ISSUED_AT = "iat";
 		public static final String ATTRIBUTES = "attrs";
 	}
+	public static final class AccessTokenKeys {
+		public static final String ACCESS_TOKEN = "accessToken";
+		public static final String EXPIRES_IN = "expiresIn";
+	}
 	public enum ATTRIBUTE_STATE { VERIFIED, PENDING_VERIFICATION, NOT_VERIFIABLE, NOT_VERIFIED, ERROR_IN_SAVE, UNKNOWN };
 	
 	public enum RESERVED_WORDS { email, credit_card, address, subject_token }

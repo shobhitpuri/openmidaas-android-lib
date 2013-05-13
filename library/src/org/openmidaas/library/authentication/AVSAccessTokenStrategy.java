@@ -62,7 +62,7 @@ public class AVSAccessTokenStrategy implements AccessTokenStrategy {
 				} else {
 					MIDaaS.logDebug(TAG, "fetching access token from the server");
 					
-					AccessTokenAuthDelegate authForAccessToken = new AccessTokenAuthDelegate();
+					AuthCallbackForAccessToken authForAccessToken = new AuthCallbackForAccessToken();
 					authForAccessToken.setAccessTokenCallback(callback);
 					authForAccessToken.setSubjectToken(list.get(0));
 					MIDaaS.logDebug(TAG, "Starting device authentication");

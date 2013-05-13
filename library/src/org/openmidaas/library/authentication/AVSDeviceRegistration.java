@@ -52,7 +52,7 @@ public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 					
 					MIDaaS.logDebug(TAG, "Device NOT registered. Registering device.");
 					mInitCallback.onRegistering();
-					RegistrationAuthDelegate deviceAuthCallback = new RegistrationAuthDelegate();
+					AuthCallbackForRegistration deviceAuthCallback = new AuthCallbackForRegistration();
 					deviceAuthCallback.setInitCallback(mInitCallback);
 					mAuthenticationStrategy.performDeviceAuthentication(deviceAuthCallback);
 					

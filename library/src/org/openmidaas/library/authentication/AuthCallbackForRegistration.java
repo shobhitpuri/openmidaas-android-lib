@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
+import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.SubjectToken;
@@ -31,14 +32,21 @@ import org.openmidaas.library.model.core.MIDaaSException;
 import android.os.Build;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
-
-public class RegistrationAuthDelegate implements DeviceAuthenticationCallback {
+/**
+ * 
+ * This class implements the device authentication callback. 
+ * Once the device auth token is obtained, it is sent to the 
+ * server for registration. A subject token is created from the 
+ * response. 
+ *
+ */
+public class AuthCallbackForRegistration implements DeviceAuthenticationCallback {
 	
 	private final String TAG = "RegistrationAuthDelegate";
 	
 	private InitializationCallback mInitCallback;
 	
-	protected RegistrationAuthDelegate(){}
+	protected AuthCallbackForRegistration(){}
 	
 	public void setInitCallback(InitializationCallback callback) {
 		mInitCallback = callback;
@@ -62,10 +70,10 @@ public class RegistrationAuthDelegate implements DeviceAuthenticationCallback {
 								subjectToken.setSignedToken(responseObject.getString("subjectToken"));
 								subjectToken.save();
 								// if we didn't get the access token, we can get it on-demand at a later time. 
-								if((responseObject.has("accessToken") && !(responseObject.isNull("accessToken"))) 
-										&& (responseObject.has("expiresIn") && !(responseObject.isNull("expiresIn")))) {
+								if((responseObject.has(Constants.AccessTokenKeys.ACCESS_TOKEN) && !(responseObject.isNull(Constants.AccessTokenKeys.ACCESS_TOKEN))) 
+										&& (responseObject.has(Constants.AccessTokenKeys.EXPIRES_IN) && !(responseObject.isNull(Constants.AccessTokenKeys.EXPIRES_IN)))) {
 									MIDaaS.logDebug(TAG, "Registration response has an access token.");
-									AccessToken token = AccessToken.createAccessToken(responseObject.getString("accessToken"), responseObject.getInt("expiresIn"));
+									AccessToken token = AccessToken.createAccessToken(responseObject.getString(Constants.AccessTokenKeys.ACCESS_TOKEN), responseObject.getInt(Constants.AccessTokenKeys.EXPIRES_IN));
 									if(token != null) {
 										MIDaaS.logDebug(TAG, "Access token is ok.");
 										AuthenticationManager.getInstance().setAccessToken(token);

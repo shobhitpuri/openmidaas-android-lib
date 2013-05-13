@@ -21,6 +21,7 @@ import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.core.AccessToken;
 import org.openmidaas.library.authentication.core.AccessToken.AccessTokenCallback;
 import org.openmidaas.library.authentication.core.DeviceAuthenticationCallback;
+import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.network.AVSServer;
 import org.openmidaas.library.model.SubjectToken;
 import org.openmidaas.library.model.core.MIDaaSError;
@@ -28,7 +29,14 @@ import org.openmidaas.library.model.core.MIDaaSException;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-public class AccessTokenAuthDelegate implements DeviceAuthenticationCallback{
+/**
+ * 
+ * Class that implements a device authentication callback interface. This class 
+ * gets the device auth token, sends it to the server and creates an access token 
+ * from the response
+ *
+ */
+public class AuthCallbackForAccessToken implements DeviceAuthenticationCallback{
 
 	private final String TAG = "DeviceAuthForAccessToken";
 	
@@ -36,7 +44,7 @@ public class AccessTokenAuthDelegate implements DeviceAuthenticationCallback{
 	
 	private SubjectToken mSubjectToken = null;
 	
-	protected AccessTokenAuthDelegate(){}
+	protected AuthCallbackForAccessToken(){}
 	
 	public void setAccessTokenCallback(AccessTokenCallback callback) {
 		mCallback = callback;
@@ -71,9 +79,10 @@ public class AccessTokenAuthDelegate implements DeviceAuthenticationCallback{
 				} else {
 					try {
 						JSONObject accessToken = new JSONObject(response);
-						if((accessToken.has("accessToken") && !(accessToken.isNull("accessToken"))) 
-								&& (accessToken.has("expiresIn") && !(accessToken.isNull("expiresIn")))) {
-							AccessToken token = AccessToken.createAccessToken(accessToken.getString("accessToken"), accessToken.getInt("expiresIn"));
+						if((accessToken.has(Constants.AccessTokenKeys.ACCESS_TOKEN) && !(accessToken.isNull(Constants.AccessTokenKeys.ACCESS_TOKEN))) 
+								&& (accessToken.has(Constants.AccessTokenKeys.EXPIRES_IN) && !(accessToken.isNull(Constants.AccessTokenKeys.EXPIRES_IN)))) {
+							AccessToken token = AccessToken.createAccessToken(accessToken.getString(Constants.AccessTokenKeys.ACCESS_TOKEN), 
+									accessToken.getInt(Constants.AccessTokenKeys.EXPIRES_IN));
 							if(token != null) {
 								MIDaaS.logDebug(TAG, "got access token: ");
 								mCallback.onSuccess(token);
