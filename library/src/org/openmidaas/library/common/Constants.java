@@ -43,6 +43,15 @@ public final class Constants {
 		public static final String ISSUED_AT = "iat";
 		public static final String ATTRIBUTES = "attrs";
 	}
+	public static final class AVSServerJSONKeys {
+		public static final String DEVICE_TOKEN = "deviceToken";
+		public static final String TYPE = "type";
+		public static final String VALUE = "value";
+		public static final String VERIFICATION_METHOD = "method";
+		public static final String CODE = "code";
+		public static final String VERIFICATION_TOKEN = "verificationToken";
+	}
+	
 	public enum ATTRIBUTE_STATE { VERIFIED, PENDING_VERIFICATION, NOT_VERIFIABLE, NOT_VERIFIED, ERROR_IN_SAVE, UNKNOWN };
 	
 	public enum RESERVED_WORDS { email, credit_card, address, subject_token }
