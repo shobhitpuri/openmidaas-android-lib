@@ -23,7 +23,7 @@ package org.openmidaas.library.model;
 public class AttributeFactory {
 
 	public static EmailAttribute getEmailAttribute() {		
-		return (new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification()));
+		return (new EmailAttribute(new InitializeAttributeVerification(), new CompleteAttributeVerification()));
 	}
 	
 	public static GenericAttributeFactory getGenericAttributeFactory() {
@@ -40,5 +40,9 @@ public class AttributeFactory {
 	
 	public static AddressAttributeFactory getShippingAddressAttributeFactory() {
 		return new AddressAttributeFactory();
+	}
+	
+	public static PhoneAttributeFactory getPhoneAttributeFactory() {
+		return new PhoneAttributeFactory();
 	}
 }

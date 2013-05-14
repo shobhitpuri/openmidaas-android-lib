@@ -29,6 +29,8 @@ import org.openmidaas.library.model.GenericAttribute;
 import org.openmidaas.library.model.GenericAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeNameException;
 import org.openmidaas.library.model.InvalidAttributeValueException;
+import org.openmidaas.library.model.PhoneAttribute;
+import org.openmidaas.library.model.PhoneAttributeFactory;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributeDBPersistence;
@@ -132,6 +134,9 @@ public class AttributeDBPersistenceDelegateTest extends InstrumentationTestCase 
 			CreditCardAttribute cc = CreditCardAttributeFactory.createAttribute();
 			cc.setValue(new CreditCardValue("4485227712981401", "123", "01", "15", "Rob Smith"));
 			cc.save();
+			PhoneAttribute phone = PhoneAttributeFactory.createAttribute();
+			phone.setValue("+14168364188");
+			phone.save();
 			AttributePersistenceCoordinator.getAllAttributes(new AttributeDataCallback() {
 
 				@Override
