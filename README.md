@@ -21,3 +21,4 @@ This project uses other open-source libraries such as:
 * [AsyncHTTPClient](https://github.com/AsyncHttpClient/async-http-client)
 * [Android JUnit Report Test Runner](https://github.com/jsankey/android-junit-report)
 * [JUnit](http://junit.sourceforge.net/) 
+* [libphonenumber](http://code.google.com/p/libphonenumber/)

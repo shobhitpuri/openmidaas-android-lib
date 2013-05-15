@@ -47,6 +47,7 @@ public final class AndroidNetworkTransport implements NetworkTransport {
 					}
 				}
 			}
+			
 			client.post(null, mHostUrl + url, new StringEntity(data.toString()), "application/json", responseHandler);
 		} catch (UnsupportedEncodingException e) {
 			MIDaaS.logError(TAG, e.getMessage());

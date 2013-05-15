@@ -19,12 +19,13 @@ import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.WorkQueueManager;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.persistence.core.AddressDataCallback;
 import org.openmidaas.library.persistence.core.AttributeDataCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 import org.openmidaas.library.persistence.core.CreditCardDataCallback;
 import org.openmidaas.library.persistence.core.EmailDataCallback;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
-import org.openmidaas.library.persistence.core.AddressDataCallback;
+import org.openmidaas.library.persistence.core.PhoneNumberDataCallback;
 import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 
 /**
@@ -89,6 +90,21 @@ public class AttributePersistenceCoordinator {
 			@Override
 			public void execute() {
 				mDelegate.getEmails(callback);
+			}
+		});
+	}
+	
+	/**
+	 * Returns a list of phone numbers from persistence storage
+	 * @param callback
+	 */
+	public static void getPhoneNumbers(final PhoneNumberDataCallback callback) {
+		MIDaaS.logDebug(TAG, "fetching phone numbers");
+		WorkQueueManager.getInstance().addWorkerToQueue(new WorkQueueManager.Worker() {
+			
+			@Override
+			public void execute() {
+				mDelegate.getPhoneNumbers(callback);
 			}
 		});
 	}
