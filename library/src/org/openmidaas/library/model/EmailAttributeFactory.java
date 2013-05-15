@@ -21,7 +21,7 @@ package org.openmidaas.library.model;
 public class EmailAttributeFactory{
 
 	public static EmailAttribute createAttribute() {
-		EmailAttribute emailAttribute = new EmailAttribute(new InitializeEmailVerification(), new CompleteEmailVerification());
+		EmailAttribute emailAttribute = new EmailAttribute(new InitializeAttributeVerification(), new CompleteAttributeVerification());
 		return emailAttribute;
 	}
 }
