@@ -37,7 +37,7 @@ public class WorkQueueManager {
 	private final String TAG = "WorkQueueManager";
 	
 	private BlockingQueue<Worker> workQueue;
-	
+
 	private Thread queueThread = null;
 	
 	private static WorkQueueManager mInstance = null;
