@@ -34,15 +34,10 @@ import org.openmidaas.library.model.core.InitializeVerificationCallback;
  */
 public class EmailAttribute extends AbstractAttribute<String> {
 	
-	/**
-	 * @uml.property  name="tAG"
-	 */
 	private final String TAG = "EmailAttribute";
 	
 	//Credit for REGEX rule: http://www.mkyong.com/regular-expressions/how-to-validate-email-address-with-regular-expression/
-	/**
-	 * @uml.property  name="eMAIL_REGEX_PATTERN"
-	 */
+	
 	private final String EMAIL_REGEX_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"; 
 	

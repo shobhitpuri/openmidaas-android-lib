@@ -29,9 +29,6 @@ import org.openmidaas.library.MIDaaS;
  */
 public class CreditCardValue {
 	
-	/**
-	 * @uml.property  name="tAG"
-	 */
 	private final String TAG = "CreditCardValue";
 	
 	public static final String CARD_NUMBER = "creditCard";
@@ -44,70 +41,27 @@ public class CreditCardValue {
 
 	public static final String CARD_CVV = "cardCvv";
 	
-	/**
-	 * @uml.property  name="mCardNumber"
-	 */
 	private String mCardNumber = null;
 	
-	/**
-	 * @uml.property  name="mExpiryMonth"
-	 */
 	private String mExpiryMonth = null;
 	
-	/**
-	 * @uml.property  name="mExpiryYear"
-	 */
 	private String mExpiryYear = null;
 	
-	/**
-	 * @uml.property  name="mHolderName"
-	 */
 	private String mHolderName = null;
 	
-	/**
-	 * @uml.property  name="mCVV"
-	 */
 	private String mCVV = null;
 	
-	/**
-	 * @author    shobhit
-	 */
-	public static enum CARD_TYPE { /**
-	 * @uml.property  name="vISA"
-	 * @uml.associationEnd  
-	 */
-	VISA, /**
-	 * @uml.property  name="mASTER_CARD"
-	 * @uml.associationEnd  
-	 */
-	MASTER_CARD, /**
-	 * @uml.property  name="aMEX"
-	 * @uml.associationEnd  
-	 */
-	AMEX, /**
-	 * @uml.property  name="dISCOVER"
-	 * @uml.associationEnd  
-	 */
-	DISCOVER, /**
-	 * @uml.property  name="dINERS_CLUB"
-	 * @uml.associationEnd  
-	 */
-	DINERS_CLUB, /**
-	 * @uml.property  name="jCB"
-	 * @uml.associationEnd  
-	 */
-	JCB }
+	public static enum CARD_TYPE { 
+		VISA, 
+		MASTER_CARD, 
+		AMEX, 
+		DISCOVER,
+		DINERS_CLUB,
+		JCB 
+	}
 	
-	/**
-	 * @uml.property  name="mCardTypeMap"
-	 * @uml.associationEnd  qualifier="MASTER_CARD:org.openmidaas.library.model.CreditCardValue$CARD_TYPE java.lang.String"
-	 */
 	private Map<CARD_TYPE, String> mCardTypeMap = new EnumMap<CARD_TYPE, String>(CARD_TYPE.class);
 	
-	/**
-	 * @uml.property  name="mCardType"
-	 * @uml.associationEnd  
-	 */
 	private CARD_TYPE mCardType = null;
 	
 	public CreditCardValue(String creditCardNumber, String cvv, String expiryMonth, String expiryYear, String holderName) {

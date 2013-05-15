@@ -53,57 +53,22 @@ import android.database.sqlite.SQLiteException;
  */
 public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	
-	/**
-	 * @uml.property  name="tAG"
-	 */
 	private final String TAG = "AttributeDBPersistenceDelegate";
 
-	/**
-	 * @uml.property  name="database"
-	 * @uml.associationEnd  
-	 */
 	private SQLiteDatabase database;
 	
-	/**
-	 * @uml.property  name="dbHelper"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private AttributeDBHelper dbHelper;
 	
-	/**
-	 * @uml.property  name="mSubjectTokenBuilder"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private SubjectTokenDBBuilder mSubjectTokenBuilder;
 	
-	/**
-	 * @uml.property  name="mEmailBuilder"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private EmailDBBuilder mEmailBuilder;
 	
-	/**
-	 * @uml.property  name="mGenericBuilder"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private GenericDBBuilder mGenericBuilder;
 	
-	/**
-	 * @uml.property  name="mShippingAddressBuilder"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private AddressDBBuilder mShippingAddressBuilder;
 	
-	/**
-	 * @uml.property  name="mCreditCardDBBuilder"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private CreditCardDBBuilder mCreditCardDBBuilder;
 	
-	/**
-	 * @uml.property  name="mPhoneNumberBuilder"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private PhoneNumberDBBuilder mPhoneNumberBuilder;
 	
 	public AttributeDBPersistence(){

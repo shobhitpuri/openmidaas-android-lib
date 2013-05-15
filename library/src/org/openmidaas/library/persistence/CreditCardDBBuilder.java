@@ -29,9 +29,6 @@ import android.database.Cursor;
 
 public class CreditCardDBBuilder extends AbstractAttributeDBBuilder<CreditCardAttribute>{
 
-	/**
-	 * @uml.property  name="tAG"
-	 */
 	private final String TAG = "CreditCardDBBuilder";
 	
 	@Override

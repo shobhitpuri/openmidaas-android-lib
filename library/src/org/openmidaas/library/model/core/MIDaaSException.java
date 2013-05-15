@@ -19,10 +19,6 @@ public class MIDaaSException extends Exception {
 
 	private static final long serialVersionUID = 3928915108062731435L;
 	
-	/**
-	 * @uml.property  name="mErrorCode"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private MIDaaSError mErrorCode;
 
 	public MIDaaSException(MIDaaSError errorCode) {

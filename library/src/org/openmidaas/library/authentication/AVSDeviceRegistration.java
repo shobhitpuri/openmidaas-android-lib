@@ -37,27 +37,13 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 	
-	/**
-	 * @uml.property  name="tAG"
-	 */
+	
 	private final String TAG = "DeviceRegistration";
 	
-	/**
-	 * @uml.property  name="mAuthenticationStrategy"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private DeviceAuthenticationStrategy mAuthenticationStrategy;
 	
-	/**
-	 * @uml.property  name="mInitCallback"
-	 * @uml.associationEnd  
-	 */
 	private InitializationCallback mInitCallback;
 	
-	/**
-	 * @uml.property  name="deviceToken"
-	 * @uml.associationEnd  
-	 */
 	private SubjectToken deviceToken;
 	
 	public AVSDeviceRegistration() {

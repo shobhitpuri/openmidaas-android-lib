@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.common.network;
 
-public class AndroidNetworkFactory implements NetworkFactory{
+package org.openmidaas.library.persistence.core;
 
-	private String mUrl;
-	
-	public AndroidNetworkFactory(String hostUrl) {
-		mUrl = hostUrl;
-	}
-	
-	@Override
-	public NetworkTransport createTransport() {
-		return (new AndroidNetworkTransport(mUrl));
-	}
+import org.openmidaas.library.model.PhoneAttribute;
+
+/**
+ * 
+ * Returns a list of phone attribute via a callback
+ *
+ */
+public abstract class PhoneNumberDataCallback extends AbstractAttributeDataCallback<PhoneAttribute> {
+
 }

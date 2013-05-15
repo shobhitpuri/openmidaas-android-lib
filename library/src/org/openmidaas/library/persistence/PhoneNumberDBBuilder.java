@@ -17,20 +17,21 @@ package org.openmidaas.library.persistence;
 
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
-import org.openmidaas.library.model.EmailAttribute;
-import org.openmidaas.library.model.EmailAttributeFactory;
 import org.openmidaas.library.model.InvalidAttributeNameException;
 import org.openmidaas.library.model.InvalidAttributeValueException;
+import org.openmidaas.library.model.PhoneAttribute;
+import org.openmidaas.library.model.PhoneAttributeFactory;
+
 import android.database.Cursor;
 
 /**
  * 
- * An email attribute builder that creates an attribute from a cursor. 
+ * A phone attribute builder that creates an attribute from a cursor. 
  *
  */
-public class EmailDBBuilder extends AbstractAttributeDBBuilder<EmailAttribute> {
+public class PhoneNumberDBBuilder extends AbstractAttributeDBBuilder<PhoneAttribute> {
 	
-	private final String TAG = "EmailDBBuilder";
+	private final String TAG = "PhoneDBBuilder";
 	
 	@Override
 	protected void setValue() throws InvalidAttributeValueException {
@@ -38,13 +39,13 @@ public class EmailDBBuilder extends AbstractAttributeDBBuilder<EmailAttribute> {
 	}
 
 	@Override
-	protected EmailAttribute buildFromCursor(Cursor cursor) throws InvalidAttributeNameException, InvalidAttributeValueException {
-		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(Constants.RESERVED_WORDS.email.toString()))) {
-			MIDaaS.logError(TAG, "Attribute name does not match that present in cursor for type email");
+	protected PhoneAttribute buildFromCursor(Cursor cursor) throws InvalidAttributeNameException, InvalidAttributeValueException {
+		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(Constants.RESERVED_WORDS.phone.toString()))) {
+			MIDaaS.logError(TAG, "Attribute name does not match that present in cursor for type phone");
 			throw new InvalidAttributeNameException("Attribute name does not match that present in cursor");
 		}
 		mCursor = cursor;
-		mAttribute = EmailAttributeFactory.createAttribute();
+		mAttribute = PhoneAttributeFactory.createAttribute();
 		return (getAttribute());
 	}
 }

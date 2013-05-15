@@ -26,9 +26,6 @@ import org.openmidaas.library.MIDaaS;
  */
 public class AddressValue {
 	
-	/**
-	 * @uml.property  name="tAG"
-	 */
 	private final String TAG = "AddressValue";
 	
 	public static final String STREET_ADDRESS = "streetAddress";
@@ -41,34 +38,16 @@ public class AddressValue {
 	
 	public static final String COUNTRY = "country";
 	
-	/**
-	 * @uml.property  name="mStreetAddress"
-	 */
 	private String mStreetAddress;
 	
-	/**
-	 * @uml.property  name="mLocality"
-	 */
 	private String mLocality;
 	
-	/**
-	 * @uml.property  name="mRegion"
-	 */
 	private String mRegion;
 	
-	/**
-	 * @uml.property  name="mPostalCode"
-	 */
 	private String mPostalCode;
 	
-	/**
-	 * @uml.property  name="mCountry"
-	 */
 	private String mCountry;
 	
-	/**
-	 * @uml.property  name="mFormattedAddress"
-	 */
 	private String mFormattedAddress;
 	
 	public AddressValue(String streetAddress, String locality, String region, String postalCode, String country) {

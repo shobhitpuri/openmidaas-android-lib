@@ -31,9 +31,6 @@ import android.provider.Settings.Secure;
  */
 public class Level0DeviceAuthentication implements DeviceAuthenticationStrategy{
 
-	/**
-	 * @uml.property  name="tAG"
-	 */
 	private final String TAG = "Level0DeviceAuthentication";
 	
 	@Override

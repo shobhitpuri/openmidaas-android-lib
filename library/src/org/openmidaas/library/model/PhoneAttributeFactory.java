@@ -13,18 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.common.network;
+package org.openmidaas.library.model;
 
-public class AndroidNetworkFactory implements NetworkFactory{
+public class PhoneAttributeFactory {
 
-	private String mUrl;
-	
-	public AndroidNetworkFactory(String hostUrl) {
-		mUrl = hostUrl;
-	}
-	
-	@Override
-	public NetworkTransport createTransport() {
-		return (new AndroidNetworkTransport(mUrl));
+	public static PhoneAttribute createAttribute() {
+		PhoneAttribute phoneAttribute = new PhoneAttribute(new InitializeAttributeVerification(), new CompleteAttributeVerification());
+		return phoneAttribute;
 	}
 }
