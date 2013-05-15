@@ -30,6 +30,9 @@ import android.database.Cursor;
  */
 public class EmailDBBuilder extends AbstractAttributeDBBuilder<EmailAttribute> {
 	
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "EmailDBBuilder";
 	
 	@Override

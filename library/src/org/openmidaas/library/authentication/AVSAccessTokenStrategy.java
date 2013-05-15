@@ -36,10 +36,21 @@ import org.openmidaas.library.persistence.core.SubjectTokenCallback;
  */
 public class AVSAccessTokenStrategy implements AccessTokenStrategy, DeviceAuthenticationCallback {
 	
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "AVSAccessTokenStrategy";
 
+	/**
+	 * @uml.property  name="mDeviceAuthStrategy"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private DeviceAuthenticationStrategy mDeviceAuthStrategy;
 	
+	/**
+	 * @uml.property  name="mAccessTokenCallback"
+	 * @uml.associationEnd  
+	 */
 	private AccessToken.AccessTokenCallback mAccessTokenCallback;
 	
 	public AVSAccessTokenStrategy() {

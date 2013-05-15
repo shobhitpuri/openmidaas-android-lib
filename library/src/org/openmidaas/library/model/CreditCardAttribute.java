@@ -34,13 +34,34 @@ import org.openmidaas.library.model.core.AbstractAttribute;
  */
 public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 	
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "CreditCardAttribute";
 	// source: http://www.regular-expressions.info/creditcard.html
+	/**
+	 * @uml.property  name="vISA_PATTERN"
+	 */
 	private final String VISA_PATTERN = "^4[0-9]{12}(?:[0-9]{3})?$";
+	/**
+	 * @uml.property  name="mC_PATTERN"
+	 */
 	private final String MC_PATTERN = "^5[1-5][0-9]{14}$";
+	/**
+	 * @uml.property  name="aMEX_PATTERN"
+	 */
 	private final String AMEX_PATTERN = "^3[47][0-9]{13}$";
+	/**
+	 * @uml.property  name="dC_PATTERN"
+	 */
 	private final String DC_PATTERN = "^3(?:0[0-5]|[68][0-9])[0-9]{11}$";
+	/**
+	 * @uml.property  name="dISCOVER_PATTERN"
+	 */
 	private final String DISCOVER_PATTERN = "^6(?:011|5[0-9]{2})[0-9]{12}$";
+	/**
+	 * @uml.property  name="jCB_PATTERN"
+	 */
 	private final String JCB_PATTERN = "^(?:2131|1800|35\\d{3})\\d{11}$";
 	
 	protected CreditCardAttribute() {

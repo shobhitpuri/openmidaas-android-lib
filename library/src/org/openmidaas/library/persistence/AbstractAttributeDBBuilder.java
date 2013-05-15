@@ -32,8 +32,16 @@ import android.database.Cursor;
  */
 public abstract class AbstractAttributeDBBuilder<T extends AbstractAttribute<?>> {
 	
+	/**
+	 * @uml.property  name="mCursor"
+	 * @uml.associationEnd  
+	 */
 	protected Cursor mCursor;
 	
+	/**
+	 * @uml.property  name="mAttribute"
+	 * @uml.associationEnd  
+	 */
 	protected T mAttribute;
 	
 	private void buildCommon() {

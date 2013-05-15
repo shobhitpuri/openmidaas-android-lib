@@ -17,6 +17,9 @@ package org.openmidaas.library.common.network;
 
 public class AndroidNetworkFactory implements NetworkFactory{
 
+	/**
+	 * @uml.property  name="mUrl"
+	 */
 	private String mUrl;
 	
 	public AndroidNetworkFactory(String hostUrl) {

@@ -28,14 +28,32 @@ import org.openmidaas.library.model.core.MIDaaSException;
 
 public class AuthenticationManager  {
 
+	/**
+	 * @uml.property  name="aCCESS_TOKEN_TIMEOUT_MS"
+	 */
 	private final int ACCESS_TOKEN_TIMEOUT_MS = 1000;
 	
+	/**
+	 * @uml.property  name="mAccessToken"
+	 * @uml.associationEnd  
+	 */
 	private AccessToken mAccessToken;
 	
+	/**
+	 * @uml.property  name="mAccessTokenStrategy"
+	 * @uml.associationEnd  
+	 */
 	private AccessTokenStrategy mAccessTokenStrategy;
 	
+	/**
+	 * @uml.property  name="mDeviceAuthStrategy"
+	 * @uml.associationEnd  
+	 */
 	private DeviceAuthenticationStrategy mDeviceAuthStrategy;
 	
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "AuthenticationManager";
 	
 	private AuthenticationManager() {

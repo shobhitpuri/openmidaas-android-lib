@@ -26,6 +26,9 @@ import android.database.Cursor;
 
 public class SubjectTokenDBBuilder extends AbstractAttributeDBBuilder<SubjectToken> {
 
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "SubjectTokenDBBuilder";
 	
 	@Override

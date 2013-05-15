@@ -30,6 +30,9 @@ import android.database.Cursor;
 
 public class AddressDBBuilder extends AbstractAttributeDBBuilder<AddressAttribute>{
 	
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "AddressDBBuilder";
 
 	@Override

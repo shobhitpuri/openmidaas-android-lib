@@ -27,8 +27,14 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public final class AndroidNetworkTransport implements NetworkTransport {
 
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "AndroidNetworkTransport";
 	
+	/**
+	 * @uml.property  name="mHostUrl"
+	 */
 	private String mHostUrl;
 	
 	protected AndroidNetworkTransport(String hostUrl){

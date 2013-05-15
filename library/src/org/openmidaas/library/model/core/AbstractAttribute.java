@@ -29,24 +29,57 @@ import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 
 public abstract class AbstractAttribute<T> {
 	
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "AbstractAttribute";
 	
+	/**
+	 * @uml.property  name="mId"
+	 */
 	protected long mId = -1;
 	
+	/**
+	 * @uml.property  name="mInitVerificationDelegate"
+	 * @uml.associationEnd  
+	 */
 	protected InitializeAttributeVerificationDelegate mInitVerificationDelegate = null;
 	
+	/**
+	 * @uml.property  name="mCompleteVerificationDelegate"
+	 * @uml.associationEnd  
+	 */
 	protected CompleteAttributeVerificationDelegate mCompleteVerificationDelegate = null;
 	
+	/**
+	 * @uml.property  name="mName"
+	 */
 	protected String mName;
 	
+	/**
+	 * @uml.property  name="mValue"
+	 */
 	protected T mValue;
 	
+	/**
+	 * @uml.property  name="mLabel"
+	 */
 	private String mLabel = null;
 	
+	/**
+	 * @uml.property  name="mSignedToken"
+	 */
 	protected String mSignedToken = null;
 	
+	/**
+	 * @uml.property  name="mPendingData"
+	 */
 	protected String mPendingData = null;
 	
+	/**
+	 * @uml.property  name="mState"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	protected ATTRIBUTE_STATE mState = ATTRIBUTE_STATE.NOT_VERIFIABLE;
 	
 	/**

@@ -34,14 +34,27 @@ public class WorkQueueManager {
 
 	private static final long POLL_TIMEOUT_MS = 150;
 	
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "WorkQueueManager";
 	
+	/**
+	 * @uml.property  name="workQueue"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="org.openmidaas.library.common.WorkQueueManager$Worker"
+	 */
 	private BlockingQueue<Worker> workQueue;
 	
+	/**
+	 * @uml.property  name="queueThread"
+	 */
 	private Thread queueThread = null;
 	
 	private static WorkQueueManager mInstance = null;
 	
+	/**
+	 * @uml.property  name="isStopRequested"
+	 */
 	private boolean isStopRequested = false;
 
 	private WorkQueueManager() {

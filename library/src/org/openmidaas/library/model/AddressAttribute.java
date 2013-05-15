@@ -27,6 +27,9 @@ import org.openmidaas.library.model.core.AbstractAttribute;
  */
 public class AddressAttribute extends AbstractAttribute<AddressValue> {
 	
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "AddressAttribute";
 	
 	protected AddressAttribute() {

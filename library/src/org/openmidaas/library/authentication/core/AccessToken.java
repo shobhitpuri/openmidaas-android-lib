@@ -35,8 +35,14 @@ public class AccessToken {
 		public void onError(MIDaaSException exception);
 	}
 	
+	/**
+	 * @uml.property  name="mToken"
+	 */
 	private String mToken;
 	
+	/**
+	 * @uml.property  name="mExpiry"
+	 */
 	private Date mExpiry;
 	
 	/**

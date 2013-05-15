@@ -26,8 +26,14 @@ import android.database.Cursor;
 
 public class GenericDBBuilder extends AbstractAttributeDBBuilder<GenericAttribute>{
 	
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "GenericDBBuilder";
 	
+	/**
+	 * @uml.property  name="mName"
+	 */
 	private String mName;
 	
 	protected GenericDBBuilder() {

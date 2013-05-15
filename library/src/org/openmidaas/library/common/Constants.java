@@ -43,9 +43,59 @@ public final class Constants {
 		public static final String ISSUED_AT = "iat";
 		public static final String ATTRIBUTES = "attrs";
 	}
-	public enum ATTRIBUTE_STATE { VERIFIED, PENDING_VERIFICATION, NOT_VERIFIABLE, NOT_VERIFIED, ERROR_IN_SAVE, UNKNOWN };
+	/**
+	 * @author    shobhit
+	 */
+	public enum ATTRIBUTE_STATE { /**
+	 * @uml.property  name="vERIFIED"
+	 * @uml.associationEnd  
+	 */
+	VERIFIED, /**
+	 * @uml.property  name="pENDING_VERIFICATION"
+	 * @uml.associationEnd  
+	 */
+	PENDING_VERIFICATION, /**
+	 * @uml.property  name="nOT_VERIFIABLE"
+	 * @uml.associationEnd  
+	 */
+	NOT_VERIFIABLE, /**
+	 * @uml.property  name="nOT_VERIFIED"
+	 * @uml.associationEnd  
+	 */
+	NOT_VERIFIED, /**
+	 * @uml.property  name="eRROR_IN_SAVE"
+	 * @uml.associationEnd  
+	 */
+	ERROR_IN_SAVE, /**
+	 * @uml.property  name="uNKNOWN"
+	 * @uml.associationEnd  
+	 */
+	UNKNOWN };
 	
-	public enum RESERVED_WORDS { email, credit_card, address, subject_token, phone }
+	/**
+	 * @author    shobhit
+	 */
+	public enum RESERVED_WORDS { /**
+	 * @uml.property  name="email"
+	 * @uml.associationEnd  
+	 */
+	email, /**
+	 * @uml.property  name="credit_card"
+	 * @uml.associationEnd  
+	 */
+	credit_card, /**
+	 * @uml.property  name="address"
+	 * @uml.associationEnd  
+	 */
+	address, /**
+	 * @uml.property  name="subject_token"
+	 * @uml.associationEnd  
+	 */
+	subject_token, /**
+	 * @uml.property  name="phone"
+	 * @uml.associationEnd  
+	 */
+	phone }
 	private static List<String> mReservedWordsAsString = new ArrayList<String>();
 	static {
 		mReservedWordsAsString.clear();

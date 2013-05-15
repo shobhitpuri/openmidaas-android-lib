@@ -25,6 +25,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class AttributeDBHelper extends SQLiteOpenHelper{
 
+	/**
+	 * @uml.property  name="tAG"
+	 */
 	private final String TAG = "AttributeSQLiteHelper";
 
 	private static AttributeDBHelper mInstance = null;
