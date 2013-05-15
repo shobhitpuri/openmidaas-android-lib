@@ -35,6 +35,7 @@ public class AccessToken {
 		public void onError(MIDaaSException exception);
 	}
 	
+	
 	private String mToken;
 	
 	private Date mExpiry;

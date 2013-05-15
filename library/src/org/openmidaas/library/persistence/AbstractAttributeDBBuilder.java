@@ -33,7 +33,7 @@ import android.database.Cursor;
 public abstract class AbstractAttributeDBBuilder<T extends AbstractAttribute<?>> {
 	
 	protected Cursor mCursor;
-	
+
 	protected T mAttribute;
 	
 	private void buildCommon() {

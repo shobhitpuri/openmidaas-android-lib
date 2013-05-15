@@ -35,7 +35,7 @@ import org.openmidaas.library.persistence.core.SubjectTokenCallback;
  *
  */
 public class AVSAccessTokenStrategy implements AccessTokenStrategy, DeviceAuthenticationCallback {
-	
+
 	private final String TAG = "AVSAccessTokenStrategy";
 
 	private DeviceAuthenticationStrategy mDeviceAuthStrategy;
@@ -45,8 +45,6 @@ public class AVSAccessTokenStrategy implements AccessTokenStrategy, DeviceAuthen
 	public AVSAccessTokenStrategy() {
 		mDeviceAuthStrategy = AuthenticationManager.getInstance().getDeviceAuthenticationStrategy();
 	}
-
-	
 	
 	@Override
 	public void getAccessToken(AccessTokenCallback callback) {

@@ -37,6 +37,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 	
+	
 	private final String TAG = "DeviceRegistration";
 	
 	private DeviceAuthenticationStrategy mAuthenticationStrategy;
