@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
@@ -54,49 +57,12 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 	}
 	
 	/**
-	 * Converts a phone number to E164 format
-	 * @param phoneNumber : Input phone number. It will first check if its a possible number and then convert it.  
-	 * @return	 		  : Phone number in E-164 format
-	 */
-	public String convertToE164Standard(String phoneNumber){
-		String convertedNumber = null;
-		try{
-			if(!phoneNumber.contains("+")){ // If no '+' sign then add one to make it into a format that is expected by function. 
-				phoneNumber = '+'+phoneNumber;
-			}
-			PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-			try {
-				PhoneNumber parsedNumber = phoneUtil.parse(phoneNumber, null); 
-				// Since country code is unknown, so we can make the second parameter null. 
-				// Then input number has to be in some international format with '+' sign(thus we checked for presence of one before) .
-				if(phoneUtil.isPossibleNumber(parsedNumber)){ //check if its a possible number
-					convertedNumber = phoneUtil.format(parsedNumber, PhoneNumberFormat.E164); // convert the number
-					MIDaaS.logDebug(TAG, "Number in E-164 format is: "+convertedNumber);
-					return convertedNumber;
-				}
-				
-			} catch (NumberParseException e) {
-				MIDaaS.logError(TAG, "Following Exception was thrown: " + e.toString());
-			}
-		}catch(NullPointerException e){
-			MIDaaS.logError(TAG, "Following exception was thrown: "+e.toString());
-		}
-		return phoneNumber;
-	}
-	
-	/**
-	 * Gets the number in E-164 format, if the number is possible. 
-	 * Then validates the number.
-	 */
-	@Override
-	public void setValue(String value) throws InvalidAttributeValueException {
-			String convertedValue = convertToE164Standard(value);
-			super.setValue(convertedValue);
-	}
-	
-	/**
-	 * Checks to see if the provided phone number is valid. 
-	 * Whatever user enters if removes all the special characters and then checks whether the entered number is valid. 
+	 * Checks to see if the provided phone number is a possible and valid number.
+	 * @param value: The value of the 'phone' attribute. It highly encouraged to use E-164 format for phone numbers. 
+	 * 				 Format is something like: +<CountryCode><City/AreaCode><LocalNumber>
+	 * 				 For example: +14162223333 number is in valid E164 format for Toronto city in Canada. 
+	 * 				 Here '1' as country code, '416' as area code and 2223333 as 7 digit local number. 
+	 * 				 For more information see: http://en.wikipedia.org/wiki/E.164
 	 */
 	@Override
 	protected boolean validateAttribute(String value) {
@@ -105,29 +71,35 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 		if(value == null || value.isEmpty()) {
 			MIDaaS.logError(TAG, "Phone attribute value is null/empty");
 			return false;
-		}	
-		
-		// Checks if '+' sign is present once in the given phone number string. If not then add it in the beginning. 
-		//If its at the beginning or even somewhere else, then the next step will take care of its validation. 
-		if(!value.contains("+")){
-			value = '+'+value;
 		}
-		
+		//checks if any alphabet is present
+		Pattern pattern = Pattern.compile(".*[a-zA-Z].*");    
+        Matcher mat = pattern.matcher(value);    
+              
+        if(mat.find()){
+        	MIDaaS.logError(TAG, "No alphabets ae allowed in the Phone attribute. Please make sure the number is in standard E-164 format of\"+<CountryCode><City/AreaCode><LocalNumber>\"");
+        	return false;
+        }
 		//Tests whether a phone number matches a valid pattern using libphonenumber library by Google.
 		PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+		
 		try {
-			PhoneNumber parsedNumber = phoneUtil.parse(value, null); 
-			if(phoneUtil.isValidNumber(parsedNumber)){ // takes into account starting digits, length and validates based on the country it belongs 
-				MIDaaS.logDebug(TAG, "Phone Number entered is a valid number.");
-				return true;
+			PhoneNumber parsedNumber = phoneUtil.parse(value, null);
+			//Check if its a possible number. It is faster than doing validation.
+			//It checks the number based on length and other general rules which applies to all types of phone numbers.
+			if(phoneUtil.isPossibleNumber(parsedNumber)){
+				// Validation function checks if it matches a valid pattern. 
+				// It takes into account starting digits, length and validates based on the country it belongs
+				if(phoneUtil.isValidNumber(parsedNumber)){ //  
+					return true;
+				}
 			}
 		} catch (NumberParseException e) {
 			MIDaaS.logError(TAG, "NumberParseException was thrown: " + e.toString());
 		}
-		MIDaaS.logError(TAG, "Phone Number entered is invalid.");
+		MIDaaS.logError(TAG, "Phone Number entered is invalid. Please make sure the number is in standard E-164 format of\"+<CountryCode><City/AreaCode><LocalNumber>\"");
 		return false;
 	}
-	
 	
 	/**
 	 * Starts the phone verification process by sending the phone number to the 
@@ -164,5 +136,37 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 	@Override
 	public void setPendingData(String data) {
 		mPendingData = data;
+	}
+
+	/**
+	 * Converts a phone number to E164 format
+	 * @param phoneNumber : Input phone number. It will first check if its a possible number and then convert it.  
+	 * @return	 		  : Phone number in E-164 format
+	 */
+	protected String convertToE164Standard(String phoneNumber){
+		String convertedNumber = null;
+		PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+		try {
+			PhoneNumber parsedNumber = phoneUtil.parse(phoneNumber, null); 
+			// Since country code is unknown, so we can make the second parameter null. 
+			// Then input number has to be in some international format with '+' sign(thus we checked for presence of one before) .
+			if(phoneUtil.isPossibleNumber(parsedNumber)){ //check if its a possible number
+				convertedNumber = phoneUtil.format(parsedNumber, PhoneNumberFormat.E164); // convert the number
+				return convertedNumber; //return the E164 formatted number
+			}
+			
+		} catch (NumberParseException e) {
+			MIDaaS.logError(TAG, "Following Exception was thrown: " + e.toString());
+		}
+		return phoneNumber; //return original number
+	}
+	
+	@Override
+	public String toString() {
+		if(mValue != null) {
+			return convertToE164Standard(mValue);
+		}
+		MIDaaS.logError(TAG, "Phone number value is null");
+		return "";
 	}
 }
