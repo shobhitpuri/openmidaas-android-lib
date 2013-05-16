@@ -15,10 +15,12 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+
 public class PhoneAttributeFactory {
 
 	public static PhoneAttribute createAttribute() {
 		PhoneAttribute phoneAttribute = new PhoneAttribute(new InitializeAttributeVerification(), new CompleteAttributeVerification());
 		return phoneAttribute;
 	}
+	
 }
