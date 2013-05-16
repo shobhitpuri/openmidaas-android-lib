@@ -15,9 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library.model.core;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
+import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
@@ -46,6 +45,8 @@ public abstract class AbstractAttribute<T> {
 	protected String mSignedToken = null;
 	
 	protected String mPendingData = null;
+	
+	protected String mVerificationMethod = null;
 	
 	protected ATTRIBUTE_STATE mState = ATTRIBUTE_STATE.NOT_VERIFIABLE;
 	
@@ -113,8 +114,12 @@ public abstract class AbstractAttribute<T> {
 	 * @throws UnsupportedOperationException
 	 */
 	public void setPendingData(String data) throws UnsupportedOperationException {
-		MIDaaS.logDebug(TAG, "Cannot set pending data for a unverifiable attribute.");
-		throw new UnsupportedOperationException("Cannot set pending data for a unverifiable attribute.");
+		if(this.mState.equals(Constants.ATTRIBUTE_STATE.NOT_VERIFIABLE)) {
+			MIDaaS.logDebug(TAG, "Cannot set pending data for a unverifiable attribute.");
+			throw new UnsupportedOperationException("Cannot set pending data for a unverifiable attribute.");
+		} else {
+			this.mPendingData = data;
+		}
 	}
 	
 	/**
@@ -150,6 +155,24 @@ public abstract class AbstractAttribute<T> {
 			return mState;
 		}
 		return ATTRIBUTE_STATE.UNKNOWN;
+	}
+	
+	/**
+	 * Set the verification method required by the server for 
+	 * this attribute
+	 * @param method a well defined verification method
+	 */
+	public void setVerificationMethod(String method) {
+		this.mVerificationMethod = method;
+	}
+	
+	/**
+	 * Returns the verification method set for this
+	 * attribute
+	 * @return the verification method
+	 */
+	public String getVerificationMethod() {
+		return mVerificationMethod;
 	}
 	
 	/**
@@ -203,20 +226,13 @@ public abstract class AbstractAttribute<T> {
 		throw new UnsupportedOperationException("Cannot complete verification");
 	}
 	
+	/**
+	 * Removes an attribute from the persistence store. 
+	 * @throws MIDaaSException if an error occured while
+	 * removing the attribute. 
+	 */
 	public void delete() throws MIDaaSException {
 		AttributePersistenceCoordinator.removeAttribute(this);
-	}
-	
-	/**
-	 * Returns an attribute in its JSON representable form.
-	 * @return the attribute in JSON format
-	 * @throws JSONException 
-	 */
-	public JSONObject getAttributeAsJSONObject() throws JSONException {
-		JSONObject attributeObject = new JSONObject();
-		attributeObject.put("type", getName());
-		attributeObject.put("value", getValue());
-		return attributeObject;
 	}
 	
 	@Override
