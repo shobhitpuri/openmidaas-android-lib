@@ -101,9 +101,4 @@ public class EmailAttribute extends AbstractAttribute<String> {
 		});
 		
 	}
-	
-	@Override
-	public void setPendingData(String data) {
-		mPendingData = data;
-	}
 }

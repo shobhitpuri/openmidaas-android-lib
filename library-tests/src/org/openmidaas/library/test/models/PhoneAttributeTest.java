@@ -42,7 +42,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 public class PhoneAttributeTest extends InstrumentationTestCase {
 	private final String TAG = "TestingPhoneAttribute";
 	
-	static PhoneAttribute phoneAttribute; 
+	static PhoneAttribute phoneAttribute;
 	private boolean notificationSuccess = false;
 	private Context mContext;
 	static boolean isInit = false;
@@ -57,6 +57,7 @@ public class PhoneAttributeTest extends InstrumentationTestCase {
 		AuthenticationManager.getInstance().setAccessTokenStrategy(new MockAccessTokenSuccessStrategy());
 		phoneAttribute = PhoneAttributeFactory.createAttribute();
 		phoneAttribute.setValue(validPhoneNumber);
+
 		mockFactory = new MockTransportFactory("init_email_ver_success.json");
 		mockFactory.setTrasport(new MockTransport(mContext));
 		ConnectionManager.setNetworkFactory(mockFactory);
@@ -88,6 +89,7 @@ public class PhoneAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testNullPhoneNumber(){
 		try {
+			MIDaaS.logDebug(TAG, "test setting Null value");
 			phoneAttribute.setValue(null);
 			Assert.fail("Should have thrown InvalidAttributeValueException");
 		} catch (InvalidAttributeValueException e) {
@@ -110,6 +112,13 @@ public class PhoneAttributeTest extends InstrumentationTestCase {
 	}
 	
 	@SmallTest
+	public void testMethodForVerification() {
+		String method = "sms";
+		phoneAttribute.setVerificationMethod(method);
+		Assert.assertEquals(method, phoneAttribute.getVerificationMethod());
+	}
+		
+	@SmallTest
 	public void testEmptyPhoneNumber() {
 		try {
 			phoneAttribute.setValue("");
@@ -122,10 +131,10 @@ public class PhoneAttributeTest extends InstrumentationTestCase {
 	
 	@SmallTest
 	public void testSetInvalidPhoneNumbers() {
-		String [] incorrectPhoneNumber = { "+4168361118", "+A (403) 235 2323" , "   4168364111", "0014168361111", "+1 111 222 1111"};
+		String [] incorrectPhoneNumber = { "+4168361118", "+A (403) 235 2323" , "416-836-4111","(416) 836-4111", "0014168361111", "+1 111 222 1111","+1 (403) 235-READ"};
 		for ( int i = 0; i < incorrectPhoneNumber.length; i++){
 			try {
-				MIDaaS.logDebug(TAG, "testing " + incorrectPhoneNumber[i]);
+				MIDaaS.logDebug(TAG, "Testing " + incorrectPhoneNumber[i]);
 				phoneAttribute.setValue(incorrectPhoneNumber[i]);
 				Assert.fail("Should have thrown InvalidAttributeValueException");
 			} catch (InvalidAttributeValueException e) {
@@ -136,14 +145,14 @@ public class PhoneAttributeTest extends InstrumentationTestCase {
 
 	@SmallTest
 	public void testSetValidPhoneNumbers() {
-		String [] correctPhoneNumber = { "1-416-836-1111", "+1-416-836-1111", "919457011377", "+915812559999", "  61 (08) 9650-5000", "+1.416.836.1111",
-										 "+1 (416) 836 4118" ,"+1/234/567/8901", "+1 (403) 235-READ"};
+		String [] correctPhoneNumber = { "+1-416-836-1111", "+14168361111", "+919457011377", "+91(581) 2559999", "  +61 (08) 9650-5000", "+1.416.836.1111",
+										 "+1 (416) 836 4118" ,"+1/234/567/8901"};
 		for ( int i = 0; i < correctPhoneNumber.length; i++){
 			try {
-				MIDaaS.logDebug(TAG, "testing " + correctPhoneNumber[i]);
+				MIDaaS.logDebug(TAG, "Testing " + correctPhoneNumber[i]);
 				phoneAttribute.setValue(correctPhoneNumber[i]);
-				Assert.assertEquals(phoneAttribute.convertToE164Standard(correctPhoneNumber[i]), phoneAttribute.getValue());
-				
+				MIDaaS.logDebug(TAG, "E164 converted is: "+phoneAttribute.toString());
+				Assert.assertEquals(correctPhoneNumber[i], phoneAttribute.getValue());
 			} catch (InvalidAttributeValueException e) {
 				Assert.fail();
 			}
@@ -154,51 +163,10 @@ public class PhoneAttributeTest extends InstrumentationTestCase {
 	public void testSetPossibleButInvalidPhoneNumber() {
 		String sample = "+1 999 222 9999";
 		try {
+			MIDaaS.logDebug(TAG, "Testing " + sample+" which is a possible but invalid Phone Number");
 			phoneAttribute.setValue(sample);
 			Assert.fail("Should have thrown InvalidAttributeValueException");
 		} catch (InvalidAttributeValueException e) {
-		}
-	}
-	
-	@SmallTest
-	public void testConvertingValidPhoneNumbers() {
-		String [] phoneNumber = { "+1-416-836-2222", "1.416.836.2222", "1/416/836/2222", "1 (416) 836 2222", "1(416)836-2222", "+1 (416) 836-AAAA"};
-		String [] phoneNumberIndia = { "+91-94570-11311", "91.94570.11311", "(91)945 701 1311"};
-		for ( int i = 0; i < phoneNumber.length; i++){
-			try {
-				MIDaaS.logDebug(TAG, "testing " + phoneNumber[i]);
-				String e164Number = phoneAttribute.convertToE164Standard(phoneNumber[i]);
-				Assert.assertEquals(e164Number, "+14168362222");
-			} catch (Exception e) {
-				Assert.fail();
-			}
-		}
-		
-		
-		for ( int i = 0; i < phoneNumberIndia.length; i++){
-			try {
-				MIDaaS.logDebug(TAG, "testing " + phoneNumberIndia[i]);
-				String e164Number = phoneAttribute.convertToE164Standard(phoneNumberIndia[i]);
-				Assert.assertEquals(e164Number, "+919457011311");
-			} catch (Exception e) {
-				Assert.fail();
-			}
-		}
-	}
-	
-	@SmallTest
-	public void testConvertingInvalidPhoneNumbers() {
-		String [] phoneNumber = {"+4168361118" , "+A (403) 235 2323" , "  4168364111", "0014168361111"};
-		for ( int i = 0; i < phoneNumber.length; i++){
-			try {
-				MIDaaS.logDebug(TAG, "testing " + phoneNumber[i]);
-				String e164Number = phoneAttribute.convertToE164Standard(phoneNumber[i]);
-				if(!phoneNumber[i].contains("+"))
-					phoneNumber[i] = '+'+phoneNumber[i];
-				Assert.assertEquals(e164Number, phoneNumber[i]);
-			} catch (Exception e) {
-				Assert.fail("Failure");
-			}
 		}
 	}
 	
