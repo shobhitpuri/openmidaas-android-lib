@@ -25,6 +25,7 @@ import org.openmidaas.library.authentication.AuthenticationManager;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.PhoneAttribute;
+import org.openmidaas.library.model.PhoneAttribute.VERIFICATION_METHOD;
 import org.openmidaas.library.model.PhoneAttributeFactory;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.InitializeVerificationCallback;
@@ -114,7 +115,7 @@ public class PhoneAttributeTest extends InstrumentationTestCase {
 	@SmallTest
 	public void testMethodForVerification() {
 		String method = "sms";
-		phoneAttribute.setVerificationMethod(method);
+		phoneAttribute.setVerificationMethod(VERIFICATION_METHOD.sms.toString());
 		Assert.assertEquals(method, phoneAttribute.getVerificationMethod());
 	}
 		

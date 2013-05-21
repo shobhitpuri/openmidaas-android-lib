@@ -41,6 +41,10 @@ import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 public class PhoneAttribute extends AbstractAttribute<String>{
 	
 	private final String TAG = "PhoneAttribute";
+	
+	public enum VERIFICATION_METHOD{
+		sms, call
+	}
 
 	/**
 	 * Constructs a new phone attribute. A new instance must be
