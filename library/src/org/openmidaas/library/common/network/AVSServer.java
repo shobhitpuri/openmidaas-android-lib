@@ -69,10 +69,12 @@ public class AVSServer {
 	public static void registerDevice(String deviceToken,
 			AsyncHttpResponseHandler responseHandler) throws JSONException {
 		if(deviceToken == null || deviceToken.isEmpty()) {
-			MIDaaS.logError(TAG, "Device token is missing");
-			throw new IllegalArgumentException("Device token is missing");
+			throw new IllegalArgumentException("Device auth token is missing");
 		}
-		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.REGISTRATION_URL, null, new JSONObject().put("deviceToken", deviceToken), responseHandler);
+		if(responseHandler == null) {
+			throw new IllegalArgumentException("Callback is missing");
+		}
+		ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.REGISTRATION_URL, null, new JSONObject().put(Constants.AVSServerJSONKeys.DEVICE_TOKEN, deviceToken), responseHandler);
 	}
 
 	/**
@@ -83,12 +85,22 @@ public class AVSServer {
 	 */
 	public static void startAttributeVerification(AbstractAttribute<?> attribute,
 			AsyncHttpResponseHandler responseHandler) throws JSONException {
+		if(attribute == null) {
+			throw new IllegalArgumentException("Attribute is missing");
+		}
+		if(responseHandler == null) {
+			throw new IllegalArgumentException("Callback is missing");
+		}
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
 		if(token == null) {
 			MIDaaS.logError(TAG, "Error getting access token. Access token is null");
 			responseHandler.onFailure(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE), "");
 		} else {
-			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.INIT_AUTH_URL, getAuthHeader(token), attribute.getAttributeAsJSONObject(), responseHandler);
+			JSONObject postData = getCommonAttributeDataAsJSONObject(attribute);
+			if(attribute.getVerificationMethod() != null && !(attribute.getVerificationMethod().isEmpty())) {
+				postData.put(Constants.AVSServerJSONKeys.VERIFICATION_METHOD, attribute.getVerificationMethod());
+			}
+			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.INIT_AUTH_URL, getAuthHeader(token), postData, responseHandler);
 		}
 	}
 
@@ -101,16 +113,23 @@ public class AVSServer {
 	 */
 	public static void completeAttributeVerification(AbstractAttribute<?> attribute, String verificationCode,
 			AsyncHttpResponseHandler responseHandler) throws JSONException {
+		if(attribute == null) {
+			throw new IllegalArgumentException("Attribute is missing");
+		}
+		if(responseHandler == null) {
+			throw new IllegalArgumentException("Callback is missing");
+		}
 		AccessToken token = AuthenticationManager.getInstance().getAccessToken();
 		if(token == null) {
 			MIDaaS.logError(TAG, "Error getting access token. Access token is null");
 			responseHandler.onFailure(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE), "");
 		} else {
-			JSONObject object = attribute.getAttributeAsJSONObject();
-			object.put("code", verificationCode);
-			object.put("verificationToken", attribute.getPendingData());
-			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getAuthHeader(token), object, responseHandler);	
+			JSONObject postData = getCommonAttributeDataAsJSONObject(attribute);
+			postData.put(Constants.AVSServerJSONKeys.CODE, verificationCode);
+			postData.put(Constants.AVSServerJSONKeys.VERIFICATION_TOKEN, attribute.getPendingData());
+			ConnectionManager.postRequest(SERVER_WITH_SSL, Constants.COMPLETE_AUTH_URL, getAuthHeader(token), postData, responseHandler);		
 		}
+
 	}
 	/**
 	 * Bundles the attributes for the app. 
@@ -183,5 +202,18 @@ public class AVSServer {
 		headers.clear();
 		headers.put("Authorization", "Bearer "+token.toString());
 		return headers;
+	}
+	
+	/**
+	 * Helper method. Returns the type and value of an attribute in a JSON object
+	 * @param attribute the attribute 
+	 * @return JSONObject containing type and value of the attribute
+	 * @throws JSONException 
+	 */
+	private static JSONObject getCommonAttributeDataAsJSONObject(AbstractAttribute<?> attribute) throws JSONException{
+		JSONObject postData = new JSONObject();
+		postData.put(Constants.AVSServerJSONKeys.TYPE, attribute.getName());
+		postData.put(Constants.AVSServerJSONKeys.VALUE, attribute.getValue());
+		return postData;
 	}
 }
