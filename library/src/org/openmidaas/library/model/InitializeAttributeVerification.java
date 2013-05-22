@@ -65,6 +65,7 @@ public class InitializeAttributeVerification implements InitializeAttributeVerif
 							MIDaaS.logError(TAG, e.getError().getErrorMessage());
 							initVerificationCallback.onError(e);
 						}
+						initVerificationCallback.onSuccess();
 						
 					} else {
 						MIDaaS.logError(TAG, "Server returned an empty response.");

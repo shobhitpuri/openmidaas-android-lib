@@ -78,7 +78,7 @@ public class WorkQueueManager {
 	private void startProcessingQueue() {
 		while(!isStopRequested) {
 			try {
-				// wait till the tiemout
+				// wait till the timeout
 				Worker worker = workQueue.poll(POLL_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 				// first check if stop was requested
 				if(isStopRequested) {
