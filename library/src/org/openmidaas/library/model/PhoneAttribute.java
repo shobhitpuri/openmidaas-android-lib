@@ -136,7 +136,7 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 		});
 		
 	}
-	
+
 	@Override
 	public void setPendingData(String data) {
 		mPendingData = data;
