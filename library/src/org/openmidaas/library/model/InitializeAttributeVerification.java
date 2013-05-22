@@ -24,8 +24,6 @@ import org.openmidaas.library.model.core.InitializeVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 
-import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
-
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 /**
@@ -52,21 +50,7 @@ public class InitializeAttributeVerification implements InitializeAttributeVerif
 				public void onSuccess(String response) { 
 					if((!(response.isEmpty())) ) {
 						attribute.setPendingData(response);
-						// it is important that we guarantee that the data is persisted before we return. 
-						try {
-							if(AttributePersistenceCoordinator.saveAttribute(attribute)) {
-								MIDaaS.logDebug(TAG, "Done init attribute verification.");
-								initVerificationCallback.onSuccess();
-							} else {
-								MIDaaS.logError(TAG, "Error saving attribute.");
-								initVerificationCallback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
-							}
-						} catch (MIDaaSException e) {
-							MIDaaS.logError(TAG, e.getError().getErrorMessage());
-							initVerificationCallback.onError(e);
-						}
 						initVerificationCallback.onSuccess();
-						
 					} else {
 						MIDaaS.logError(TAG, "Server returned an empty response.");
 						initVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
