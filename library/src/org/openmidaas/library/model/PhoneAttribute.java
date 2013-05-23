@@ -79,11 +79,12 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 		//checks if any alphabet is present
 		Pattern pattern = Pattern.compile(".*[a-zA-Z].*");    
         Matcher mat = pattern.matcher(value);    
-              
+        
         if(mat.find()){
         	MIDaaS.logError(TAG, "No alphabets ae allowed in the Phone attribute. Please make sure the number is in standard E-164 format of\"+<CountryCode><City/AreaCode><LocalNumber>\"");
         	return false;
         }
+        
 		//Tests whether a phone number matches a valid pattern using libphonenumber library by Google.
 		PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 		
@@ -94,8 +95,13 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 			if(phoneUtil.isPossibleNumber(parsedNumber)){
 				// Validation function checks if it matches a valid pattern. 
 				// It takes into account starting digits, length and validates based on the country it belongs
-				if(phoneUtil.isValidNumber(parsedNumber)){ //  
-					return true;
+				if(phoneUtil.isValidNumber(parsedNumber)){ //
+					if(value.equalsIgnoreCase(convertToE164Standard(value))){
+						return true;
+					}else{
+						MIDaaS.logError(TAG, "Unacceptable Format Error: Phone Number entered is valid but not in expected standard E-164 format.");
+						return false;
+					}
 				}
 			}
 		} catch (NumberParseException e) {
