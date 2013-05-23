@@ -145,9 +145,22 @@ public class PhoneAttributeTest extends InstrumentationTestCase {
 	}
 
 	@SmallTest
-	public void testSetValidPhoneNumbers() {
-		String [] correctPhoneNumber = { "+1-416-836-1111", "+14168361111", "+919457011377", "+91(581) 2559999", "  +61 (08) 9650-5000", "+1.416.836.1111",
-										 "+1 (416) 836 4118" ,"+1/234/567/8901"};
+	public void testSetValidWrongFormatPhoneNumbers() {
+		String [] correctPhoneNumber = { "+1-416-836-1111", "+91(581) 2559999", "  +61 (08) 9650-5000", "+1.416.836.1111", "+1 (416) 836 4118" ,"+1/234/567/8901"};
+		for ( int i = 0; i < correctPhoneNumber.length; i++){
+			try {
+				MIDaaS.logDebug(TAG, "Testing " + correctPhoneNumber[i]);
+				phoneAttribute.setValue(correctPhoneNumber[i]);
+				Assert.fail("Throws invalid attribute exception as though the number is valid but not in E164 format. Value can only be set if in standard E-164 format.");
+			} catch (InvalidAttributeValueException e) {
+				
+			}
+		}
+	}
+	
+	@SmallTest
+	public void testSetValidCorrectFormatPhoneNumbers() {
+		String [] correctPhoneNumber = { "+14168361111", "+919457011377" };
 		for ( int i = 0; i < correctPhoneNumber.length; i++){
 			try {
 				MIDaaS.logDebug(TAG, "Testing " + correctPhoneNumber[i]);
