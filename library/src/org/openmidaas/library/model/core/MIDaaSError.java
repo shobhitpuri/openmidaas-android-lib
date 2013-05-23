@@ -27,6 +27,7 @@ public enum MIDaaSError {
 	ATTRIBUTE_STATE_ERROR(205, "The current attribute state does not match with what is required."),
 	INTERNAL_LIBRARY_ERROR(300, "There an interal error occurred in the library.");
 	
+	
 	private final int mErrorCode;
 	
 	private final String mErrorMessage;

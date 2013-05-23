@@ -57,7 +57,6 @@ public class DeviceRegistrationTest extends InstrumentationTestCase{
 	public void testDeviceRegistrationSuccess() throws Exception {
 		final CountDownLatch mLatch = new CountDownLatch(1);
 		mockFactory.setFilename("device_reg_success.json");
-		mContext.deleteDatabase(mContext.getDatabasePath("attributes.db").toString());
 		// first register the device. 
 		notificationSuccess = false;
 		AuthenticationManager.getInstance().setDeviceAuthenticationStrategy(new Level0DeviceAuthentication());

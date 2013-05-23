@@ -32,6 +32,7 @@ public final class Constants {
 	public static final String COMPLETE_AUTH_URL = SERVER_API_VERSION + "/completeAttributeVerification";
 	public static final String REGISTRATION_URL = SERVER_API_VERSION + "/device/register";
 	public static final String BUNDLE_ATTRIBUTES_URL = SERVER_API_VERSION + "/bundleVerifiedAttributes";
+	public static final String TOKEN_URL = SERVER_API_VERSION + "/authenticate";
 	public static final Object APP_ISSUER_ID = "org.openmidaas.library";
 	public static final class RequestKeys {
 		public static final String CLIENT_ID = "client_id";
@@ -43,7 +44,10 @@ public final class Constants {
 		public static final String ISSUED_AT = "iat";
 		public static final String ATTRIBUTES = "attrs";
 	}
-
+	public static final class AccessTokenKeys {
+		public static final String ACCESS_TOKEN = "accessToken";
+		public static final String EXPIRES_IN = "expiresIn";
+	}
 	public static final class AVSServerJSONKeys {
 		public static final String DEVICE_TOKEN = "deviceToken";
 		public static final String TYPE = "type";
@@ -52,17 +56,10 @@ public final class Constants {
 		public static final String CODE = "code";
 		public static final String VERIFICATION_TOKEN = "verificationToken";
 	}
-	
+
 	public enum ATTRIBUTE_STATE { VERIFIED, PENDING_VERIFICATION, NOT_VERIFIABLE, NOT_VERIFIED, ERROR_IN_SAVE, UNKNOWN };
 
-	public enum RESERVED_WORDS {
-		email, 
-		credit_card, 
-		address, 
-		subject_token,
-		phone 
-	}
-	
+	public enum RESERVED_WORDS { email, credit_card, address, subject_token, phone }
 	private static List<String> mReservedWordsAsString = new ArrayList<String>();
 	static {
 		mReservedWordsAsString.clear();
