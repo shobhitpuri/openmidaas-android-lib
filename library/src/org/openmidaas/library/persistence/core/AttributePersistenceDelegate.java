@@ -32,7 +32,7 @@ public interface AttributePersistenceDelegate extends PersistenceDelegate<Abstra
 	public void getEmails(EmailDataCallback callback);
 
 	/**
-	 * Returns all email attributes in a list via the callback
+	 * Returns all phone attributes in a list via the callback
 	 * @param callback - callback to get a list of phone numbers
 	 */
 	public void getPhoneNumbers(PhoneNumberDataCallback callback);

@@ -47,7 +47,7 @@ import android.util.Log;
  */
 public final class MIDaaS{
 	private static String TAG = "MIDaaS";
-	private static int currentLoggingLevel = 2;
+	private static int currentLoggingLevel = 6;
 	public static final int LOG_LEVEL_VERBOSE = 2;
 	public static final int LOG_LEVEL_DEBUG = 3;
 	public static final int LOG_LEVEL_INFO = 4;

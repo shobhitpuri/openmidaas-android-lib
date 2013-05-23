@@ -95,7 +95,7 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 			if(phoneUtil.isPossibleNumber(parsedNumber)){
 				// Validation function checks if it matches a valid pattern. 
 				// It takes into account starting digits, length and validates based on the country it belongs
-				if(phoneUtil.isValidNumber(parsedNumber)){ //
+				if(phoneUtil.isValidNumber(parsedNumber)){
 					if(value.equalsIgnoreCase(convertToE164Standard(value))){
 						return true;
 					}else{
@@ -153,7 +153,7 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 	 * @param phoneNumber : Input phone number. It will first check if its a possible number and then convert it.  
 	 * @return	 		  : Phone number in E-164 format
 	 */
-	protected String convertToE164Standard(String phoneNumber){
+	private String convertToE164Standard(String phoneNumber){
 		String convertedNumber = null;
 		PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 		try {
