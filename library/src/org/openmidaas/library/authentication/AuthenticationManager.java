@@ -28,8 +28,7 @@ import org.openmidaas.library.model.core.MIDaaSException;
 
 public class AuthenticationManager  {
 
-	
-	private final int ACCESS_TOKEN_TIMEOUT_MS = 1000;
+	private final int ACCESS_TOKEN_TIMEOUT_MS = 15000;
 	
 	private AccessToken mAccessToken;
 	
@@ -80,6 +79,10 @@ public class AuthenticationManager  {
 	 */
 	public DeviceAuthenticationStrategy getDeviceAuthenticationStrategy() {
 		return mDeviceAuthStrategy;
+	}
+	
+	protected void setAccessToken(AccessToken token) {
+		this.mAccessToken = token;
 	}
 	
 	/**

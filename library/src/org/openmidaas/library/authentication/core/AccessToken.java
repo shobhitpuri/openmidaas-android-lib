@@ -17,12 +17,11 @@ package org.openmidaas.library.authentication.core;
 
 import java.util.Date;
 
-import org.openmidaas.library.model.SubjectToken;
 import org.openmidaas.library.model.core.MIDaaSException;
 
 /**
  * 
- * ADT that specifies an access token
+ * Data type for an access token
  *
  */
 
@@ -38,16 +37,23 @@ public class AccessToken {
 	
 	private String mToken;
 	
-	private Date mExpiry;
+	private long mExpiry;
+	
+	/* this provides a buffer window for the access token. 
+	 for example, if the expiration time sent by the server is 600 s = 10 m,
+	 the  actual access token expiry variable of this class is set to:
+	 now + (expiry - expiryBufferPercentage*expiry). 
+	*/
+	private static final int EXPIRY_BUFFER_PERCENTAGE = 10;
 	
 	/**
 	 * Creates a new access token object. 
 	 * @param token
 	 * @param expiry
 	 */
-	private AccessToken(String token, Date expiry){
+	private AccessToken(String token, long expiry){
 		this.mToken = token;
-		this.mExpiry = expiry;
+		this.mExpiry = expiry; 
 	}
 	
 	public String getToken() { 
@@ -55,25 +61,33 @@ public class AccessToken {
 	}
 	
 	public boolean isExpired() {
-		Date now = new Date();
-		if(this.mExpiry.compareTo(now) < 0) {
-			return true;
+		long now = getNowInSeconds();
+		if(this.mExpiry > now) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 	
-	/**
-	 * Creates an access token form a subject token and device authentication token 
-	 * @param subjectToken the subject token assigned to the device
-	 * @param deviceAuthenticationToken the device authentication token 
-	 * @return an AccessToken object. 
-	 */
-	public static AccessToken createAccessTokenFromDeviceAttribute(SubjectToken subjectToken, String deviceAuthenticationToken) {
-		return (new AccessToken(subjectToken.getSignedToken()+":"+deviceAuthenticationToken, new Date(Long.MAX_VALUE)));
+	public static AccessToken createAccessToken(String accessToken, int expiry) {
+		double buffer = expiry - (expiry*((EXPIRY_BUFFER_PERCENTAGE)/100.00));
+		long now = getNowInSeconds();
+		long exp = now + (int)Math.floor(buffer);
+		if(exp <= now) {
+			return null;
+		}
+		if(accessToken == null || accessToken.isEmpty()) {
+			return null;
+		}
+		return (new AccessToken(accessToken , exp));
 	}
 	
 	@Override
 	public String toString() {
 		return getToken();
+	}
+	
+	private static long getNowInSeconds() {
+		Date now = new Date();
+		return (now.getTime()/1000);
 	}
 }
