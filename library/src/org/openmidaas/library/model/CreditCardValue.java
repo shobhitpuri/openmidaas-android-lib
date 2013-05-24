@@ -51,7 +51,14 @@ public class CreditCardValue {
 	
 	private String mCVV = null;
 	
-	public static enum CARD_TYPE { VISA, MASTER_CARD, AMEX, DISCOVER, DINERS_CLUB, JCB }
+	public static enum CARD_TYPE { 
+		VISA, 
+		MASTER_CARD, 
+		AMEX, 
+		DISCOVER,
+		DINERS_CLUB,
+		JCB 
+	}
 	
 	private Map<CARD_TYPE, String> mCardTypeMap = new EnumMap<CARD_TYPE, String>(CARD_TYPE.class);
 	

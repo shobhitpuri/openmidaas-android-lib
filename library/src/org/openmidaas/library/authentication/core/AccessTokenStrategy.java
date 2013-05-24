@@ -15,8 +15,6 @@
  ******************************************************************************/
 package org.openmidaas.library.authentication.core;
 
-
-
 /**
  * 
  * Implement this interface to specify your own 

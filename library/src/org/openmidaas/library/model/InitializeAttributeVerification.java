@@ -30,9 +30,9 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  * Class that implements the delegate that initializes
  * attribute verification. 
  */
-public class InitializeEmailVerification implements InitializeAttributeVerificationDelegate{
+public class InitializeAttributeVerification implements InitializeAttributeVerificationDelegate{
 
-	private final String TAG = "InitializeEmailVerification";
+	private final String TAG = "InitializeAttributeVerification";
 	
 	/**
 	 * The method calls the server with the provided attribute 
@@ -42,7 +42,7 @@ public class InitializeEmailVerification implements InitializeAttributeVerificat
 	@Override
 	public void startVerification(final AbstractAttribute<?> attribute,
 			final InitializeVerificationCallback initVerificationCallback) {
-		MIDaaS.logDebug(TAG, "Starting email verification");
+		MIDaaS.logDebug(TAG, "Starting attribute verification");
 		try {
 			AVSServer.startAttributeVerification(attribute, new AsyncHttpResponseHandler() {
 				

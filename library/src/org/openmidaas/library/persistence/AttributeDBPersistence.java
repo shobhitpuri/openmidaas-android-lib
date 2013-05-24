@@ -17,25 +17,28 @@ package org.openmidaas.library.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
-import org.openmidaas.library.model.CreditCardAttribute;
-import org.openmidaas.library.model.InvalidAttributeNameException;
 import org.openmidaas.library.model.AddressAttribute;
-import org.openmidaas.library.model.SubjectToken;
+import org.openmidaas.library.model.CreditCardAttribute;
 import org.openmidaas.library.model.EmailAttribute;
 import org.openmidaas.library.model.GenericAttribute;
+import org.openmidaas.library.model.InvalidAttributeNameException;
 import org.openmidaas.library.model.InvalidAttributeValueException;
+import org.openmidaas.library.model.PhoneAttribute;
+import org.openmidaas.library.model.SubjectToken;
 import org.openmidaas.library.model.core.AbstractAttribute;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
+import org.openmidaas.library.persistence.core.AddressDataCallback;
 import org.openmidaas.library.persistence.core.AttributeDataCallback;
 import org.openmidaas.library.persistence.core.AttributePersistenceDelegate;
 import org.openmidaas.library.persistence.core.CreditCardDataCallback;
-import org.openmidaas.library.persistence.core.AddressDataCallback;
-import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 import org.openmidaas.library.persistence.core.EmailDataCallback;
 import org.openmidaas.library.persistence.core.GenericDataCallback;
+import org.openmidaas.library.persistence.core.PhoneNumberDataCallback;
+import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -66,6 +69,8 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	
 	private CreditCardDBBuilder mCreditCardDBBuilder;
 	
+	private PhoneNumberDBBuilder mPhoneNumberBuilder;
+	
 	public AttributeDBPersistence(){
 		dbHelper = AttributeDBHelper.getInstance();
 		mSubjectTokenBuilder = new SubjectTokenDBBuilder();
@@ -73,6 +78,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 		mGenericBuilder = new GenericDBBuilder();
 		mShippingAddressBuilder = new AddressDBBuilder();
 		mCreditCardDBBuilder = new CreditCardDBBuilder();
+		mPhoneNumberBuilder = new PhoneNumberDBBuilder();
 	}
 	
 	@Override
@@ -149,10 +155,15 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 					this.<AddressAttribute>getAttributeFor(Constants.RESERVED_WORDS.address.toString(), this.mShippingAddressBuilder);
 			List<CreditCardAttribute> creditCardList = 
 					this.<CreditCardAttribute>getAttributeFor(Constants.RESERVED_WORDS.credit_card.toString(), this.mCreditCardDBBuilder);
+			List<PhoneAttribute> phoneNumberList = 
+					this.<PhoneAttribute>getAttributeFor(Constants.RESERVED_WORDS.phone.toString(), this.mPhoneNumberBuilder);
 			List<GenericAttribute> genericList = new ArrayList<GenericAttribute>();
+			
 			mList.addAll(emailList);
 			mList.addAll(shippingAddressList);
 			mList.addAll(creditCardList);
+			mList.addAll(phoneNumberList);
+			
 			// get all generic attributes
 			List<String> genericAttributeNames = getAllGenericAttributeNames();
 			for(String name: genericAttributeNames) {
@@ -189,6 +200,25 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 			MIDaaS.logError(TAG, e.getError().getErrorMessage());
 			callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
 		}
+	}
+	
+	@Override
+	public void getPhoneNumbers(PhoneNumberDataCallback callback) {
+		try {
+			List<PhoneAttribute> list = 
+					this.<PhoneAttribute>getAttributeFor(Constants.RESERVED_WORDS.phone.toString(), this.mPhoneNumberBuilder);
+			callback.onSuccess(list);
+		} catch (InvalidAttributeNameException e) {
+			MIDaaS.logError(TAG, e.getMessage());
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_NAME_ERROR));
+		} catch (InvalidAttributeValueException e) {
+			MIDaaS.logError(TAG, e.getMessage());
+			callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+		} catch (MIDaaSException e) {
+			MIDaaS.logError(TAG, e.getError().getErrorMessage());
+			callback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
+		}
+		
 	}
 	
 	@Override
