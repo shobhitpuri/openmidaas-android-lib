@@ -237,6 +237,9 @@ public abstract class AbstractAttribute<T> {
 	
 	@Override
 	public String toString() {
-		return (mValue.toString());
+		if(mValue!=null)
+			return (mValue.toString());
+		MIDaaS.logError(TAG, "Attribute value is null");
+		return "";
 	}
 }
