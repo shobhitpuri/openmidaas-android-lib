@@ -25,7 +25,7 @@ import org.openmidaas.library.authentication.AVSAccessTokenStrategy;
 import org.openmidaas.library.authentication.AVSDeviceRegistration;
 import org.openmidaas.library.authentication.AuthenticationManager;
 import org.openmidaas.library.authentication.DeviceRegistrar;
-import org.openmidaas.library.authentication.Level0DeviceAuthentication;
+import org.openmidaas.library.authentication.SKDeviceAuthentication;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.WorkQueueManager;
 import org.openmidaas.library.common.WorkQueueManager.Worker;
@@ -104,7 +104,7 @@ public final class MIDaaS{
 		// we will use a SQLITE database to persist attributes. 
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistence());
 		// set the authentication strategy to level0 device authentication 
-		AuthenticationManager.getInstance().setDeviceAuthenticationStrategy(new Level0DeviceAuthentication());
+		AuthenticationManager.getInstance().setDeviceAuthenticationStrategy(new SKDeviceAuthentication());
 		// we will use our access token strategy that depends on level 0 device authentication
 		AuthenticationManager.getInstance().setAccessTokenStrategy(new AVSAccessTokenStrategy());
 		logDebug(TAG, "Checking to see if device is registered.");

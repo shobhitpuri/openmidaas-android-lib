@@ -13,6 +13,7 @@ library-tests/lint.xml
 # generated files
 library/bin/
 library/gen/
+library/libs/armeabi/
 library/lint.xml
 library-tests/bin/
 library-tests/gen/
@@ -20,6 +21,7 @@ library-tests/junit-results/
 
 # Local configuration file (sdk path, etc)
 library/local.properties
+library/libs/skaplibOBF-SANDBOX.jar
 library-tests/local.properties
 library-tests/build-custom.xml
 
