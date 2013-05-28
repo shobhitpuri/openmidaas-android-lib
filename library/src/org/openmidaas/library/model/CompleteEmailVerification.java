@@ -23,7 +23,7 @@ import org.openmidaas.library.model.core.CompleteAttributeVerificationDelegate;
 import org.openmidaas.library.model.core.CompleteVerificationCallback;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
-import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 
@@ -51,21 +51,13 @@ public class CompleteEmailVerification implements CompleteAttributeVerificationD
 				
 				@Override
 				public void onSuccess(String response) {
-					MIDaaS.logDebug(TAG, "Attribute verified successfully");
-					attribute.setSignedToken(response);
-					attribute.setPendingData(null);
-					
-					try {
-						if(AttributePersistenceCoordinator.saveAttribute(attribute)) {
-							completeVerificationCallback.onSuccess();
-						} else {
-							MIDaaS.logError(TAG, "Attribute could not be saved");
-							completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.DATABASE_ERROR));
-						}
-						
-					} catch (MIDaaSException e) {
-						MIDaaS.logError(TAG, e.getError().getErrorMessage());
-						completeVerificationCallback.onError(e);
+					if(!(response.isEmpty())) {
+						MIDaaS.logDebug(TAG, "Attribute verified successfully");
+						attribute.setSignedToken(response);
+						attribute.setPendingData(null);
+						completeVerificationCallback.onSuccess();
+					} else {
+						completeVerificationCallback.onError(new MIDaaSException(MIDaaSError.SERVER_ERROR));
 					}
 				}
 				
