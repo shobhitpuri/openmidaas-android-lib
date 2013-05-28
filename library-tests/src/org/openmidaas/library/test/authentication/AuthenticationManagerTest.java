@@ -44,7 +44,7 @@ public class AuthenticationManagerTest  extends InstrumentationTestCase {
 	
 	protected void setUp() throws Exception {
 		mContext = getInstrumentation().getContext();
-		MIDaaS.setContext( getInstrumentation().getContext());	
+		MIDaaS.setContext(mContext);	
 	}
 
 	@SmallTest
