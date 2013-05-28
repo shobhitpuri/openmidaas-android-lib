@@ -68,13 +68,13 @@ public class AccessToken {
 	}
 	
 	public static AccessToken createAccessToken(String accessToken, int expiry) {
+		if(accessToken == null || accessToken.isEmpty()) {
+			return null;
+		}
 		double buffer = expiry - (expiry*((EXPIRY_BUFFER_PERCENTAGE)/100.00));
 		long now = getNowInSeconds();
 		long exp = now + (int)Math.floor(buffer);
 		if(exp <= now) {
-			return null;
-		}
-		if(accessToken == null || accessToken.isEmpty()) {
 			return null;
 		}
 		return (new AccessToken(accessToken , exp));
