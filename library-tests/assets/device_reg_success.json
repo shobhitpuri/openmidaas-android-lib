@@ -1,6 +1,6 @@
 {
 	"http": {
-		"statusCode": "201 Created",
+		"statusCode": "200 Ok",
 		"body":"{\"subjectToken\": \"header.payload.signature\", \"accessToken\": \"some_access_token\", \"expiresIn\": 600}",
 		"headers":[ {
 			"content-type": "application/json"

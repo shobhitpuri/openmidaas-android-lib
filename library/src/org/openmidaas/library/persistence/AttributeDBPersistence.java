@@ -203,7 +203,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	}
 	
 	@Override
-	public void getPhoneNumbers(PhoneNumberDataCallback callback) {
+	public void getPhoneNumbers(final PhoneNumberDataCallback callback) {
 		try {
 			List<PhoneAttribute> list = 
 					this.<PhoneAttribute>getAttributeFor(Constants.RESERVED_WORDS.phone.toString(), this.mPhoneNumberBuilder);

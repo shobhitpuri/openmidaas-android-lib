@@ -70,7 +70,7 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 	 */
 	@Override
 	protected boolean validateAttribute(String value) {
-		
+
 		//Check if Null or empty
 		if(value == null || value.isEmpty()) {
 			MIDaaS.logError(TAG, "Phone attribute value is null/empty");
@@ -96,7 +96,7 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 				// Validation function checks if it matches a valid pattern. 
 				// It takes into account starting digits, length and validates based on the country it belongs
 				if(phoneUtil.isValidNumber(parsedNumber)){
-					if(value.equalsIgnoreCase(convertToE164Standard(value))){
+					if(value.equalsIgnoreCase(phoneUtil.format(parsedNumber, PhoneNumberFormat.E164))){
 						return true;
 					}else{
 						MIDaaS.logError(TAG, "Unacceptable Format Error: Phone Number entered is valid but not in expected standard E-164 format.");
@@ -148,33 +148,10 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 		mPendingData = data;
 	}
 
-	/**
-	 * Converts a phone number to E164 format
-	 * @param phoneNumber : Input phone number. It will first check if its a possible number and then convert it.  
-	 * @return	 		  : Phone number in E-164 format
-	 */
-	private String convertToE164Standard(String phoneNumber){
-		String convertedNumber = null;
-		PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-		try {
-			PhoneNumber parsedNumber = phoneUtil.parse(phoneNumber, null); 
-			// Since country code is unknown, so we can make the second parameter null. 
-			// Then input number has to be in some international format with '+' sign(thus we checked for presence of one before) .
-			if(phoneUtil.isPossibleNumber(parsedNumber)){ //check if its a possible number
-				convertedNumber = phoneUtil.format(parsedNumber, PhoneNumberFormat.E164); // convert the number
-				return convertedNumber; //return the E164 formatted number
-			}
-			
-		} catch (NumberParseException e) {
-			MIDaaS.logError(TAG, "Following Exception was thrown: " + e.toString());
-		}
-		return phoneNumber; //return original number
-	}
-	
 	@Override
 	public String toString() {
-		if(mValue != null) {
-			return convertToE164Standard(mValue);
+		if( (mValue != null) && (!mValue.isEmpty()) ) {
+			return mValue;
 		}
 		MIDaaS.logError(TAG, "Phone number value is null");
 		return "";
