@@ -156,7 +156,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 			List<CreditCardAttribute> creditCardList = 
 					this.<CreditCardAttribute>getAttributeFor(Constants.RESERVED_WORDS.credit_card.toString(), this.mCreditCardDBBuilder);
 			List<PhoneAttribute> phoneNumberList = 
-					this.<PhoneAttribute>getAttributeFor(Constants.RESERVED_WORDS.phone.toString(), this.mPhoneNumberBuilder);
+					this.<PhoneAttribute>getAttributeFor(Constants.RESERVED_WORDS.phone_number.toString(), this.mPhoneNumberBuilder);
 			List<GenericAttribute> genericList = new ArrayList<GenericAttribute>();
 			
 			mList.addAll(emailList);
@@ -206,7 +206,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 	public void getPhoneNumbers(final PhoneNumberDataCallback callback) {
 		try {
 			List<PhoneAttribute> list = 
-					this.<PhoneAttribute>getAttributeFor(Constants.RESERVED_WORDS.phone.toString(), this.mPhoneNumberBuilder);
+					this.<PhoneAttribute>getAttributeFor(Constants.RESERVED_WORDS.phone_number.toString(), this.mPhoneNumberBuilder);
 			callback.onSuccess(list);
 		} catch (InvalidAttributeNameException e) {
 			MIDaaS.logError(TAG, e.getMessage());
