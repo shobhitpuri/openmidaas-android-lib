@@ -102,7 +102,7 @@ public class PhoneAttributeTest extends InstrumentationTestCase {
 	
 	@SmallTest
 	public void testNameAttribute() {
-		Assert.assertEquals("phone", phoneAttribute.getName());
+		Assert.assertEquals("phone_number", phoneAttribute.getName());
 	}
 	
 	@SmallTest

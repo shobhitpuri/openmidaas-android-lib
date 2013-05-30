@@ -54,7 +54,7 @@ public class PhoneAttribute extends AbstractAttribute<String>{
 	 */
 	protected PhoneAttribute(InitializeAttributeVerificationDelegate initPhoneDelegate,
 			CompleteAttributeVerificationDelegate completePhoneDelegate) {
-		mName = Constants.RESERVED_WORDS.phone.toString();
+		mName = Constants.RESERVED_WORDS.phone_number.toString();
 		mInitVerificationDelegate = initPhoneDelegate;
 		mCompleteVerificationDelegate = completePhoneDelegate;
 		mState = ATTRIBUTE_STATE.NOT_VERIFIED;

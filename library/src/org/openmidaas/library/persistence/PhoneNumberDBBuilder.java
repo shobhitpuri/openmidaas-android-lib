@@ -40,7 +40,7 @@ public class PhoneNumberDBBuilder extends AbstractAttributeDBBuilder<PhoneAttrib
 
 	@Override
 	protected PhoneAttribute buildFromCursor(Cursor cursor) throws InvalidAttributeNameException, InvalidAttributeValueException {
-		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(Constants.RESERVED_WORDS.phone.toString()))) {
+		if (!(cursor.getString(cursor.getColumnIndex(AttributesTable.COLUMN_NAME_NAME)).equals(Constants.RESERVED_WORDS.phone_number.toString()))) {
 			MIDaaS.logError(TAG, "Attribute name does not match that present in cursor for type phone");
 			throw new InvalidAttributeNameException("Attribute name does not match that present in cursor");
 		}
