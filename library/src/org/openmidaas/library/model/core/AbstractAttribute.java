@@ -132,7 +132,11 @@ public abstract class AbstractAttribute<T> {
 	
 	public void save() throws MIDaaSException, InvalidAttributeValueException {
 		if(validateAttribute(this.mValue)) {
-			AttributePersistenceCoordinator.saveAttribute(this);
+			boolean isSaved = AttributePersistenceCoordinator.saveAttribute(this);
+			if(!isSaved) {
+				MIDaaS.logDebug(TAG, "Attribute could not be saved. Seems to be an internal database error.");
+				throw new MIDaaSException(MIDaaSError.DATABASE_ERROR);
+			}
 		} else {
 			MIDaaS.logDebug(TAG, "Attribute value could not be set. Check the value you are setting.");
 			throw new InvalidAttributeValueException("Attribute value could not be set. Check the value you are setting.");
