@@ -56,10 +56,10 @@ public final class Constants {
 		public static final String CODE = "code";
 		public static final String VERIFICATION_TOKEN = "verificationToken";
 	}
-	
+
 	public enum ATTRIBUTE_STATE { VERIFIED, PENDING_VERIFICATION, NOT_VERIFIABLE, NOT_VERIFIED, ERROR_IN_SAVE, UNKNOWN };
-	
-	public enum RESERVED_WORDS { email, credit_card, address, subject_token }
+
+	public enum RESERVED_WORDS { email, credit_card, address, subject_token, phone_number }
 	private static List<String> mReservedWordsAsString = new ArrayList<String>();
 	static {
 		mReservedWordsAsString.clear();

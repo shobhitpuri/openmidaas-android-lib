@@ -15,13 +15,12 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-/**
- * Email attribute factory implementation that creates new email attributes. 
- */
-public class EmailAttributeFactory{
 
-	public static EmailAttribute createAttribute() {
-		EmailAttribute emailAttribute = new EmailAttribute(new InitializeAttributeVerification(), new CompleteAttributeVerification());
-		return emailAttribute;
+public class PhoneAttributeFactory {
+
+	public static PhoneAttribute createAttribute() {
+		PhoneAttribute phoneAttribute = new PhoneAttribute(new InitializeAttributeVerification(), new CompleteAttributeVerification());
+		return phoneAttribute;
 	}
+	
 }

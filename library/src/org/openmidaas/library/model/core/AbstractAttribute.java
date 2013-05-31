@@ -192,7 +192,7 @@ public abstract class AbstractAttribute<T> {
 	 * @param value - the attribute value
 	 * @throws InvalidAttributeValueException - if the attribute is invalid
 	 */
-	public final  void setValue(T value) throws InvalidAttributeValueException {
+	public final void setValue(T value) throws InvalidAttributeValueException {
 		if(validateAttribute(value)) {
 			this.mValue = value;
 		} else {
@@ -241,6 +241,9 @@ public abstract class AbstractAttribute<T> {
 	
 	@Override
 	public String toString() {
-		return (mValue.toString());
+		if(mValue!=null)
+			return (mValue.toString());
+		MIDaaS.logError(TAG, "Attribute value is null");
+		return "";
 	}
 }
