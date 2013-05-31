@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
@@ -75,5 +77,25 @@ public class AddressAttribute extends AbstractAttribute<AddressValue> {
 		} 
 		MIDaaS.logError(TAG, "Value is null");
 		return "";
+	}
+
+	@Override
+	public Object getValueAsJSONSerializableObject() {
+		if(this.mValue != null) {
+			JSONObject object = new JSONObject();
+			try {
+				object.put(AddressValue.STREET_ADDRESS, this.mValue.getAddressLine());
+				object.put(AddressValue.STREET_ADDRESS, this.mValue.getAddressLine());
+				object.put(AddressValue.LOCALITY, this.mValue.getLocality());
+				object.put(AddressValue.REGION, this.mValue.getRegion());
+				object.put(AddressValue.POSTAL_CODE, this.mValue.getPostalCode());
+				object.put(AddressValue.COUNTRY, this.mValue.getCountry());
+			} catch (JSONException e) {
+				MIDaaS.logError(TAG, e.getMessage());
+				object = null;
+			}
+			return object;
+		}
+		return null;
 	}
 }

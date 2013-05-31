@@ -25,6 +25,7 @@ import org.openmidaas.library.model.CreditCardValue;
 import org.openmidaas.library.model.InvalidAttributeValueException;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
+
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
@@ -38,7 +39,6 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 	private final String CARD_HOLDER_NAME = "Rob Smith";
 	private final String VALID_CVV = "123";
 	private final String expectedValidCreditCardToString = VALID_CARD_NUMBER + "\n" + VALID_EXPIRY_MONTH + "/" + VALID_EXPIRY_YEAR + "\n" + CARD_HOLDER_NAME;		
-	private CreditCardValue mValue; 
 	private CreditCardAttribute creditCardAttribute;
 	protected void setUp() throws Exception {
 		MIDaaS.setContext(getInstrumentation().getContext());
@@ -168,37 +168,30 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 	}
 	
 	@SmallTest
-	public void testToStringMethodOfCreditCardValue() {
-		mValue = new CreditCardValue(VALID_CARD_NUMBER, VALID_CVV,VALID_EXPIRY_MONTH, VALID_EXPIRY_YEAR, CARD_HOLDER_NAME);
+	public void testNotNullGetAttributeAsJSONObject() {
 		try {
-			JSONObject object = new JSONObject(mValue.toString());
+			createAttribute(new CreditCardValue(VALID_CARD_NUMBER, VALID_CVV, VALID_EXPIRY_MONTH, VALID_EXPIRY_YEAR, CARD_HOLDER_NAME));
+			JSONObject object = (JSONObject) creditCardAttribute.getValueAsJSONSerializableObject();
+			Assert.assertNotNull(object);
 			Assert.assertEquals(VALID_CARD_NUMBER, object.getString(CreditCardValue.CARD_NUMBER));
+			Assert.assertEquals(VALID_CVV, object.getString(CreditCardValue.CARD_CVV));
 			Assert.assertEquals(VALID_EXPIRY_MONTH, object.getString(CreditCardValue.CARD_EXPIRY_MONTH));
 			Assert.assertEquals(VALID_EXPIRY_YEAR, object.getString(CreditCardValue.CARD_EXPIRY_YEAR));
 			Assert.assertEquals(CARD_HOLDER_NAME, object.getString(CreditCardValue.CARD_HOLDER_NAME));
+		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
+		} catch (MIDaaSException e) {
+			Assert.fail();
 		} catch (JSONException e) {
 			Assert.fail();
 		}
 	}
 	
 	@SmallTest
-	public void testToStringMethodWithCVVSet() {
-		try {
-			
-			createAttribute(new CreditCardValue(VALID_CARD_NUMBER, VALID_CVV, VALID_EXPIRY_MONTH, VALID_EXPIRY_YEAR, CARD_HOLDER_NAME));
-			JSONObject object = new JSONObject(creditCardAttribute.getValue().toString());
-			Assert.assertEquals(VALID_CARD_NUMBER, object.getString(CreditCardValue.CARD_NUMBER));
-			Assert.assertEquals(VALID_EXPIRY_MONTH, object.getString(CreditCardValue.CARD_EXPIRY_MONTH));
-			Assert.assertEquals(VALID_EXPIRY_YEAR, object.getString(CreditCardValue.CARD_EXPIRY_YEAR));
-			Assert.assertEquals(CARD_HOLDER_NAME, object.getString(CreditCardValue.CARD_HOLDER_NAME));
-			Assert.assertEquals(VALID_CVV, object.getString(CreditCardValue.CARD_CVV));
-		} catch (JSONException e) {
-			Assert.fail();
-		} catch (InvalidAttributeValueException e) {
-			Assert.fail();
-		} catch (MIDaaSException e) {
-			Assert.fail();
-		}
+	public void testNullGetAttributeAsJSONObject() {
+		CreditCardAttribute creditCardAttribute = CreditCardAttributeFactory.createAttribute();
+		JSONObject object = (JSONObject) creditCardAttribute.getValueAsJSONSerializableObject();
+		Assert.assertNull(object);
 	}
 	
 	

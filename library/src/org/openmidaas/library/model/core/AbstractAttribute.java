@@ -38,7 +38,7 @@ public abstract class AbstractAttribute<T> {
 	
 	protected String mName;
 	
-	protected T mValue;
+	protected T mValue = null;
 	
 	private String mLabel = null;
 	
@@ -232,7 +232,7 @@ public abstract class AbstractAttribute<T> {
 	
 	/**
 	 * Removes an attribute from the persistence store. 
-	 * @throws MIDaaSException if an error occured while
+	 * @throws MIDaaSException if an error occurred while
 	 * removing the attribute. 
 	 */
 	public void delete() throws MIDaaSException {
@@ -242,5 +242,17 @@ public abstract class AbstractAttribute<T> {
 	@Override
 	public String toString() {
 		return (mValue.toString());
+	}
+	
+	/**
+	 * Returns a String or JSONObject depending on whether the class extending 
+	 * this class specifies a String or a custom object as a generic parameter. 
+	 * @return the JSONObject 
+	 */
+	public Object getValueAsJSONSerializableObject() {
+		if(this.mValue != null) {
+			return this.mValue.toString();
+		}
+		return null;
 	}
 }

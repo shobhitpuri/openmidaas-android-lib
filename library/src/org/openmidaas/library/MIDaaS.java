@@ -206,7 +206,7 @@ public final class MIDaaS{
 	
 	/**
 	 * Log - detailed messages
-	 * @param tag
+	 * @param tagthis.mStreetAddress
 	 * @param message
 	 */
 	public static void logVerbose(String tag, String message) {
@@ -275,7 +275,13 @@ public final class MIDaaS{
 				if(entry.getValue() == null) { 
 					throw new NullPointerException("Key " + entry.getKey() + " has value null");
 				} else {
-					attributes.put(entry.getKey(), entry.getValue().toString());
+					Object object = entry.getValue().getValueAsJSONSerializableObject();
+					if(object == null) {
+						return null;
+					}
+					if(object instanceof String || object instanceof JSONObject) {
+						attributes.put(entry.getKey(), object);
+					} 
 				}
 			}
 			Date now = new Date();

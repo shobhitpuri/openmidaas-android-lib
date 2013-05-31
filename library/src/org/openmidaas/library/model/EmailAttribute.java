@@ -99,5 +99,5 @@ public class EmailAttribute extends AbstractAttribute<String> {
 			}
 		});
 		
-	}
+	}	
 }
