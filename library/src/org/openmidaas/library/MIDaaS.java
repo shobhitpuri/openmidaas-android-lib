@@ -276,12 +276,11 @@ public final class MIDaaS{
 					throw new NullPointerException("Key " + entry.getKey() + " has value null");
 				} else {
 					Object object = entry.getValue().getValueAsJSONSerializableObject();
-					if(object == null) {
-						return null;
-					}
 					if(object instanceof String || object instanceof JSONObject) {
 						attributes.put(entry.getKey(), object);
-					} 
+					} else {
+						return null;
+					}
 				}
 			}
 			Date now = new Date();
