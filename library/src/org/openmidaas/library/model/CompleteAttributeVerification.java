@@ -33,9 +33,9 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  * collected via a GUI to the server for verification. 
  * The result is returned via a callback.
  */
-public class CompleteEmailVerification implements CompleteAttributeVerificationDelegate{
+public class CompleteAttributeVerification implements CompleteAttributeVerificationDelegate{
 
-	private final String TAG = "CompleteEmailVerification";
+	private final String TAG = "CompleteAttributeVerification";
 	
 	/**
 	 * This methods is an implementation of the interface that 

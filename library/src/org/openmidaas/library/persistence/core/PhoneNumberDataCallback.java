@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.model;
+
+package org.openmidaas.library.persistence.core;
+
+import org.openmidaas.library.model.PhoneAttribute;
 
 /**
- * Email attribute factory implementation that creates new email attributes. 
+ * 
+ * Returns a list of phone attribute via a callback
+ *
  */
-public class EmailAttributeFactory{
+public abstract class PhoneNumberDataCallback extends AbstractAttributeDataCallback<PhoneAttribute> {
 
-	public static EmailAttribute createAttribute() {
-		EmailAttribute emailAttribute = new EmailAttribute(new InitializeAttributeVerification(), new CompleteAttributeVerification());
-		return emailAttribute;
-	}
 }

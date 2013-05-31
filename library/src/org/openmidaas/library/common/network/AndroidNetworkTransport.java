@@ -42,11 +42,15 @@ public final class AndroidNetworkTransport implements NetworkTransport {
 			AsyncHttpClient client = new AsyncHttpClient();
 			if(headers != null) {
 				if(headers.size() > 0) {
+					MIDaaS.logDebug(TAG, "Headers: ");
+					MIDaaS.logDebug(TAG, "Key: Value");
 					for(String key: headers.keySet()) {
 						client.addHeader(key, headers.get(key));
+						MIDaaS.logDebug(TAG, ""+key+" : "+headers.get(key));
 					}
 				}
 			}
+			MIDaaS.logDebug(TAG, "Data: "+data.toString());
 			client.post(null, mHostUrl + url, new StringEntity(data.toString()), "application/json", responseHandler);
 		} catch (UnsupportedEncodingException e) {
 			MIDaaS.logError(TAG, e.getMessage());

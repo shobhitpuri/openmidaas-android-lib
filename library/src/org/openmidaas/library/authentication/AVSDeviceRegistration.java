@@ -29,6 +29,7 @@ import org.openmidaas.library.persistence.core.SubjectTokenCallback;
 
 public class AVSDeviceRegistration implements DeviceRegistrationDelegate {
 	
+	
 	private final String TAG = "DeviceRegistration";
 	
 	private DeviceAuthenticationStrategy mAuthenticationStrategy;
