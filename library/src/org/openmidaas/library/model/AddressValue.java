@@ -15,9 +15,6 @@
  ******************************************************************************/
 package org.openmidaas.library.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openmidaas.library.MIDaaS;
 
 /**
  * 
@@ -25,8 +22,6 @@ import org.openmidaas.library.MIDaaS;
  *
  */
 public class AddressValue {
-	
-	private final String TAG = "AddressValue";
 	
 	public static final String STREET_ADDRESS = "streetAddress";
 	
@@ -109,21 +104,5 @@ public class AddressValue {
 
 	public void setFormattedAddress(String formattedAddress) {
 		this.mFormattedAddress = formattedAddress;
-	}
-
-	@Override
-	public String toString() {
-		JSONObject object = new JSONObject();
-		try {
-			object.put(STREET_ADDRESS, this.mStreetAddress);
-			object.put(LOCALITY, this.mLocality);
-			object.put(REGION, this.mRegion);
-			object.put(POSTAL_CODE, this.mPostalCode);
-			object.put(COUNTRY, this.mCountry);
-		} catch (JSONException e) {
-			MIDaaS.logError(TAG, e.getMessage());
-			object = null;
-		}
-		return object.toString();	
 	}
 }

@@ -206,7 +206,7 @@ public final class MIDaaS{
 	
 	/**
 	 * Log - detailed messages
-	 * @param tag
+	 * @param tagthis.mStreetAddress
 	 * @param message
 	 */
 	public static void logVerbose(String tag, String message) {
@@ -261,9 +261,11 @@ public final class MIDaaS{
 	 */
 	public static String getAttributeBundle(String clientId, String state, Map<String, AbstractAttribute<?>> attributeBundleMap) throws IllegalArgumentException {
 		if(clientId == null) {
+			MIDaaS.logError(TAG, "Client ID cannot be null");
 			throw new IllegalArgumentException("Client ID cannot be null");
 		}
 		if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
+			MIDaaS.logError(TAG, "Attribute map is either null or empty");
 			throw new IllegalArgumentException("Attribute map is either null or empty");
 		}
 		try {
@@ -273,9 +275,16 @@ public final class MIDaaS{
 			JSONObject attributes = new JSONObject();
 			for(Map.Entry<String, AbstractAttribute<?>> entry: attributeBundleMap.entrySet()) {
 				if(entry.getValue() == null) { 
+					MIDaaS.logError(TAG, "Key " + entry.getKey() + " has value null");
 					throw new NullPointerException("Key " + entry.getKey() + " has value null");
 				} else {
-					attributes.put(entry.getKey(), entry.getValue().toString());
+					Object object = entry.getValue().getValueAsJSONSerializableObject();
+					if(object instanceof String || object instanceof JSONObject) {
+						attributes.put(entry.getKey(), object);
+					} else {
+						MIDaaS.logError(TAG, "attribute method \"getValueAsJSONSerializableObject()\" is not returning an object of instance String or JSONObject");
+						return null;
+					}
 				}
 			}
 			Date now = new Date();
@@ -283,8 +292,10 @@ public final class MIDaaS{
 			bundleData.put(Constants.AttributeBundleKeys.ATTRIBUTES, attributes);
 			return (getJWS(bundleData.toString()));
 		} catch(JSONException e) {
+			MIDaaS.logError(TAG, e.getMessage());
 			return null;
 		} catch (UnsupportedEncodingException e) {
+			MIDaaS.logError(TAG, e.getMessage());
 			return null;
 		}
 	}
