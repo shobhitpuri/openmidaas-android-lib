@@ -16,6 +16,7 @@
 package org.openmidaas.library.test;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +29,7 @@ import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.authentication.AuthenticationManager;
 import org.openmidaas.library.common.network.ConnectionManager;
 import org.openmidaas.library.model.core.AbstractAttribute;
+import org.openmidaas.library.model.core.InitializationCallback;
 import org.openmidaas.library.model.core.MIDaaSException;
 import org.openmidaas.library.persistence.AttributePersistenceCoordinator;
 import org.openmidaas.library.test.authentication.MockAccessTokenSuccessStrategy;
@@ -199,10 +201,7 @@ public class MIDaaSTest extends InstrumentationTestCase {
 		}
 	}
 
-	protected void tearDown() {
-		AuthenticationManager.getInstance().setAccessTokenStrategy(null);
-		
-	}
+	
 	
 	@SmallTest
 	public void testAttributeBundle() {
@@ -252,7 +251,65 @@ public class MIDaaSTest extends InstrumentationTestCase {
 		}
 		
 	}
-
-
 	
+	@SmallTest
+	public void testInvalidAttributeServerUrl() {
+		String invalidUrl = "/test/path";
+		try {
+			MIDaaS.initialize(mContext, invalidUrl, new InitializationCallback() {
+
+				@Override
+				public void onSuccess() {
+					Assert.fail();
+				}
+
+				@Override
+				public void onError(MIDaaSException exception) {
+					Assert.fail();
+				}
+
+				@Override
+				public void onRegistering() {
+					Assert.fail();
+				}
+				
+			});
+			Assert.fail();
+		} catch (URISyntaxException e) {
+			
+		}
+		
+	}
+	
+	@SmallTest
+	public void testInvalidAttributeServerUrlScheme() {
+		String invalidUrl = "foo://server.url.com/test";
+		try {
+			MIDaaS.initialize(mContext, invalidUrl, new InitializationCallback() {
+
+				@Override
+				public void onSuccess() {
+					Assert.fail();
+				}
+
+				@Override
+				public void onError(MIDaaSException exception) {
+					Assert.fail();
+				}
+
+				@Override
+				public void onRegistering() {
+					Assert.fail();
+				}
+				
+			});
+			Assert.fail();
+		} catch (URISyntaxException e) {
+			
+		}
+	}
+
+	protected void tearDown() {
+		AuthenticationManager.getInstance().setAccessTokenStrategy(null);
+	}
 }
