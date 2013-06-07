@@ -17,21 +17,27 @@ package org.openmidaas.library.test.models;
 
 
 
+
 import android.test.InstrumentationTestRunner;
 import android.test.InstrumentationTestSuite;
 
 
-public class TestSuite extends InstrumentationTestRunner {
+public class ModelsTestSuite extends InstrumentationTestRunner {
 	@Override
 	public junit.framework.TestSuite getAllTests() {
 		InstrumentationTestSuite suite = new InstrumentationTestSuite(this);
+		suite.addTestSuite(AddressAttributeTest.class);
+		suite.addTestSuite(AuthenticationStrategyTest.class);
+		suite.addTestSuite(CreditCardAttributeTest.class);
+		suite.addTestSuite(DeviceRegistrationTest.class);
 		suite.addTestSuite(EmailAttributeTest.class);
-		//suite.addTestSuite(GenericAttributeTest.class);
+		suite.addTestSuite(GenericAttributeTest.class);
+		suite.addTestSuite(PhoneAttributeTest.class);
 		return suite;
 	}
 
 	@Override
 	public ClassLoader getLoader() {
-		return TestSuite.class.getClassLoader();
+		return ModelsTestSuite.class.getClassLoader();
 	}
 }
