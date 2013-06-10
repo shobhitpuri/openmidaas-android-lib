@@ -267,9 +267,6 @@ public final class MIDaaS{
 		if(clientId == null || clientId.isEmpty()) {
 			throw new IllegalArgumentException("Client ID must be provided");
 		}
-		if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
-			throw new IllegalArgumentException("Attribute bundle is null or of size 0");
-		}
 
 		WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
 			
@@ -307,7 +304,7 @@ public final class MIDaaS{
 					MIDaaS.logError(TAG, "Key " + entry.getKey() + " has value null");
 					throw new NullPointerException("Key " + entry.getKey() + " has value null");
 				} else {
-					Object object = entry.getValue().getResponseTokenValue();
+					Object object = entry.getValue().getValueAsJSONSerializableObject();
 					if(object instanceof String || object instanceof JSONObject) {
 						attributes.put(entry.getKey(), object);
 					} else {
