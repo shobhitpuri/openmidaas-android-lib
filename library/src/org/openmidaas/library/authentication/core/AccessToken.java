@@ -17,6 +17,7 @@ package org.openmidaas.library.authentication.core;
 
 import java.util.Date;
 
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.core.MIDaaSException;
 
 /**
