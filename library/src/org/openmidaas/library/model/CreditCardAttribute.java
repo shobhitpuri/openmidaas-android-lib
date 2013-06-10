@@ -173,4 +173,22 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 		}
 		return null;
 	}
+
+	@Override
+	public Object getResponseTokenValue() {
+		if(this.mValue != null) {
+			JSONObject object = new JSONObject();
+			try {
+				object.put("type", this.mValue.getCardType());
+				object.put("card_no", this.mValue.getCreditCardNumber());
+				object.put("exp", this.mValue.getExpiryMonth()+"/"+this.mValue.getExpiryYear());
+				object.put("card_name", this.mValue.getHolderName());
+			} catch (JSONException e) {
+				MIDaaS.logError(TAG, e.getMessage());
+				object = null;
+			}
+			return object;
+		}
+		return null;
+	}
 }
