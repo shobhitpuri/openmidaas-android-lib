@@ -258,4 +258,11 @@ public abstract class AbstractAttribute<T> {
 		}
 		return null;
 	}
+	
+	public Object getResponseTokenValue() {
+		if(this.mValue != null) {
+			return this.mValue.toString();
+		}
+		return null;
+	}
 }

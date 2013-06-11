@@ -33,5 +33,4 @@ public class SubjectToken extends AbstractAttribute<String>{
 	protected boolean validateAttribute(String value) {
 		return true;
 	}
-
 }
