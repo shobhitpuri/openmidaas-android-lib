@@ -248,17 +248,11 @@ public abstract class AbstractAttribute<T> {
 	}
 	
 	/**
-	 * Returns a String or JSONObject depending on whether the class extending 
-	 * this class specifies a String or a custom object as a generic parameter. 
-	 * @return the JSONObject 
+	 * Returns the value of the attribute in the response format as described in the 
+	 * release document. 
+	 * @return String or JSONObject depending whether the value is a simple (String)
+	 * or complex templated object. 
 	 */
-	public Object getValueAsJSONSerializableObject() {
-		if(this.mValue != null) {
-			return this.mValue.toString();
-		}
-		return null;
-	}
-	
 	public Object getResponseTokenValue() {
 		if(this.mValue != null) {
 			return this.mValue.toString();

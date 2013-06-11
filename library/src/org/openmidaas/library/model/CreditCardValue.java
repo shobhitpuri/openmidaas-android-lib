@@ -18,12 +18,18 @@ package org.openmidaas.library.model;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openmidaas.library.MIDaaS;
+
 /**
  * 
  * ADT that defines the value of a credit card attribute. 
  *
  */
 public class CreditCardValue {
+	
+	private final String TAG = "CreditCardValue";
 	
 	public static final String CARD_NUMBER = "card_no";
 	
@@ -120,6 +126,22 @@ public class CreditCardValue {
 		this.mCVV = cvv;
 	}
 
+	@Override
+	public String toString() {
+		JSONObject object = new JSONObject();
+		try {
+			object.put(CARD_NUMBER, this.mCardNumber);
+			object.put(CARD_CVV, this.mCVV);
+			object.put(CARD_EXPIRY_MONTH, this.mExpiryMonth);
+			object.put(CARD_EXPIRY_YEAR, this.mExpiryYear);
+			object.put(CARD_HOLDER_NAME, this.mHolderName);
+		} catch (JSONException e) {
+			MIDaaS.logError(TAG, e.getMessage());
+			object = null;
+		}
+		return object.toString();	
+	}
+	
 	@Override
 	protected void finalize() throws Throwable {
 		this.mCardNumber = null;

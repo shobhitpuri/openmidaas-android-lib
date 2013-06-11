@@ -304,7 +304,7 @@ public final class MIDaaS{
 					MIDaaS.logError(TAG, "Key " + entry.getKey() + " has value null");
 					throw new NullPointerException("Key " + entry.getKey() + " has value null");
 				} else {
-					Object object = entry.getValue().getValueAsJSONSerializableObject();
+					Object object = entry.getValue().getResponseTokenValue();
 					if(object instanceof String || object instanceof JSONObject) {
 						attributes.put(entry.getKey(), object);
 					} else {
