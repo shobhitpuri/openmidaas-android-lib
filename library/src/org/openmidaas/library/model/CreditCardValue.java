@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class CreditCardValue {
 	
-	public static final String CARD_NUMBER = "card_no";
+	public static final String CARD_NUMBER = "creditCard";
 	
 	public static final String CARD_EXPIRY_MONTH = "expiryMonth";
 	
