@@ -154,25 +154,6 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 		MIDaaS.logError(TAG, "Value is null");
 		return "";
 	}
-	
-	@Override
-	public Object getValueAsJSONSerializableObject() {
-		if(this.mValue != null) {
-			JSONObject object = new JSONObject();
-			try {
-				object.put(CreditCardValue.CARD_NUMBER, this.mValue.getCreditCardNumber());
-				object.put(CreditCardValue.CARD_CVV, this.mValue.getCVV());
-				object.put(CreditCardValue.CARD_EXPIRY_MONTH, this.mValue.getExpiryMonth());
-				object.put(CreditCardValue.CARD_EXPIRY_YEAR, this.mValue.getExpiryYear());
-				object.put(CreditCardValue.CARD_HOLDER_NAME, this.mValue.getHolderName());
-			} catch (JSONException e) {
-				MIDaaS.logError(TAG, e.getMessage());
-				object = null;
-			}
-			return object;
-		}
-		return null;
-	}
 
 	@Override
 	public Object getResponseTokenValue() {

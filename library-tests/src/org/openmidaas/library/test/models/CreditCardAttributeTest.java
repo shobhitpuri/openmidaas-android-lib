@@ -171,7 +171,7 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 	public void testNotNullGetAttributeAsJSONObject() {
 		try {
 			createAttribute(new CreditCardValue(VALID_CARD_NUMBER, VALID_CVV, VALID_EXPIRY_MONTH, VALID_EXPIRY_YEAR, CARD_HOLDER_NAME));
-			JSONObject object = (JSONObject) creditCardAttribute.getValueAsJSONSerializableObject();
+			JSONObject object = new JSONObject(creditCardAttribute.getValue().toString());
 			Assert.assertNotNull(object);
 			Assert.assertEquals(VALID_CARD_NUMBER, object.getString(CreditCardValue.CARD_NUMBER));
 			Assert.assertEquals(VALID_CVV, object.getString(CreditCardValue.CARD_CVV));
@@ -185,13 +185,6 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 		} catch (JSONException e) {
 			Assert.fail();
 		}
-	}
-	
-	@SmallTest
-	public void testNullGetAttributeAsJSONObject() {
-		CreditCardAttribute creditCardAttribute = CreditCardAttributeFactory.createAttribute();
-		JSONObject object = (JSONObject) creditCardAttribute.getValueAsJSONSerializableObject();
-		Assert.assertNull(object);
 	}
 	
 	

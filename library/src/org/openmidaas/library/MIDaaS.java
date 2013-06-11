@@ -267,9 +267,6 @@ public final class MIDaaS{
 		if(clientId == null || clientId.isEmpty()) {
 			throw new IllegalArgumentException("Client ID must be provided");
 		}
-		if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
-			throw new IllegalArgumentException("Attribute bundle is null or of size 0");
-		}
 
 		WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
 			

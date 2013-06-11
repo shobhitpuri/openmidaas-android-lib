@@ -80,26 +80,6 @@ public class AddressAttribute extends AbstractAttribute<AddressValue> {
 	}
 
 	@Override
-	public Object getValueAsJSONSerializableObject() {
-		if(this.mValue != null) {
-			JSONObject object = new JSONObject();
-			try {
-				object.put(AddressValue.STREET_ADDRESS, this.mValue.getAddressLine());
-				object.put(AddressValue.STREET_ADDRESS, this.mValue.getAddressLine());
-				object.put(AddressValue.LOCALITY, this.mValue.getLocality());
-				object.put(AddressValue.REGION, this.mValue.getRegion());
-				object.put(AddressValue.POSTAL_CODE, this.mValue.getPostalCode());
-				object.put(AddressValue.COUNTRY, this.mValue.getCountry());
-			} catch (JSONException e) {
-				MIDaaS.logError(TAG, e.getMessage());
-				object = null;
-			}
-			return object;
-		}
-		return null;
-	}
-
-	@Override
 	public Object getResponseTokenValue() {
 		if(this.mValue != null) {
 			JSONObject object = new JSONObject();
