@@ -37,9 +37,4 @@ public class GenericAttribute extends AbstractAttribute<String>{
 	protected boolean validateAttribute(String value) {
 		return true;
 	}
-
-	@Override
-	public Object getResponseTokenValue() {
-		return this.mValue;
-	}
 }
