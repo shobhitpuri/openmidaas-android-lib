@@ -38,7 +38,7 @@ public class CreditCardAttributeTest extends InstrumentationTestCase {
 	private final String INVALID_EXPIRY_YEAR = "10";
 	private final String CARD_HOLDER_NAME = "Rob Smith";
 	private final String VALID_CVV = "123";
-	private final String expectedValidCreditCardToString = VALID_CARD_NUMBER + "\n" + VALID_EXPIRY_MONTH + "/" + VALID_EXPIRY_YEAR + "\n" + CARD_HOLDER_NAME;		
+	private final String expectedValidCreditCardToString = "************1401" + "\n" + VALID_EXPIRY_MONTH + "/" + VALID_EXPIRY_YEAR + "\n" + CARD_HOLDER_NAME;		
 	private CreditCardAttribute creditCardAttribute;
 	protected void setUp() throws Exception {
 		MIDaaS.setContext(getInstrumentation().getContext());
