@@ -147,7 +147,9 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 	@Override
 	public String toString() {
 		if(mValue != null) {
-			return (mValue.getCreditCardNumber() + "\n" + String.format("%02d", Integer.parseInt(mValue.getExpiryMonth())) + 
+			String rawCardNumber = mValue.getCreditCardNumber();
+			String maskedPan = rawCardNumber.substring(rawCardNumber.length()-4, rawCardNumber.length());
+			return (rawCardNumber.replaceAll("\\d", "*").substring(0, rawCardNumber.length()-4) + maskedPan + "\n" + String.format("%02d", Integer.parseInt(mValue.getExpiryMonth())) + 
 					"/" +mValue.getExpiryYear() + "\n" + mValue.getHolderName());
 		 
 		}
