@@ -95,6 +95,7 @@ public class WorkQueueManager {
 			} catch(InterruptedException intException) {
 				break;
 			} catch(Exception e) {
+				if (e.getMessage()!=null)
 				MIDaaS.logError(TAG, e.getMessage());
 			}
 			MIDaaS.logDebug(TAG, "done work...");
