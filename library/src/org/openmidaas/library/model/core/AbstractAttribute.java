@@ -38,7 +38,7 @@ public abstract class AbstractAttribute<T> {
 	
 	protected String mName;
 	
-	protected T mValue;
+	protected T mValue = null;
 	
 	private String mLabel = null;
 	
@@ -232,7 +232,7 @@ public abstract class AbstractAttribute<T> {
 	
 	/**
 	 * Removes an attribute from the persistence store. 
-	 * @throws MIDaaSException if an error occured while
+	 * @throws MIDaaSException if an error occurred while
 	 * removing the attribute. 
 	 */
 	public void delete() throws MIDaaSException {
@@ -245,5 +245,18 @@ public abstract class AbstractAttribute<T> {
 			return (mValue.toString());
 		MIDaaS.logError(TAG, "Attribute value is null");
 		return "";
+	}
+	
+	/**
+	 * Returns the value of the attribute in the response format as described in the 
+	 * release document. 
+	 * @return String or JSONObject depending whether the value is a simple (String)
+	 * or complex templated object. 
+	 */
+	public Object getResponseTokenValue() {
+		if(this.mValue != null) {
+			return this.mValue.toString();
+		}
+		return null;
 	}
 }

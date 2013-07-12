@@ -16,6 +16,8 @@
 package org.openmidaas.library;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.Map;
 
@@ -93,14 +95,41 @@ public final class MIDaaS{
 	 * method. Otherwise, it tries to register the device with the server and calls
 	 * onSuccess() or onError() accordingly. 
 	 * @param context - the Android context. 
+	 * @param attributeServerUrl - the attribute server that verifies and releases attributes. If null, the 
+	 * default server is used. This is defined in the Constants.java file. 
 	 * @param initCallback - the Initialization callback. 
+	 * @throws URISyntaxException 
 	 */
-	public static void initialize(Context context, final InitializationCallback initCallback) {
+	public static void initialize(final Context context, final String attributeServerUrl,final InitializationCallback initCallback) throws URISyntaxException  {
+		if(context == null) {
+			MIDaaS.logError(TAG, "context is null");
+			throw new IllegalArgumentException("Context cannot be null");
+		}
+		if(initCallback == null) {
+			MIDaaS.logError(TAG, "initialization callback is null");
+			throw new IllegalArgumentException("InitializationCallback cannot be null");
+		}
 		mContext = context.getApplicationContext();
 		/* *** initialization routines *** */
-		// we will target our sandbox URL.
 		logDebug(TAG, "Initializing library");
-		ConnectionManager.setNetworkFactory(new AndroidNetworkFactory(Constants.AVP_SB_BASE_URL));
+		if(attributeServerUrl == null || attributeServerUrl.isEmpty()) {
+			ConnectionManager.setNetworkFactory(new AndroidNetworkFactory(Constants.AVP_SB_BASE_URL));
+		} else {
+			URI uri = new URI(attributeServerUrl);
+			// check to see if we have a complete URL
+			if(uri.isAbsolute()) {
+				// since we're using the URI class, check that the scheme is http or https. 
+				if(uri.getScheme().equals("http") || uri.getScheme().equals("https")) {
+					ConnectionManager.setNetworkFactory(new AndroidNetworkFactory(attributeServerUrl));
+				} else {
+					MIDaaS.logError(TAG, "Unknown URI scheme: " + uri.getScheme());
+					throw new URISyntaxException(attributeServerUrl, "Unknown URI scheme: " + uri.getScheme());
+				}
+			} else {
+				MIDaaS.logError(TAG, "URI appears to be incomplete: " + attributeServerUrl);
+				throw new URISyntaxException(attributeServerUrl, "URI appears to be incomplete: " + attributeServerUrl);
+			}
+		}
 		// we will use a SQLITE database to persist attributes. 
 		AttributePersistenceCoordinator.setPersistenceDelegate(new AttributeDBPersistence());
 		// set the authentication strategy to level0 device authentication 
@@ -206,7 +235,7 @@ public final class MIDaaS{
 	
 	/**
 	 * Log - detailed messages
-	 * @param tag
+	 * @param tagthis.mStreetAddress
 	 * @param message
 	 */
 	public static void logVerbose(String tag, String message) {
@@ -238,9 +267,6 @@ public final class MIDaaS{
 		if(clientId == null || clientId.isEmpty()) {
 			throw new IllegalArgumentException("Client ID must be provided");
 		}
-		if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
-			throw new IllegalArgumentException("Attribute bundle is null or of size 0");
-		}
 
 		WorkQueueManager.getInstance().addWorkerToQueue(new Worker() {
 			
@@ -261,9 +287,11 @@ public final class MIDaaS{
 	 */
 	public static String getAttributeBundle(String clientId, String state, Map<String, AbstractAttribute<?>> attributeBundleMap) throws IllegalArgumentException {
 		if(clientId == null) {
+			MIDaaS.logError(TAG, "Client ID cannot be null");
 			throw new IllegalArgumentException("Client ID cannot be null");
 		}
 		if(attributeBundleMap == null || attributeBundleMap.size() == 0) {
+			MIDaaS.logError(TAG, "Attribute map is either null or empty");
 			throw new IllegalArgumentException("Attribute map is either null or empty");
 		}
 		try {
@@ -273,9 +301,16 @@ public final class MIDaaS{
 			JSONObject attributes = new JSONObject();
 			for(Map.Entry<String, AbstractAttribute<?>> entry: attributeBundleMap.entrySet()) {
 				if(entry.getValue() == null) { 
+					MIDaaS.logError(TAG, "Key " + entry.getKey() + " has value null");
 					throw new NullPointerException("Key " + entry.getKey() + " has value null");
 				} else {
-					attributes.put(entry.getKey(), entry.getValue().toString());
+					Object object = entry.getValue().getResponseTokenValue();
+					if(object instanceof String || object instanceof JSONObject) {
+						attributes.put(entry.getKey(), object);
+					} else {
+						MIDaaS.logError(TAG, "attribute method \"getValueAsJSONSerializableObject()\" is not returning an object of instance String or JSONObject");
+						return null;
+					}
 				}
 			}
 			Date now = new Date();
@@ -283,8 +318,10 @@ public final class MIDaaS{
 			bundleData.put(Constants.AttributeBundleKeys.ATTRIBUTES, attributes);
 			return (getJWS(bundleData.toString()));
 		} catch(JSONException e) {
+			MIDaaS.logError(TAG, e.getMessage());
 			return null;
 		} catch (UnsupportedEncodingException e) {
+			MIDaaS.logError(TAG, e.getMessage());
 			return null;
 		}
 	}

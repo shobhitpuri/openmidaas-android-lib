@@ -127,17 +127,6 @@ public class CreditCardValue {
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		this.mCardNumber = null;
-		this.mCVV = null;
-		this.mExpiryMonth = null;
-		this.mExpiryYear = null;
-		this.mHolderName = null;
-		this.mCardType = null;
-		super.finalize();
-	}
-	
-	@Override
 	public String toString() {
 		JSONObject object = new JSONObject();
 		try {
@@ -151,5 +140,16 @@ public class CreditCardValue {
 			object = null;
 		}
 		return object.toString();	
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		this.mCardNumber = null;
+		this.mCVV = null;
+		this.mExpiryMonth = null;
+		this.mExpiryYear = null;
+		this.mHolderName = null;
+		this.mCardType = null;
+		super.finalize();
 	}
 }

@@ -153,19 +153,23 @@ public class AddressAttributeTest extends InstrumentationTestCase {
 	
 	
 	@SmallTest
-	public void testToStringMethodOfAddressValue() {
+	public void testNotNullGetAttributeAsJSONObject() {
 		try {
-			AddressValue mValue = new AddressValue(VALID_STREET_ADDRESS, VALID_LOCALITY, VALID_REGION, VALID_POSTAL_CODE, VALID_COUNTRY);
-			JSONObject object = new JSONObject(mValue.toString());
+			createAttribute(new AddressValue(VALID_STREET_ADDRESS, VALID_LOCALITY, VALID_REGION, VALID_POSTAL_CODE, VALID_COUNTRY));
+			JSONObject object = new JSONObject(addressAttribute.getValue().toString());
+			Assert.assertNotNull(object);
 			Assert.assertEquals(VALID_STREET_ADDRESS, object.getString(AddressValue.STREET_ADDRESS));
 			Assert.assertEquals(VALID_LOCALITY, object.getString(AddressValue.LOCALITY));
 			Assert.assertEquals(VALID_REGION, object.getString(AddressValue.REGION));
 			Assert.assertEquals(VALID_POSTAL_CODE, object.getString(AddressValue.POSTAL_CODE));
 			Assert.assertEquals(VALID_COUNTRY, object.getString(AddressValue.COUNTRY));
+		} catch (InvalidAttributeValueException e) {
+			Assert.fail();
+		} catch (MIDaaSException e) {
+			Assert.fail();
 		} catch (JSONException e) {
 			Assert.fail();
 		}
-		
 	}
 	
 	private void createAttribute(AddressValue value) throws InvalidAttributeValueException, MIDaaSException {

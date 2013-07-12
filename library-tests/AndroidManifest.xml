@@ -19,17 +19,15 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="15" />
+    <uses-sdk android:minSdkVersion="15" android:targetSdkVersion="17" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
 
- <!--    <instrumentation
-        android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="org.openmidaas.library" /> -->
 
     <application	
+        android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" android:debuggable="true">
+        android:label="@string/app_name" >
         <uses-library android:name="android.test.runner" />
     </application>
     
@@ -37,8 +35,16 @@
 	    android:name="com.zutubi.android.junitreport.JUnitReportTestRunner"
         android:targetPackage="org.openmidaas.library.test"/>
 
-    <instrumentation android:label="All Tests" 
-	    android:name="org.openmidaas.library.test.models.TestSuite"
+    <instrumentation android:label="Models Test Suite" 
+	    android:name="org.openmidaas.library.test.models.ModelsTestSuite"
+        android:targetPackage="org.openmidaas.library.test"/>
+    
+    <instrumentation android:label="Authentication Test Suite" 
+	    android:name="org.openmidaas.library.test.authentication.AuthenticationTestSuite"
+        android:targetPackage="org.openmidaas.library.test"/>
+    
+    <instrumentation android:label="Persistence Test Suite" 
+	    android:name="org.openmidaas.library.test.persistence.PersistenceTestSuite"
         android:targetPackage="org.openmidaas.library.test"/>
     
 </manifest>

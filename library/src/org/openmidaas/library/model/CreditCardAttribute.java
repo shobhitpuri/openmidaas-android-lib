@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.common.Constants;
 import org.openmidaas.library.common.Constants.ATTRIBUTE_STATE;
@@ -145,11 +147,31 @@ public class CreditCardAttribute extends AbstractAttribute<CreditCardValue>{
 	@Override
 	public String toString() {
 		if(mValue != null) {
-			return (mValue.getCreditCardNumber() + "\n" + String.format("%02d", Integer.parseInt(mValue.getExpiryMonth())) + 
+			String rawCardNumber = mValue.getCreditCardNumber();
+			String maskedPan = rawCardNumber.substring(rawCardNumber.length()-4, rawCardNumber.length());
+			return (rawCardNumber.replaceAll("\\d", "*").substring(0, rawCardNumber.length()-4) + maskedPan + "\n" + String.format("%02d", Integer.parseInt(mValue.getExpiryMonth())) + 
 					"/" +mValue.getExpiryYear() + "\n" + mValue.getHolderName());
 		 
 		}
 		MIDaaS.logError(TAG, "Value is null");
 		return "";
+	}
+
+	@Override
+	public Object getResponseTokenValue() {
+		if(this.mValue != null) {
+			JSONObject object = new JSONObject();
+			try {
+				object.put("type", this.mValue.getCardType());
+				object.put("card_no", this.mValue.getCreditCardNumber());
+				object.put("exp", this.mValue.getExpiryMonth()+"/"+this.mValue.getExpiryYear());
+				object.put("card_name", this.mValue.getHolderName());
+			} catch (JSONException e) {
+				MIDaaS.logError(TAG, e.getMessage());
+				object = null;
+			}
+			return object;
+		}
+		return null;
 	}
 }

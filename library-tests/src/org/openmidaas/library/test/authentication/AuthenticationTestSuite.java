@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.openmidaas.library.model;
+package org.openmidaas.library.test.authentication;
 
-import org.openmidaas.library.common.Constants;
-import org.openmidaas.library.model.core.AbstractAttribute;
 
-public class SubjectToken extends AbstractAttribute<String>{
-	
-	protected SubjectToken(){
-		mName = Constants.RESERVED_WORDS.subject_token.toString();
+import android.test.InstrumentationTestRunner;
+import android.test.InstrumentationTestSuite;
+
+public class AuthenticationTestSuite extends InstrumentationTestRunner {
+	@Override
+	public junit.framework.TestSuite getAllTests() {
+		InstrumentationTestSuite suite = new InstrumentationTestSuite(this);
+		suite.addTestSuite(AccessTokenTest.class);
+		suite.addTestSuite(AuthenticationManagerTest.class);
+		
+		return suite;
 	}
 
 	@Override
-	public void delete() {
-		throw new UnsupportedOperationException("Devic token cannot be deleted");
+	public ClassLoader getLoader() {
+		return AuthenticationTestSuite.class.getClassLoader();
 	}
-	
-	@Override
-	protected boolean validateAttribute(String value) {
-		return true;
-	}
+
 }

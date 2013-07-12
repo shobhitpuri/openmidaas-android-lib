@@ -306,7 +306,7 @@ public class AttributeDBPersistence implements AttributePersistenceDelegate{
 		ContentValues contentValues = new ContentValues();
 		contentValues.put(AttributesTable.COLUMN_NAME_NAME, attribute.getName());
 		contentValues.put(AttributesTable.COLUMN_NAME_LABEL, attribute.getLabel());
-		if(attribute.getValue().toString() != null) {
+		if(attribute.getValue() != null) {
 			contentValues.put(AttributesTable.COLUMN_NAME_VALUE, attribute.getValue().toString());
 		} else {
 			// should never get to this point. All checks for the value should be done prior to this. 

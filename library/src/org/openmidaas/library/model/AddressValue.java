@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openmidaas.library.MIDaaS;
 
+
 /**
  * 
  * ADT that describes an address value
@@ -110,7 +111,7 @@ public class AddressValue {
 	public void setFormattedAddress(String formattedAddress) {
 		this.mFormattedAddress = formattedAddress;
 	}
-
+	
 	@Override
 	public String toString() {
 		JSONObject object = new JSONObject();

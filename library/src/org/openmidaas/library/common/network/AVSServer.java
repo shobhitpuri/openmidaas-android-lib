@@ -148,22 +148,24 @@ public class AVSServer {
 			if(state != null && !state.equals("")) {
 				data.put(Constants.RequestKeys.STATE, state);
 			}
-			for(Map.Entry<String, AbstractAttribute<?>> entry: verifiedAttributeMap.entrySet()) {
-				if(entry.getValue() != null) { 
-					if(entry.getValue().getState().equals(ATTRIBUTE_STATE.VERIFIED)) {
-						if(entry.getValue().getSignedToken() != null) {
-							data.getJSONObject(Constants.AttributeBundleKeys.ATTRIBUTES).put(entry.getKey(), entry.getValue().getSignedToken());
+			if(verifiedAttributeMap != null) {
+				for(Map.Entry<String, AbstractAttribute<?>> entry: verifiedAttributeMap.entrySet()) {
+					if(entry.getValue() != null) { 
+						if(entry.getValue().getState().equals(ATTRIBUTE_STATE.VERIFIED)) {
+							if(entry.getValue().getSignedToken() != null) {
+								data.getJSONObject(Constants.AttributeBundleKeys.ATTRIBUTES).put(entry.getKey(), entry.getValue().getSignedToken());
+							} else {
+								callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+							}
 						} else {
-							callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+							MIDaaS.logError(TAG, "Trying to bundle an attribute that's not in a verified state.");
+							callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_STATE_ERROR));
 						}
 					} else {
-						MIDaaS.logError(TAG, "Trying to bundle an attribute that's not in a verified state.");
-						callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_STATE_ERROR));
+						MIDaaS.logError(TAG, "No entry value for the attribute " + entry.getKey());
+						callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
+						return;
 					}
-				} else {
-					MIDaaS.logError(TAG, "No entry value for the attribute " + entry.getKey());
-					callback.onError(new MIDaaSException(MIDaaSError.ATTRIBUTE_VALUE_ERROR));
-					return;
 				}
 			}
 		} catch(JSONException e) {

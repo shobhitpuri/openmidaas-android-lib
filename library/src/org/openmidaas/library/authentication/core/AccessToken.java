@@ -17,6 +17,7 @@ package org.openmidaas.library.authentication.core;
 
 import java.util.Date;
 
+import org.openmidaas.library.MIDaaS;
 import org.openmidaas.library.model.core.MIDaaSException;
 
 /**
@@ -63,8 +64,10 @@ public class AccessToken {
 	public boolean isExpired() {
 		long now = getNowInSeconds();
 		if(this.mExpiry > now) {
+			MIDaaS.logDebug("AccessToken", "Access token has NOT EXPIRED, returning");
 			return false;
 		}
+		MIDaaS.logDebug("AccessToken", "Access token has EXPIRED, need to renew now. ");
 		return true;
 	}
 	
