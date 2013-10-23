@@ -21,59 +21,43 @@ import org.openmidaas.library.authentication.core.DeviceAuthenticationStrategy;
 import org.openmidaas.library.model.core.MIDaaSError;
 import org.openmidaas.library.model.core.MIDaaSException;
 
-import com.securekey.accessplatform.AccessPlatform;
-import com.securekey.accessplatform.AccessPlatformException;
-import com.securekey.accessplatform.AccessPlatformFactory;
-import com.securekey.accessplatform.AccessPlatformListener;
+import com.securekey.briidge.Briidge;
+import com.securekey.briidge.Briidge.AuthenticateDeviceListener;
+import com.securekey.briidge.SKBriidgeFactory;
 
-public class SKDeviceAuthentication implements DeviceAuthenticationStrategy, AccessPlatformListener {
+public class SKDeviceAuthentication implements DeviceAuthenticationStrategy, AuthenticateDeviceListener {
 
 	private final String TAG = "SKDeviceAuthentication";
 	
 	private DeviceAuthenticationCallback mCallback;
-	
-	
+		
 	@Override
 	public void performDeviceAuthentication(
 			DeviceAuthenticationCallback callback) {
 		mCallback = callback;
 		MIDaaS.logDebug(TAG, "Authenticating device...");
-		AccessPlatform accessPlatform;
-		try {
-			accessPlatform = AccessPlatformFactory.getAccessPlatform(MIDaaS.getContext());
-			accessPlatform.authenticateDevice(this);
-		} catch (AccessPlatformException e) {
-			if(e.getMessage() != null)
-				MIDaaS.logError(TAG, e.getMessage());
-			else
-				MIDaaS.logError(TAG, "Authentication error");
-			mCallback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
-		}
-		
+		Briidge accessPlatform;
+		accessPlatform = SKBriidgeFactory.getBriidgePlatform(MIDaaS.getContext());
+		accessPlatform.authenticateDevice(this);
 	}
-
+	
 	@Override
-	public void requestComplete(String requestType, int status, int subStatus, String transactionId) {
+	public void authenticateDeviceComplete(int status, String transactionId) {
 		MIDaaS.logDebug(TAG, "Authentication response received. ");
-		if(requestType.equals(AccessPlatform.AUTHENTICATE_DEVICE_REQUEST)) {
-			MIDaaS.logDebug(TAG, "Request matches expected response");
-			if(status == AccessPlatform.STATUS_OK && subStatus == AccessPlatform.SUBSTATUS_NO_ERROR) {
-				MIDaaS.logDebug(TAG, "Response status is OK");
-				if(transactionId != null)  {
-					MIDaaS.logDebug(TAG, "response is not null. calling back.");
-					MIDaaS.logDebug("SKDeviceAuthentication", transactionId);
-					mCallback.onSuccess(transactionId);
-				}
-				else {
-					MIDaaS.logError(TAG, "Error authenticating device. Response is null");
-					mCallback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
-				}
-			} else {
-				MIDaaS.logError(TAG, "Error authenticating device. Status is not OK");
+		MIDaaS.logDebug(TAG, "Request matches expected response");
+		if(status == Briidge.STATUS_OK) {
+			MIDaaS.logDebug(TAG, "Response status is OK");
+			if(transactionId != null)  {
+				MIDaaS.logDebug(TAG, "response is not null. calling back.");
+				MIDaaS.logDebug("SKDeviceAuthentication", transactionId);
+				mCallback.onSuccess(transactionId);
+			}
+			else {
+				MIDaaS.logError(TAG, "Error authenticating device. Response is null");
 				mCallback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
 			}
 		} else {
-			MIDaaS.logError(TAG, "Error authenticating device. Response type does not match request type");
+			MIDaaS.logError(TAG, "Error authenticating device. Status is not OK");
 			mCallback.onError(new MIDaaSException(MIDaaSError.ERROR_AUTHENTICATING_DEVICE));
 		}
 	}
